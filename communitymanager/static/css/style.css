@@ -236,17 +236,6 @@ textarea {
 	margin: 0 1em 1em 1em
 }
 
-.searchnav {
-	float: right;
-	font-size: 50%;
-	vertical-align: middle;
-	line-height: 200%;
-}
-
-.searchnav a, .site-nav a {
-	vertical-align: middle;
-}
-
 .site-nav a {
 	margin-bottom: 0.5em;
 }

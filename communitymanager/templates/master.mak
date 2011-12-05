@@ -51,17 +51,17 @@
 <header class="ui-widget-header" style="padding-left: 1em;">
 <nav class="site-nav"><%block name="sitenav">
 %if request.user:
-<%block name="newsearch"><a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('search')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('New Search')}</span></a></%block>
+<%block name="browse"><a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('communities')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Browse')}</span></a></%block>
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('logout')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Logout')}</span></a>
 %else:
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('login')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Login')}</span></a>
 %endif
 </%block>
 </nav>
-<h1 style="margin: 0;">${_('CIOC Community Table Management Tool')}</h1>
+<h1 style="margin: 0;">${_('CIOC Communities Management Tool')}</h1>
 </header>
 <header id="pagetitle">
-<h1 class="clearfix"><%block name="searchnav"/>${self.title()}</h1>
+<h1 class="clearfix">${self.title()}</h1>
 </header>
 
     <div id="main" role="main">

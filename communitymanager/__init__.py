@@ -25,7 +25,7 @@ log = logging.getLogger('communitymanager')
 def groupfinder(userid, request):
     user = request.user
     if user is not None:
-        log.debug('user: %s, %d', user.UserName, user.ViewType)
+        #log.debug('user: %s, %d', user.UserName, user.ViewType)
         groups = []
 
         if user.ManageAreaList:
@@ -40,6 +40,9 @@ def groupfinder(userid, request):
 
 class RootFactory(object):
     __acl__ = [(Allow, Authenticated, 'view'), (Deny, Everyone, 'view')]
+
+    def __init__(self, request):
+        pass
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -62,6 +65,9 @@ def main(global_config, **settings):
     passvars_pregen = request.passvars_pregen
 
     config.add_translation_dirs('communitymanager:locale')
+    config.add_subscriber('communitymanager.lib.subscribers.add_renderer_globals',
+                      'pyramid.events.BeforeRender')
+
     config.add_static_view('static', 'communitymanager:static', cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
 
 
@@ -69,7 +75,7 @@ def main(global_config, **settings):
 
     config.add_route('community', '/communities/{cmid}', pregenerator=passvars_pregen)
 
-    config.add_route('browse', '/communities', pregenerator=passvars_pregen)
+    config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
     config.add_route('altarea', '/altareas/{aaid}', pregenerator=passvars_pregen)
 
@@ -90,6 +96,11 @@ def main(global_config, **settings):
     config.add_route('login', '/login', pregenerator=passvars_pregen)
 
     config.add_route('logout', '/logout', pregenerator=passvars_pregen)
+
+    config.add_route('json_communities', '/json/communities')
+
+    config.add_route('json_community', '/json/communities/{cmid}')
+
 
     config.scan()
 

@@ -194,7 +194,7 @@ class CommunityManagerRequest(Request):
             # this should return None if the user doesn't exist
             # in the database
             with self.connmgr.get_connection() as conn:
-                user = conn.execute('EXEC sp_User_s ?', userid).first()
+                user = conn.execute('EXEC sp_User_Login_s ?', userid).fetchone()
 
             if user:
                 if user.ManageAreaList:
