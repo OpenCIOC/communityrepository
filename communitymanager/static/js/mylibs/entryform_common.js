@@ -176,7 +176,7 @@ function init_autocomplete_checklist($, options) {
 		}
 		look_for_value(newfield[0].value, function(item) {
 			if (item) {
-				add_new_value(item.chkid, item.value);
+				add_new_value(item.chkid, item[options.match_prop]);
 				after_add();
 			} else {
 				do_show_error();
@@ -197,7 +197,7 @@ function init_autocomplete_checklist($, options) {
 			select: function(evt, ui) {
 				newfield.data({
 					chkid: ui.item.chkid,
-					display: ui.item.value
+					display: ui.item[options.match_prop]
 					});
 			}
 		}).

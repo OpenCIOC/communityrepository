@@ -14,6 +14,8 @@ active_cultures = syslanguage.active_cultures()
 culture_map = syslanguage.culture_map()
 languages = sorted((culture_map[x] for x in active_cultures), key=lambda x: x.LanguageName)
 self.languages = [(x.Culture, x.LanguageName) for x in languages]
+is_add = not (community and community.CM_ID)
+can_delete = True
 %>
 
 ${renderer.error_notice()}
@@ -32,8 +34,15 @@ ${renderer.hidden('altarea', 'on')}
 	%if community.ChildCommunities:
 		${_('The following Communities are using this Community as a parent community:')}
         ${Markup(", ").join(x['Name'] for x in community.ChildCommunities)}
+        <% can_delete = False %>
 	%else:
-		<br>${_('This Community <strong>is not</strong> being used by any Communities as a Parent Community.')|n}
+		${_('This Community <strong>is not</strong> being used by any Communities as a Parent Community.')|n}
+	%endif
+
+	%if can_delete:
+	<br>${_('Because this Community is not being used, you can delete it using the button at the bottom of the form.')}
+	%else:
+		<br>${_('Because this Community is being used, you cannot currently delete it.')}
 	%endif
     </td>
 </tr>
@@ -174,7 +183,7 @@ if community:
         init_municipality_autocomplete($('#community_ParentCommunityWeb'), parent_link, '${_("An unknown community was entered")}');
 
         init_community_edit($);
-        init_search_areas_checklist($, search_area_link, {field: 'search_community', not_found_msg:'${_("Not Found")|n}'});
+        init_search_areas_checklist($, search_area_link, {field: 'search_community', not_found_msg:'${_("Not Found")|n}', match_prop: 'label'});
 
         restore_cached_state();
     });

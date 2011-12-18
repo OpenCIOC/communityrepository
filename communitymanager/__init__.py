@@ -76,6 +76,8 @@ def main(global_config, **settings):
 
     config.add_route('home', '/', pregenerator=passvars_pregen)
 
+    config.add_route('community_delete', '/communities/{cmid}/delete', pregenerator=passvars_pregen, factory='communitymanager.views.community.CommunityRoot')
+
     config.add_route('community', '/communities/{cmid}', pregenerator=passvars_pregen, factory='communitymanager.views.community.CommunityRoot')
 
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)

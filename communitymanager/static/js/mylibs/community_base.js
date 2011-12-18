@@ -1,6 +1,6 @@
 (function() {
 window['init_search_areas_checklist'] = function($, url, options) {
-    var cache = {}, source_fn = create_caching_source_fn($, url, cache, 'display'),
+    var cache = {}, source_fn = create_caching_source_fn($, url, cache, 'label'),
     parent_cmid_input = $('#community_ParentCommunity'), alt_search_area_counter=9999,
     alt_search_area_template = $('#alt-area-template').html(), alt_search_area_target=$('#alt-area-target'),
     parent_community_adding_src_fn = function(request, response, override_url) {

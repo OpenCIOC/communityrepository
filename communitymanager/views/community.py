@@ -29,6 +29,9 @@ class  CommunityRoot(object):
         cm_id = request.matchdict.get('cmid')
 
         if cm_id == 'new':
+            if request.matched_route.name == 'community_delete':
+                raise HTTPNotFound()
+
             parents = [('manager',)]
 
         else:
@@ -96,6 +99,9 @@ class Community(ViewBase):
         is_alt_area = not not request.params.get('altarea')
 
         cm_id = request.matchdict.get('cmid')
+
+        if cm_id != 'new' and request.params.get('Delete'):
+            return HTTPFound(location=request.route_url('community_delete', cmid=cm_id))
 
         model_state = request.model_state
         model_state.form.variable_decode = True
@@ -289,6 +295,49 @@ class Community(ViewBase):
         return cm_id
 
 
+    @view_config(route_name='community_delete', renderer='confirmdelete.mak', request_method='POST', permission='edit')
+    def confirm_delete(self):
+        request = self.request
+
+        cm_id = self._get_cmid()
+
+        sql = '''
+			Declare @ErrMsg as nvarchar(500), 
+			@RC as int 
+
+			EXECUTE @RC = dbo.sp_Community_d ?, @ErrMsg=@ErrMsg OUTPUT  
+
+			SELECT @RC as [Return], @ErrMsg AS ErrMsg
+        '''
+        with request.connmgr.get_connection() as conn:
+            result = conn.execute(sql, cm_id).fetchone()
+
+        _ = request.translate
+        if not result.Return:
+            request.session.flash(_('The Community was successfully deleted'))
+            return HTTPFound(location=request.route_url('communities'))
+
+        request.session.flash(_('Unable to delete Community:') + result.ErrMsg, 'errorqueue')
+        if result.Return == 3:
+            # cmid does not exist
+            return HTTPFound(location=request.route_url('communities'))
+            
+        return HTTPFound(location=request.route_url('community', cmid=cm_id))
+
+
+        
+        _ = request.translate
+
+        return {'title_txt': _('Delete Community/Alternate Search Area'), 'prompt':_('Are you sure you want to delete this community?')}
+
+    @view_config(route_name='community_delete', renderer='confirmdelete.mak', permission='edit')
+    def delete(self):
+        request = self.request
+        
+        _ = request.translate
+
+        return {'title_txt': _('Delete Community/Alternate Search Area'), 'prompt':_('Are you sure you want to delete this community?')}
+
     @view_config(route_name='json_parents', renderer='json', permission='view')
     @view_config(route_name='json_search_areas', renderer='json', permission='view')
     def autocomplete(self):
@@ -318,14 +367,14 @@ class Community(ViewBase):
                 pass
 
         retval = []
-        search_areas =  request.matched_route == 'json_search_areas'
+        search_areas =  request.matched_route.name == 'json_search_areas'
         with request.connmgr.get_connection() as conn:
             if search_areas:
                 cursor = conn.execute('EXEC sp_Community_ls_SearchAreaSelector ?, ?, ?, ?', request.user.User_ID, cur_cm_id, cur_parent, terms)
             else:
                 cursor = conn.execute('EXEC sp_Community_ls_ParentSelector ?, ?, ?', request.user.User_ID, cur_parent, terms)
 
-            cols = ['chkid', 'value' if not search_areas else 'name' , 'display' if search_areas else 'label']
+            cols = ['chkid', 'value', 'label']
 
             retval = [dict(zip(cols, x)) for x in cursor.fetchall()]
 

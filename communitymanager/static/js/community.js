@@ -906,7 +906,7 @@ function init_autocomplete_checklist($, options) {
 		}
 		look_for_value(newfield[0].value, function(item) {
 			if (item) {
-				add_new_value(item.chkid, item.value);
+				add_new_value(item.chkid, item[options.match_prop]);
 				after_add();
 			} else {
 				do_show_error();
@@ -927,7 +927,7 @@ function init_autocomplete_checklist($, options) {
 			select: function(evt, ui) {
 				newfield.data({
 					chkid: ui.item.chkid,
-					display: ui.item.value
+					display: ui.item[options.match_prop]
 					});
 			}
 		}).
@@ -1105,7 +1105,7 @@ window['init_municipality_autocomplete'] = init_municipality_autocomplete;
 })();
 (function() {
 window['init_search_areas_checklist'] = function($, url, options) {
-    var cache = {}, source_fn = create_caching_source_fn($, url, cache, 'display'),
+    var cache = {}, source_fn = create_caching_source_fn($, url, cache, 'label'),
     parent_cmid_input = $('#community_ParentCommunity'), alt_search_area_counter=9999,
     alt_search_area_template = $('#alt-area-template').html(), alt_search_area_target=$('#alt-area-target'),
     parent_community_adding_src_fn = function(request, response, override_url) {
