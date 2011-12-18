@@ -12,9 +12,11 @@ from operator import attrgetter
 
 # 3rd party
 from pyramid.view import view_config
+from pyramid.renderers import render
 
 # this app
-from communitymanager.views.base import ViewBase
+from communitymanager.views.base import ViewBase, xml_to_dict_list
+from communitymanager.lib import validators
 
 
 class Login(ViewBase):
@@ -25,20 +27,46 @@ class Login(ViewBase):
         if manage_list:
             manage_list = ','.join(manage_list)
 
-        start_communities = []
+        communities = []
         with request.connmgr.get_connection() as conn:
-            start_communities = conn.execute('EXEC sp_Community_l_Browse ?', manage_list).fetchall()
+            communities = conn.execute('EXEC sp_Community_l ?', (request.user and request.user.User_ID)).fetchall()
 
-        start_communities = {k:list(g) for k,g in groupby(start_communities, attrgetter('ParentCommunity'))}
+        communities = {k:list(g) for k,g in groupby(communities, attrgetter('ParentCommunity'))}
         #raise Exception
 
 
-        return {'start_communities': start_communities}
-
-    @view_config(route_name="json_communities", renderer='json', permission='view')
-    def json_communities(self):
-        return {}
+        return {'communities': communities}
 
     @view_config(route_name="json_community", renderer='json', permission='view')
     def json_community(self):
-        return {}
+        request = self.request
+
+        validator = validators.IntID(not_empty=True)
+        try:
+            cm_id = validator.to_python(request.matchdict.get('cmid'))
+        except validators.Invalid, e:
+            return {'fail': True, 'reason': e.message}
+
+        community = None
+        with request.connmgr.get_connection() as conn:
+            community = conn.execute('EXEC sp_Community_s_MoreInfo ?', cm_id).fetchone()
+
+        if not community:
+            _ = request.translate
+            return {'fail': True, 'reason': _('Community Not Found.')}
+
+        pcn = xml_to_dict_list(community.ParentCommunityName)  
+        if pcn:
+            pcn = pcn[0]
+        community.ParentCommunityName = pcn
+
+        community.OtherNames = xml_to_dict_list(community.OtherNames)
+        community.ChildCommunities = xml_to_dict_list(community.ChildCommunities)
+        community.SearchCommunities = xml_to_dict_list(community.SearchCommunities)
+        community.Managers = xml_to_dict_list(community.Managers)
+
+        #community = dict(zip((x[0] for x in community.cursor_description), community))
+        
+        community_info = render('community_more_details.mak', {'community': community}, request)
+
+        return {'fail': False, 'community_info': community_info, 'community_name': community.Name}

@@ -24,7 +24,7 @@
   <!-- CSS: implied media=all -->
   <!-- CSS concatenated and minified via ant build script-->
   <!-- XXX only local styles -->
-  <link rel="stylesheet" href="/static/css/jquery-ui-1.8.16.custom.css" type="text/css" />
+  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/redmond/jquery-ui.css" type="text/css" />
   <link rel="stylesheet" href="/static/css/style.css">
   <style type="text/css">
     /* fix the broken font handling in default jquery-ui styles */
@@ -88,7 +88,7 @@
   <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="/js/libs/jquery-1.7.min.js"><\/script>')</script>
-  <script src="/static/js/libs/jquery-ui-1.8.16.custom.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
 
   
   <!-- scripts concatenated and minified via ant build script-->
@@ -107,3 +107,37 @@
         </div>
     </div>
 </%def>
+
+<%def name="makeMgmtInfo(model, show_created=True, show_modified=True)">
+%if show_created:
+<%
+	created_date = getattr(model, 'CREATED_DATE', None)
+	created_by = getattr(model, 'CREATED_BY', None) or _('Unknown')
+%>
+<tr>
+    <td class="ui-widget-header field">${_('Date Created')}</td>
+    <td class="ui-widget-content">${request.format_date(created_date) if created_date else _('Unknown')} (${_('set automatically')})</td>
+</tr>
+<tr>
+    <td class="ui-widget-header field">${_('Created By')}</td>
+    <td class="ui-widget-content">${created_by} (${_('set automatically')})</td>
+</tr>
+
+%endif
+%if show_modified:
+<%
+	modified_date = getattr(model, 'MODIFIED_DATE', None)
+	modified_by = getattr(model, 'MODIFIED_BY', None) or _('Unknown')
+%>
+<tr>
+    <td class="ui-widget-header field">${_('Last Modified')}</td>
+    <td class="ui-widget-content">${request.format_date(modified_date) if modified_date else _('Unknown')} (${_('set automatically')})</td>
+</tr>
+<tr>
+    <td class="ui-widget-header field">${_('Last Modified By')}</td>
+    <td class="ui-widget-content">${modified_by} (${_('set automatically')})</td>
+</tr>
+
+%endif
+</%def>
+

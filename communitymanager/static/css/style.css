@@ -279,12 +279,22 @@ span.ui-icon.menu-icon {
     color: #2e6e9e;
 }
 
+td.field-label-clear {
+    font-weight: bold;
+}
+
 .extra-space {
     margin-left: 1em;
 }
 
 .status-summary {
     margin-top: 5em;
+}
+
+#alt-area-target {
+    margin-top: 0;
+    list-style: none;
+    padding-left: 0;
 }
 
 /* ==|== non-semantic helper classes ========================================

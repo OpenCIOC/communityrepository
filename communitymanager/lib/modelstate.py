@@ -11,7 +11,7 @@ from markupsafe import Markup
 from webhelpers.html import tags
 from webhelpers.html.builder import HTML, literal
 
-from pyramid_simpleform import Form
+from pyramid_simpleform import Form, State
 from pyramid_simpleform.renderers import FormRenderer
 
 from communitymanager.lib import const
@@ -208,7 +208,7 @@ class CiocFormRenderer(FormRenderer):
 
 class ModelState(object):
     def __init__(self, request):
-        self.form = Form(request)
+        self.form = Form(request, state=State(_=request.translate, request=request))
         self.renderer = CiocFormRenderer(self.form)
         self._defaults = None
 

@@ -34,6 +34,9 @@ def groupfinder(userid, request):
         if user.Admin:
             groups.append('area:admin')
 
+        if user.Admin or user.ManageAreaList:
+            groups.append('area:manager')
+
         return groups
 
     return None
@@ -73,7 +76,7 @@ def main(global_config, **settings):
 
     config.add_route('home', '/', pregenerator=passvars_pregen)
 
-    config.add_route('community', '/communities/{cmid}', pregenerator=passvars_pregen)
+    config.add_route('community', '/communities/{cmid}', pregenerator=passvars_pregen, factory='communitymanager.views.community.CommunityRoot')
 
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
@@ -97,9 +100,11 @@ def main(global_config, **settings):
 
     config.add_route('logout', '/logout', pregenerator=passvars_pregen)
 
-    config.add_route('json_communities', '/json/communities')
-
     config.add_route('json_community', '/json/communities/{cmid}')
+
+    config.add_route('json_parents', '/json/parents')
+
+    config.add_route('json_search_areas', '/json/search_areas')
 
 
     config.scan()
