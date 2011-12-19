@@ -1,12 +1,12 @@
 (function() {
-window['init_search_areas_checklist'] = function($, url, options) {
+window['init_cm_checklist'] = function($, url, options) {
     var cache = {}, source_fn = create_caching_source_fn($, url, cache, 'label'),
-    parent_cmid_input = $('#community_ParentCommunity'), alt_search_area_counter=9999,
-    alt_search_area_template = $('#alt-area-template').html(), alt_search_area_target=$('#alt-area-target'),
-    parent_community_adding_src_fn = function(request, response, override_url) {
+    parent_cmid_input = options.parent_cmid_input || null, cm_checklist_counter=9999,
+    cm_checklist_template = $('#cm-checklist-template').html(), cm_checklist_target=$('#cm-checklist-target'),
+    parent_community_adding_src_fn = !parent_cmid_input ? source_fn : (function(request, response, override_url) {
         request.parent = parent_cmid_input.val();
         return source_fn(request, response, override_url);
-    },
+    }),
     look_for_value = function(invalue, response, dont_source) {
         var inputvalue = string_ci_ai(invalue);
         var content = cache.content;
@@ -29,16 +29,19 @@ window['init_search_areas_checklist'] = function($, url, options) {
                 });
     },
     add_new_html = function(chkid, display) {
-        to_add = $(alt_search_area_template.replace(/\[COUNT\]/g, alt_search_area_counter++).
+        to_add = $(cm_checklist_template.replace(/\[COUNT\]/g, cm_checklist_counter++).
                 replace(/\[ID\]/g, chkid).replace(/\[LABEL\]/g, $('<div>').text(display).html()));
-        if (alt_search_area_target.is(':hidden')) {
-            alt_search_area_target.removeClass('hidden').append(to_add);
+        if (cm_checklist_target.is(':hidden')) {
+            cm_checklist_target.removeClass('hidden').append(to_add);
         }else{
-            alt_search_area_target.append(to_add);
+            cm_checklist_target.append(to_add);
         }
         return false;
         
     };
+    if (options.parent_cmid_input){
+        parent_cmid_input = $(options.parent_cmid_input);
+    }
 
     options.source = parent_community_adding_src_fn;
     options.look_for_fn = look_for_value;

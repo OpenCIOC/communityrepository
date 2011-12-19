@@ -52,11 +52,17 @@ class  CommunityRoot(object):
         self.__acl__.append((Allow, 'area:admin', 'edit'))
         self.__acl__.append(DENY_ALL)
 
+def cannot_save_without_parent(value_dict, state):
+    user = state.request.user
+    return not (user and user.Admin)
+
 class CommunityBaseSchema(validators.Schema):
     
     ParentCommunity = validators.IntID()
     ParentCommunityName = validators.UnicodeString()
     ProvinceState = validators.IntID()
+
+    chained_validators = [validators.RequireIfPredicate(cannot_save_without_parent, ['ParentCommunity'])]
 
     
 

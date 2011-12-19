@@ -39,6 +39,11 @@
     }
 </style>
 
+<% user = request.user %>
+%if user and (user.Admin or user.ManageAreaList):
+<p>${_('Add new:')} <a href="${request.route_path('community', cmid='new')}">${_('Community')}</a> | <a href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}">${_('Alternate Search Area')}</a></p>
+%endif
+
 <%def name="tree_level(node, map, last=False)">
 <% children = map.get(node.CM_ID) %>
 <li class="tree-node ${'tree-leaf tree-closed' if not children else ''} ${'tree-node-last' if last else ''}" data-id="${node.CM_ID}" id="tree-node-${node.CM_ID}">

@@ -1,4 +1,5 @@
 <%inherit file="master.mak"/>
+<%namespace file="cm_checklist.mak" name="cc"/>
 <%! 
 import json
 
@@ -97,14 +98,7 @@ ${self.makeMgmtInfo(community)}
 <tr>
 	<td class="ui-widget-header field">${_('Search Communities')}</th>
 	<td class="ui-widget-content">
-        <% form_alt_areas = renderer.form.data.get('alt_areas') or [] %>
-        <ul id="alt-area-target" ${'' if form_alt_areas else 'class="hidden"' |n}>
-            %for i,alt_area in enumerate(form_alt_areas):
-                ${make_alt_area(str(i), alt_area, alt_area_name_map.get(alt_area))}
-            %endfor
-        </ul>
-
-        <div id="search_community_new_input_table"><input type="text" class="text" id="NEW_search_community" maxlength="200"> <input type="button" id="add_search_community" value="${_('Add')}"></div>
+    ${cc.make_cm_checklist_ui('alt_areas', alt_area_name_map)}
 	</td>
 </tr>
 %endif
@@ -142,12 +136,6 @@ ${self.makeMgmtInfo(community)}
                 </td>
 </tr>
 </%def>
-<%def name="make_alt_area(number, value, label)">
-            <li>
-                ${renderer.errorlist('alt_areas-' + number)}
-                ${renderer.checkbox('alt_areas-' + number, checked=True, id="search_community_ID_" + str(value), value=value, label= ' ' + label)}
-            </li>
-</%def>
 
 <%block name="bottomscripts">
 <div class='hidden'>
@@ -159,9 +147,7 @@ ${self.makeMgmtInfo(community)}
 ${make_alt_name('alt_names-[COUNT].')}
 </script>
 %if is_alt_area:
-<script type="text/html" id="alt-area-template">
-${make_alt_area('[COUNT]', '[ID]', '[LABEL]')}
-</script>
+${cc.make_cm_checklist_template('alt_areas')}
 %endif
 <script type="text/javascript" src="${request.static_path('communitymanager:static/js/community.min.js')}"></script>
 <script type="text/javascript">
@@ -183,7 +169,7 @@ if community:
         init_municipality_autocomplete($('#community_ParentCommunityWeb'), parent_link, '${_("An unknown community was entered")}');
 
         init_community_edit($);
-        init_search_areas_checklist($, search_area_link, {field: 'search_community', not_found_msg:'${_("Not Found")|n}', match_prop: 'label'});
+        init_cm_checklist($, search_area_link, {field: 'cm_checklist', not_found_msg:'${_("Not Found")|n}', match_prop: 'label', parent_cmid_input: $('#community_ParentCommunity')});
 
         restore_cached_state();
     });

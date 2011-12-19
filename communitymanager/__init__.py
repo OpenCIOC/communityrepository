@@ -13,7 +13,7 @@ import logging
 from pyramid.config import Configurator
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Deny, Allow, Everyone
+from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Allow, DENY_ALL
 
 from pyramid_beaker import session_factory_from_settings
 
@@ -42,10 +42,17 @@ def groupfinder(userid, request):
     return None
 
 class RootFactory(object):
-    __acl__ = [(Allow, Authenticated, 'view'), (Deny, Everyone, 'view')]
+    __acl__ = [(Allow, Authenticated, 'view'), DENY_ALL]
 
     def __init__(self, request):
         pass
+
+class OnlyAdminRootFactory(object):
+    __acl__ = [(Allow, 'area:admin', 'view'), DENY_ALL]
+
+    def __init__(self, request):
+        pass
+
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -82,13 +89,11 @@ def main(global_config, **settings):
 
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
-    config.add_route('altarea', '/altareas/{aaid}', pregenerator=passvars_pregen)
+    config.add_route('users', '/users/', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
-    config.add_route('altareas', '/altareas', pregenerator=passvars_pregen)
+    config.add_route('user_new', '/users/new', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
-    config.add_route('users', '/users/', pregenerator=passvars_pregen)
-
-    config.add_route('user', '/users/{uid}', pregenerator=passvars_pregen)
+    config.add_route('user', '/users/{uid}', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
     config.add_route('account', '/account', pregenerator=passvars_pregen)
 
@@ -96,7 +101,7 @@ def main(global_config, **settings):
 
     config.add_route('download', '/downloads/{dlid}', pregenerator=passvars_pregen)
 
-    config.add_route('publish', '/publish', pregenerator=passvars_pregen)
+    config.add_route('publish', '/publish', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
     config.add_route('login', '/login', pregenerator=passvars_pregen)
 
