@@ -21,6 +21,9 @@ ${renderer.error_notice()}
 <form method="post" action="${request.current_route_path(_form=True)}">
 <div class="hidden">
 ${renderer.form_passvars()}
+%if account_request:
+<input type="hidden" name="reqid" value="${account_request.Request_ID}">
+%endif
 </div>
 <table class="form-table">
 %if account_request:
@@ -39,11 +42,14 @@ ${renderer.form_passvars()}
 </tr>
 %endif
 %endif
+%if user:
+${self.makeMgmtInfo(user)}
+%endif
 <tr>
 	<td class="ui-widget-header field">${_('User Name')}</th>
 	<td class="ui-widget-content">
 	${renderer.errorlist("user.UserName")}
-	${renderer.text("user.UserName", maxlength=200)}
+	${renderer.text("user.UserName", maxlength=50)}
 	</td>
 </tr>
 <tr>
@@ -88,6 +94,7 @@ ${renderer.form_passvars()}
         ${renderer.email('user.Email')}
 	</td>
 </tr>
+%if is_admin:
 <tr>
 	<td class="ui-widget-header field">${_('Mangage Communities')}</th>
 	<td class="ui-widget-content">
@@ -106,10 +113,43 @@ ${renderer.form_passvars()}
 	</td>
 </tr>
 <tr>
-	<td colspan="2">
-	<input type="submit" name="Submit" value="${_('Add') if action=='add' else _('Update')}"> 
-	%if not is_add and can_delete:
+	<td class="ui-widget-header field">${_('Admin User')}</th>
+	<td class="ui-widget-content">
+		${renderer.errorlist('user.Admin')}
+        ${renderer.checkbox('user.Admin', label=' ' + _('This is an admin user'))}
+	</td>
+</tr>
+%elif not user:
+<tr>
+	<td class="ui-widget-header field">${_('Mangage Communities')}</th>
+	<td class="ui-widget-content">
+        <strong>${_('By completing the following section you warrant that any contributions you make become the property of CIOC:')}</strong><br><br>
+		${renderer.errorlist('user.ManageAreaRequest')}
+        ${renderer.checkbox('user.ManageAreaRequest', label=' ' + _('I would like to manage communities.'))}
+        <br><br><strong>${renderer.label('user.ManageAreaDetail', _('Management Request Details:'))}</strong><br>
+		${renderer.errorlist('user.ManageAreaDetail')}
+        ${renderer.textarea('user.ManageAreaDetail')}
+
+    </td>
+</tr>
+%endif
+%if not is_admin and not user:
+<tr>
+    <td class="ui-widget-header field">${renderer.label('TomorrowsDate', 'Tomorrows Date')}</td>
+    <td class="ui-widget-content">
+        <div class="field-help">Enter tomorrow's date as dd/mm/yyyy to help prevent spammers</div>
+        ${renderer.errorlist('TomorrowsDate')}
+        ${renderer.text('TomorrowsDate', maxlength=60)}
+    </td>
+</tr>
+%endif
+<tr>
+	<td colspan="2" class="ui-widget-content">
+	<input type="submit" name="Submit" value="${_('Add') if account_request else _('Request Account') if not user else _('Update')}"> 
+	%if is_admin and user:
 	<input type="submit" name="Delete" value="${_('Delete')}"> 
+    %elif account_request:
+	<input type="submit" name="Reject" value="${_('Reject')}"> 
 	%endif
 	<input type="reset" value="${_('Reset Form')}"></td>
 </tr>
@@ -122,7 +162,7 @@ ${renderer.form_passvars()}
 <textarea id="cache_form_values"></textarea>
 </form>
 </div>
-${cc.make_cm_checklist_template('mangage_areas')}
+${cc.make_cm_checklist_template('manage_areas')}
 <script type="text/javascript" src="${request.static_path('communitymanager:static/js/community.min.js')}"></script>
 <script type="text/javascript">
 (function($) {

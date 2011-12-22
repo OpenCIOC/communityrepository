@@ -13,10 +13,10 @@ from pyramid.security import remember, forget, NO_PERMISSION_REQUIRED
 from pyramid.view import view_config
 
 from formencode import Schema
-from beaker.crypto.pbkdf2 import PBKDF2
 
 
 #this app
+from communitymanager.lib.security import Crypt
 from communitymanager.views.base import ViewBase
 from communitymanager.lib import validators
 from communitymanager.lib.syslanguage import _culture_list, default_culture
@@ -88,6 +88,3 @@ def logout(request):
     return HTTPFound(location = request.route_url('login'),
                      headers = headers)
 
-def Crypt(salt, password, repeat):
-	pbkdf2 = PBKDF2(password, salt, int(repeat))
-	return pbkdf2.read(33).encode('base64').strip()

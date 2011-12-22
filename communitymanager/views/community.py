@@ -193,7 +193,7 @@ class Community(ViewBase):
 
             alt_areas = data.get('alt_areas') or []
         else:
-            data = model_state.form.data
+            data = model_state.data
             decoded = variable_decode(request.POST)
             alt_areas = decoded.get('alt_areas') or []
 

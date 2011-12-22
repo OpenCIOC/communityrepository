@@ -72,7 +72,7 @@
     <div id="main" role="main">
     <% errmsg = request.session.pop_flash('errorqueue') %>
     %if errmsg:
-        ${renderer.error_msg(errmsg)}
+        ${renderer.error_msg(errmsg[0])}
     %endif
 	<% message = request.session.pop_flash() %>
 	%if message:

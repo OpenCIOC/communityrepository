@@ -207,6 +207,23 @@ class CommunityManagerRequest(Request):
 
 tsf = TranslationStringFactory('communitymanager')
 
+def get_translate_fn(request, _culture=None):
+    if not _culture or _culture==request._LOCALE_:
+        return request.translate
+    
+    ln = request._LOCALE_
+    try:
+        request._LOCALE_ = _culture
+        localizer = get_localizer(request)
+    finally:
+        request._LOCALE_ = ln
+
+    def auto_translate(string):
+        return localizer.translate(tsf(string))
+
+    return auto_translate
+
+
 def passvars_pregen(request, elements, kw):
     query = kw.get('_query')
     ln = kw.pop('_ln', None)

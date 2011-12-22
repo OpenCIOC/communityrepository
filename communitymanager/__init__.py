@@ -48,7 +48,7 @@ class RootFactory(object):
         pass
 
 class OnlyAdminRootFactory(object):
-    __acl__ = [(Allow, 'area:admin', 'view'), DENY_ALL]
+    __acl__ = [(Allow, 'area:admin', ('edit', 'view')), DENY_ALL]
 
     def __init__(self, request):
         pass
@@ -96,6 +96,9 @@ def main(global_config, **settings):
     config.add_route('user', '/users/{uid}', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
     config.add_route('account', '/account', pregenerator=passvars_pregen)
+
+    config.add_route('request_account', '/request_account', pregenerator=passvars_pregen)
+    config.add_route('request_account_thanks', '/request_account/thanks', pregenerator=passvars_pregen)
 
     config.add_route('downloads', '/downloads', pregenerator=passvars_pregen)
 

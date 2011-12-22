@@ -1,4 +1,3 @@
-
 # =================================================================
 # Copyright (C) 2011 Community Information Online Consortium (CIOC)
 # http://www.cioc.ca
@@ -8,19 +7,109 @@
 #==================================================================
 
 # std lib
+from xml.etree import ElementTree as ET
 
 # 3rd party
-from pyramid.httpexceptions import HTTPFound
+from formencode.variabledecode import variable_decode
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
+from pyramid.security import NO_PERMISSION_REQUIRED
 
 # this app
-from communitymanager.lib import validators
+from communitymanager.lib import validators, security, email
 from communitymanager.views.base import ViewBase, xml_to_dict_list
+from communitymanager.lib.request import get_translate_fn
 
 
 import logging
-log = logging.getLogger('communitymanager.views.community')
+log = logging.getLogger('communitymanager.views.users')
 
+# create passthrough _ function to grab the string value
+_ = lambda x: x
+welcome_email_template = _(u'''\
+Hi %(FirstName)s,
+
+Your account on the CIOC Community Manager Site has been created:
+User Name: %(UserName)s
+Password: %(Password)s
+
+Please log in to %(url)s as soon as possible and change your password.
+''')
+
+request_email_template = _(u'''\
+Hi,
+
+An account has been requested on the CIOC Community Management Site:
+User Name: %(UserName)s
+First Name: %(FirstName)s
+Last Name: %(LastName)s
+Organization: %(Organization)s
+Email: %(Email)s
+Manage Area Request: %(ManageAreaRequest)s
+Manage Area Detail: %(ManageAreaDetail)s
+
+Go to %(url)s to accept or reject the account request.
+''')
+del _
+
+class BaseUserValidator(validators.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+
+    UserName = validators.String(max=50, not_empty=True)
+    Culture = validators.ActiveCulture(not_empty=True)
+    FirstName = validators.String(max=50, not_empty=True)
+    LastName = validators.String(max=50, not_empty=True)
+    Initials = validators.String(max=6, not_empty=True)
+    Organization = validators.String(max=200)
+    Email = validators.Email(not_empty=True)
+
+
+class NewUserValidator(BaseUserValidator):
+    Admin = validators.Bool()
+
+class ManageUsersValidator(NewUserValidator):
+    Inactive = validators.Bool()
+
+class PasswordValidator(validators.Schema):
+    if_key_missing = None
+
+    CurrentPassword = validators.UnicodeString()
+
+    Password = validators.Pipe(validators.UnicodeString(), validators.SecurePassword())
+    ConfirmPassword = validators.UnicodeString()
+
+    chained_validators = [validators.CheckPassword()]
+
+def is_manage_area_detail_required(value_dict, state):
+    return value_dict.get('ManageAreaRequest')
+
+class RequestAccessValidator(BaseUserValidator):
+
+    ManageAreaRequest = validators.Bool()
+    ManageAreaDetail = validators.UnicodeString()
+
+
+    chained_validators = [validators.RequireIfPredicate(is_manage_area_detail_required, 'ManageAreaDetail')] 
+
+#captcha validator
+TomorrowsDateValidator = validators.Pipe(
+    validators.DateConverter(month_style='dd/mm/yyyy', not_empty=True), 
+    validators.TomorrowsDate(not_empty=True))
+
+class ManageUserAddUserWrapper(validators.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+
+    # need to add user validator when constructing
+
+    manage_areas = validators.ForEach(validators.IntID())
+
+class UpdateProfileRequestAccessBase(validators.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+    
+    # need to add user validator when constructing
 
 
 class Users(ViewBase):
@@ -30,7 +119,6 @@ class Users(ViewBase):
 
 
         with request.connmgr.get_connection() as conn:
-            # XXX also list of account requests
             users = conn.execute('EXEC sp_Users_l').fetchall()
 
             user_requests = conn.execute('EXEC sp_Users_AccountRequest_l ?', not not request.params.get('show_rejected')).fetchall()
@@ -44,32 +132,279 @@ class Users(ViewBase):
 
 
 
-    @view_config(route_name="user_new", renderer='user.mak', permission='view')
-    def new(self):
+    @view_config(route_name="user_new", renderer='user.mak', request_method='POST', permission='edit')
+    @view_config(route_name="user", renderer='user.mak', request_method='POST', permission='edit')
+    @view_config(route_name="request_account", renderer="user.mak", request_method="POST", permission=NO_PERMISSION_REQUIRED)
+    def post(self):
         request = self.request
         _ = request.translate
 
+        is_new = not not request.matched_route.name == 'user_new'
+        is_request = not not request.matched_route.name == 'request_account'
+
+        reqid=None
+
+
         validator = validators.IntID(not_empty=True)
-        try:
-            reqid = validator.to_python(request.params.get('reqid'))
-        except validators.Invalid, e:
-            request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
-            return HTTPFound(location=request.route_path('users'))
+        if is_new:
+            try:
+                reqid = validator.to_python(request.params.get('reqid'))
+            except validators.Invalid, e:
+                request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
+                return HTTPFound(location=request.route_path('users'))
+        elif not is_request:
+            try:
+                uid = validator.to_python(request.matchdict.get('uid'))
+            except validators.Invalid, e:
+                raise HTTPNotFound()
 
-        with request.connmgr.get_connection() as conn:
-            account_request = conn.execute('EXEC sp_Users_AccountRequest_s ?', reqid).fetchone()
 
-        if not account_request:
-            request.session.flash(_('Account Request Not Found'), 'errorqueue')
-            return HTTPFound(location=request.route_path('users'))
+        extra_validators = {}
+        if is_new:
+            extra_validators['user'] = NewUserValidator()
+        elif not is_request:
+            extra_validators['user'] = ManageUsersValidator()
+            extra_validators['password'] = PasswordValidator(if_missing=None)
+        else:
+            extra_validators['user'] = RequestAccessValidator()
+            extra_validators['TomorrowsDate'] = TomorrowsDateValidator
+
+        if is_request:
+            schema = UpdateProfileRequestAccessBase(**extra_validators)
+        else:
+            schema = ManageUserAddUserWrapper(**extra_validators)
+
+        model_state = request.model_state
+        model_state.form.variable_decode = True
+        model_state.schema = schema
+
+        if model_state.validate():
+            form_data = model_state.data
+            user = form_data['user']
+
+            fields = schema.fields['user'].fields.keys()
+            args = [user.get(x) for x in fields]
+
+
+            if not is_request:
+                root = ET.Element('ManageAreas')
+                for cmid in form_data.get('manage_areas') or []:
+                    if cmid:
+                        ET.SubElement(root, 'CM_ID').text = unicode(cmid)
+
+                fields.append('ManageAreas')
+                args.append(ET.tostring(root))
+
+            if is_new:
+                fields.append('Request_ID')
+                args.append(reqid)
+
+            if not is_request:
+                fields.append('MODIFIED_BY')
+                args.append(request.user.UserName)
+
+
+            password = None
+            if not is_request:
+                if is_new:
+                    password = security.MakeRandomPassword()
+                else:
+                    password = form_data.get('password.Password')
+
+                if password:
+                    salt = security.MakeSalt()
+                    hash = security.Crypt(salt, password)
+                    hash_args =  [security.DEFAULT_REPEAT, salt, hash]
+                else:
+                    hash_args = [None, None, None]
+
+
+                fields.extend(['PasswordHashRepeat', 'PasswordHashSalt', 'PasswordHash'])
+                args.extend(hash_args)
+
+            user_id_sql = ''
+            if is_new:
+                user_id_sql = '@User_ID OUTPUT,'
+            elif not is_request:
+                fields.append('User_ID')
+                args.append(uid)
+
+            
+            if is_request:
+                sql = '''
+                    DECLARE @RT int, @ErrMsg nvarchar(500), @Request_ID int
+
+                    %s
+                    EXEC @RT = sp_Users_AccountRequest_i @Request_ID OUTPUT, %s, @ErrMsg=@ErrMsg OUTPUT
+
+                    SELECT @RT AS [Return], @ErrMsg AS ErrMsg, @Request_ID AS Request_ID
+                '''
+            else:
+                sql = '''
+                    DECLARE @RT int, @ErrMsg nvarchar(500), @User_ID int
+                    SET @ErrMsg = NULL
+
+                    EXEC @RT = sp_Users_u %s %s, @ErrMsg=@ErrMsg OUTPUT
+
+                    SELECT @RT AS [Return], @ErrMsg AS ErrMsg, @User_ID AS [User_ID]
+
+                ''' 
+            
+            sql = sql % (user_id_sql, ','.join('@%s=?' % x for x in fields))
+
+            with request.connmgr.get_connection() as conn:
+                result = conn.execute(sql, args).fetchone()
+
+
+            if not result.Return:
+
+                if is_new:
+                    ### force to language of request?
+                    gettext = get_translate_fn(request, user['Culture']) 
+
+                    subject = gettext('Your CIOC Community Manager Site Account')
+                    welcome_message = gettext(welcome_email_template) % {
+                                            'FirstName': user['FirstName'], 
+                                            'UserName': user['UserName'], 
+                                            'Password': password,
+                                            'url': request.route_url('login')}
+
+                    email.email('admin@cioc.ca', user['Email'], subject, welcome_message)
+                    request.session.flash(_('User Successfully Added'))
+                    return HTTPFound(location=request.route_url('user', uid=result.User_ID))
+                elif is_request:
+                    subject = 'CIOC Community Manager Account Request'
+                    tmpl_args = {'url': request.route_url('user_new', _query=[('Request_ID', result.Request_ID)])}
+                    tmpl_args.update(user)
+                    request_message = request_email_template % tmpl_args
+                    email.email('admin@cioc.ca', 'admin@cioc.ca', subject, request_message)
+
+                    return HTTPFound(location=request.route_url('request_account_thanks'))
+                else:
+                    request.session.flash(_('User Successfully Modified'))
+                    return HTTPFound(location=request.current_route_url())
+                
+
+            
+            model_state.add_error_for('*', _('Could not add user: ') + result.ErrMsg)
+            manage_areas = form_data.get('manage_areas') or []
+
+        else:
+            data = model_state.data
+            decoded = variable_decode(request.POST)
+            data['manage_areas'] = manage_areas = decoded.get('manage_areas') or []
+            log.debug('errors: %s', model_state.form.errors)
+
+
+        account_request = user = None
+        cm_name_map = {}
+        if not is_request:
+            with request.connmgr.get_connection() as conn:
+                if is_new:
+                    account_request = conn.execute('EXEC sp_Users_AccountRequest_s ?', reqid).fetchone()
+                else:
+                    user = conn.execute('EXEC sp_Users_s ?', uid).fetchone()
+
+                cm_name_map = {str(x[0]): x[1] for x in 
+                               conn.execute('EXEC sp_Community_ls_Names ?', 
+                                            ','.join(str(x) for x in manage_areas)).fetchall()}
+
+            
+
+        if is_new:
+            if not account_request:
+                request.session.flash(_('Account Request Not Found'), 'errorqueue')
+                return HTTPFound(location=request.route_path('users'))
+        elif not is_request:
+            if not user:
+                raise HTTPNotFound()
+
+
+        if is_new:
+            title_text = _('Add New User')
+        elif is_request:
+            title_text = _('Request Account')
+        else:
+            title_text = _('Modify User')
+
+        return {'title_text': title_text, 'account_request': account_request, 'user': user, 'cm_name_map': cm_name_map }
+
+
+    @view_config(route_name="user_new", renderer='user.mak', permission='edit')
+    @view_config(route_name="user", renderer='user.mak', permission='edit')
+    @view_config(route_name="request_account", renderer="user.mak", permission=NO_PERMISSION_REQUIRED)
+    def get(self):
+        request = self.request
+        _ = request.translate
+
+        is_new = not not request.matched_route.name == 'user_new'
+        is_request = not not request.matched_route.name == 'request_account'
+
+        validator = validators.IntID(not_empty=True)
+        if is_new:
+            try:
+                reqid = validator.to_python(request.params.get('reqid'))
+            except validators.Invalid, e:
+                request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
+                return HTTPFound(location=request.route_path('users'))
+        elif not is_request:
+            try:
+                uid = validator.to_python(request.matchdict.get('uid'))
+            except validators.Invalid, e:
+                raise HTTPNotFound()
+
+        account_request = None
+        user = None
+        cm_name_map = {}
+        manage_areas = []
+
+        if not is_request:
+            with request.connmgr.get_connection() as conn:
+                if is_new:
+                    account_request = conn.execute('EXEC sp_Users_AccountRequest_s ?', reqid).fetchone()
+                else:
+                    cursor = conn.execute('EXEC sp_Users_s ?, 1', uid)
+                    user = cursor.fetchone()
+
+                    cursor.nextset()
+                    cm_tmp = cursor.fetchall()
+
+                    manage_areas = [str(x[0]) for x in cm_tmp]
+                    cm_name_map = {str(x[0]): x[1] for x in cm_tmp}
+
+
+        if is_new:
+            if not account_request:
+                request.session.flash(_('Account Request Not Found'), 'errorqueue')
+                return HTTPFound(location=request.route_path('users'))
+        elif not is_request:
+            if not user:
+                return HTTPNotFound()
+
 
         data = request.model_state.data
-        data['user'] = account_request
-        if account_request.CanUseRequestedName:
-            data['user.UserName'] = account_request.PreferredUserName
-        elif account_request.CanUseLastPlusInital:
-            data['user.UserName'] = account_request.LastName.lower() + account_request.FirstName[0].lower()
-        elif account_request.CanUseDottedJoin:
-            data['user.UserName'] = '.'.join((account_request.FirstName, account_request.LastName))
+        if is_new:
+            data['user'] = account_request
+            if account_request.CanUseRequestedName:
+                data['user.UserName'] = account_request.PreferredUserName
+            elif account_request.CanUseLastPlusInital:
+                data['user.UserName'] = account_request.LastName.lower() + account_request.FirstName[0].lower()
+            elif account_request.CanUseDottedJoin:
+                data['user.UserName'] = '.'.join((account_request.FirstName, account_request.LastName))
+        elif not is_request:
+            data['user'] = user
+            data['manage_areas'] = manage_areas
 
-        return {'title_text': _('Add New User'), 'account_request': account_request, 'cm_name_map': {} }
+        if is_new:
+            title_text = _('Add New User')
+        elif is_request:
+            title_text = _('Request Account')
+        else:
+            title_text = _('Modify User')
+
+        return {'title_text': title_text, 'account_request': account_request, 'cm_name_map': cm_name_map, 'user': user, 'is_admin': not is_request}
+
+
+    @view_config(route_name='request_account_thanks', renderer='request_thanks.mak', permission=NO_PERMISSION_REQUIRED)
+    def thanks(self):
+        return {}
