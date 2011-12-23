@@ -16,7 +16,11 @@
 </tr>
 %for user in user_requests:
 <tr>
-<td class="ui-widget-content"><a href="${request.route_path('user_new', _query=[('reqid', user.Request_ID)])}">${_('Add')}</a></td>
+<td class="ui-widget-content"><a href="${request.route_path('user_new', _query=[('reqid', user.Request_ID)])}">${_('Add')}</a>
+%if not user.REJECTED_DATE:
+| <a href="${request.route_path('request_reject', _query=[('reqid', user.Request_ID)])}">${_('Reject')}</a>
+%endif
+</td>
 <td class="ui-widget-content">${request.format_date(user.REQUEST_DATE)}</td>
 <td class="ui-widget-content">${user.PreferredUserName}</td>
 <td class="ui-widget-content">${u' '.join((user.FirstName,user.LastName))}</td>

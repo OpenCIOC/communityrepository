@@ -135,33 +135,39 @@ class Users(ViewBase):
     @view_config(route_name="user_new", renderer='user.mak', request_method='POST', permission='edit')
     @view_config(route_name="user", renderer='user.mak', request_method='POST', permission='edit')
     @view_config(route_name="request_account", renderer="user.mak", request_method="POST", permission=NO_PERMISSION_REQUIRED)
+    @view_config(route_name="account", renderer="user.mak", request_method="POST", permission='view')
     def post(self):
         request = self.request
         _ = request.translate
 
         is_new = not not request.matched_route.name == 'user_new'
         is_request = not not request.matched_route.name == 'request_account'
+        is_account = not not request.matched_route.name == 'account'
 
         reqid=None
 
 
-        validator = validators.IntID(not_empty=True)
         if is_new:
-            try:
-                reqid = validator.to_python(request.params.get('reqid'))
-            except validators.Invalid, e:
-                request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
-                return HTTPFound(location=request.route_path('users'))
+            reqid = self._get_request_id()
+        elif is_account:
+            uid = request.user.User_ID
         elif not is_request:
+            validator = validators.IntID(not_empty=True)
             try:
                 uid = validator.to_python(request.matchdict.get('uid'))
-            except validators.Invalid, e:
+            except validators.Invalid:
                 raise HTTPNotFound()
+
+        if is_new and request.params.get('Reject'):
+            return HTTPFound(location=request.route_url('request_reject', _query=[('reqid',reqid)]))
 
 
         extra_validators = {}
         if is_new:
             extra_validators['user'] = NewUserValidator()
+        elif is_account:
+            extra_validators['user'] = BaseUserValidator()
+            extra_validators['password'] = PasswordValidator(if_missing=None)
         elif not is_request:
             extra_validators['user'] = ManageUsersValidator()
             extra_validators['password'] = PasswordValidator(if_missing=None)
@@ -169,7 +175,7 @@ class Users(ViewBase):
             extra_validators['user'] = RequestAccessValidator()
             extra_validators['TomorrowsDate'] = TomorrowsDateValidator
 
-        if is_request:
+        if is_request or is_account:
             schema = UpdateProfileRequestAccessBase(**extra_validators)
         else:
             schema = ManageUserAddUserWrapper(**extra_validators)
@@ -186,7 +192,7 @@ class Users(ViewBase):
             args = [user.get(x) for x in fields]
 
 
-            if not is_request:
+            if not is_request and not is_account:
                 root = ET.Element('ManageAreas')
                 for cmid in form_data.get('manage_areas') or []:
                     if cmid:
@@ -280,9 +286,13 @@ class Users(ViewBase):
                     email.email('admin@cioc.ca', 'admin@cioc.ca', subject, request_message)
 
                     return HTTPFound(location=request.route_url('request_account_thanks'))
+                
+                if is_account:
+                    request.session.flash(_('Account successfully updated'))
                 else:
-                    request.session.flash(_('User Successfully Modified'))
-                    return HTTPFound(location=request.current_route_url())
+                    request.session.flash(_('User successfully modified'))
+
+                return HTTPFound(location=request.current_route_url())
                 
 
             
@@ -305,16 +315,17 @@ class Users(ViewBase):
                 else:
                     user = conn.execute('EXEC sp_Users_s ?', uid).fetchone()
 
-                cm_name_map = {str(x[0]): x[1] for x in 
-                               conn.execute('EXEC sp_Community_ls_Names ?', 
-                                            ','.join(str(x) for x in manage_areas)).fetchall()}
+                if not is_account:
+                    cm_name_map = {str(x[0]): x[1] for x in 
+                                   conn.execute('EXEC sp_Community_ls_Names ?', 
+                                                ','.join(str(x) for x in manage_areas)).fetchall()}
 
             
 
         if is_new:
             if not account_request:
                 request.session.flash(_('Account Request Not Found'), 'errorqueue')
-                return HTTPFound(location=request.route_path('users'))
+                return HTTPFound(location=request.route_url('users'))
         elif not is_request:
             if not user:
                 raise HTTPNotFound()
@@ -324,33 +335,37 @@ class Users(ViewBase):
             title_text = _('Add New User')
         elif is_request:
             title_text = _('Request Account')
+        elif is_account:
+            title_text = _('Update Account')
         else:
             title_text = _('Modify User')
 
-        return {'title_text': title_text, 'account_request': account_request, 'user': user, 'cm_name_map': cm_name_map }
+        return {'title_text': title_text, 'account_request': account_request, 
+                'user': user, 'cm_name_map': cm_name_map, 'is_admin': not is_request and not is_account, 
+                'is_account': is_account  }
 
 
     @view_config(route_name="user_new", renderer='user.mak', permission='edit')
     @view_config(route_name="user", renderer='user.mak', permission='edit')
     @view_config(route_name="request_account", renderer="user.mak", permission=NO_PERMISSION_REQUIRED)
+    @view_config(route_name="account", renderer="user.mak", permission='view')
     def get(self):
         request = self.request
         _ = request.translate
 
         is_new = not not request.matched_route.name == 'user_new'
         is_request = not not request.matched_route.name == 'request_account'
+        is_account = not not request.matched_route.name == 'account'
 
-        validator = validators.IntID(not_empty=True)
         if is_new:
-            try:
-                reqid = validator.to_python(request.params.get('reqid'))
-            except validators.Invalid, e:
-                request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
-                return HTTPFound(location=request.route_path('users'))
+            reqid = self._get_request_id()
+        elif is_account:
+            uid = request.user.User_ID
         elif not is_request:
+            validator = validators.IntID(not_empty=True)
             try:
                 uid = validator.to_python(request.matchdict.get('uid'))
-            except validators.Invalid, e:
+            except validators.Invalid:
                 raise HTTPNotFound()
 
         account_request = None
@@ -376,7 +391,7 @@ class Users(ViewBase):
         if is_new:
             if not account_request:
                 request.session.flash(_('Account Request Not Found'), 'errorqueue')
-                return HTTPFound(location=request.route_path('users'))
+                return HTTPFound(location=request.route_url('users'))
         elif not is_request:
             if not user:
                 return HTTPNotFound()
@@ -397,14 +412,74 @@ class Users(ViewBase):
 
         if is_new:
             title_text = _('Add New User')
+        elif is_account:
+            title_text = _('Update Account')
         elif is_request:
             title_text = _('Request Account')
         else:
             title_text = _('Modify User')
 
-        return {'title_text': title_text, 'account_request': account_request, 'cm_name_map': cm_name_map, 'user': user, 'is_admin': not is_request}
+        return {'title_text': title_text, 'account_request': account_request, 
+                'cm_name_map': cm_name_map, 'user': user, 'is_admin': not is_request and not is_account,
+                'is_account': is_account}
 
 
     @view_config(route_name='request_account_thanks', renderer='request_thanks.mak', permission=NO_PERMISSION_REQUIRED)
     def thanks(self):
         return {}
+
+
+    @view_config(route_name='request_reject', renderer='confirmdelete.mak', request_method='POST', permission='edit')
+    def reject_confirm(self):
+        request = self.request 
+
+        reqid = self._get_request_id()
+
+        sql = '''
+			Declare @ErrMsg as nvarchar(500), 
+			@RC as int 
+
+			EXECUTE @RC = dbo.sp_Users_AccountRequest_Reject ?, ?, @ErrMsg=@ErrMsg OUTPUT  
+
+			SELECT @RC as [Return], @ErrMsg AS ErrMsg
+        '''
+        with request.connmgr.get_connection() as conn:
+            result = conn.execute(sql, reqid, request.user.UserName).fetchone()
+
+        _ = request.translate
+        if not result.Return:
+            request.session.flash(_('The Account Request was successfully rejected'))
+            return HTTPFound(location=request.route_url('users'))
+
+        request.session.flash(_('Unable to reject Account Request:') + result.ErrMsg, 'errorqueue')
+        if result.Return == 3:
+            # reqid does not exist
+            return HTTPFound(location=request.route_url('users'))
+
+        _ = request.translate
+        return HTTPFound(location=request.route_url('user_new', _query=[('reqid', reqid)]))
+
+    @view_config(route_name='request_reject', renderer='confirmdelete.mak', permission='edit')
+    def reject(self):
+        request = self.request 
+        _ = request.translate
+        
+        reqid = self._get_request_id()
+
+        return {'title_text': _('Reject Account Request'), 
+                'prompt': _('Are you sure you want to reject this account request?'), 
+                'continue_prompt': _('Reject'),
+                'extra_hidden_params': [('reqid', reqid)]}
+
+    def _get_request_id(self):
+        request = self.request
+        _ = request.translate
+
+        validator = validators.IntID()
+        try:
+            reqid = validator.to_python(request.params.get('reqid'))
+        except validators.Invalid, e:
+            request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
+            raise HTTPFound(location=request.route_url('users'))
+
+        return reqid

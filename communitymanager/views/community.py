@@ -226,7 +226,8 @@ class Community(ViewBase):
 
         log.debug('errors:', model_state.form.errors)
 
-        return {'community': community, 'alt_area_name_map': alt_area_name_map, 'is_alt_area': is_alt_area, 'prov_state': prov_state}
+        return {'community': community, 'alt_area_name_map': alt_area_name_map, 
+                'is_alt_area': is_alt_area, 'prov_state': prov_state}
 
 
 
@@ -334,7 +335,9 @@ class Community(ViewBase):
         
         _ = request.translate
 
-        return {'title_txt': _('Delete Community/Alternate Search Area'), 'prompt':_('Are you sure you want to delete this community?')}
+        return {'title_text': _('Delete Community/Alternate Search Area'), 
+                'prompt':_('Are you sure you want to delete this community?'), 
+                'continue_prompt': _('Delete')}
 
     @view_config(route_name='community_delete', renderer='confirmdelete.mak', permission='edit')
     def delete(self):
@@ -342,7 +345,9 @@ class Community(ViewBase):
         
         _ = request.translate
 
-        return {'title_txt': _('Delete Community/Alternate Search Area'), 'prompt':_('Are you sure you want to delete this community?')}
+        return {'title_text': _('Delete Community/Alternate Search Area'), 
+                'prompt':_('Are you sure you want to delete this community?'), 
+                'continue_prompt': _('Delete')}
 
     @view_config(route_name='json_parents', renderer='json', permission='view')
     @view_config(route_name='json_search_areas', renderer='json', permission='view')
@@ -376,9 +381,11 @@ class Community(ViewBase):
         search_areas =  request.matched_route.name == 'json_search_areas'
         with request.connmgr.get_connection() as conn:
             if search_areas:
-                cursor = conn.execute('EXEC sp_Community_ls_SearchAreaSelector ?, ?, ?, ?', request.user.User_ID, cur_cm_id, cur_parent, terms)
+                cursor = conn.execute('EXEC sp_Community_ls_SearchAreaSelector ?, ?, ?, ?', 
+                                      request.user.User_ID, cur_cm_id, cur_parent, terms)
             else:
-                cursor = conn.execute('EXEC sp_Community_ls_ParentSelector ?, ?, ?', request.user.User_ID, cur_parent, terms)
+                cursor = conn.execute('EXEC sp_Community_ls_ParentSelector ?, ?, ?', 
+                                      request.user.User_ID, cur_parent, terms)
 
             cols = ['chkid', 'value', 'label']
 

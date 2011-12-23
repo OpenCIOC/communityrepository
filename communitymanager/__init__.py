@@ -89,7 +89,7 @@ def main(global_config, **settings):
 
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
-    config.add_route('users', '/users/', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
+    config.add_route('users', '/users', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
     config.add_route('user_new', '/users/new', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
@@ -99,6 +99,8 @@ def main(global_config, **settings):
 
     config.add_route('request_account', '/request_account', pregenerator=passvars_pregen)
     config.add_route('request_account_thanks', '/request_account/thanks', pregenerator=passvars_pregen)
+
+    config.add_route('request_reject', '/request_reject', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
     config.add_route('downloads', '/downloads', pregenerator=passvars_pregen)
 

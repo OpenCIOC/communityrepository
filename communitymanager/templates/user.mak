@@ -119,6 +119,13 @@ ${self.makeMgmtInfo(user)}
         ${renderer.checkbox('user.Admin', label=' ' + _('This is an admin user'))}
 	</td>
 </tr>
+	<td class="ui-widget-header field">${_('Inactive')}</th>
+	<td class="ui-widget-content">
+		${renderer.errorlist('user.Inactive')}
+        ${renderer.checkbox('user.Inactive', label=' ' + _('This user is inactive'))}
+	</td>
+<tr>
+</tr>
 %elif not user:
 <tr>
 	<td class="ui-widget-header field">${_('Mangage Communities')}</th>
@@ -135,11 +142,42 @@ ${self.makeMgmtInfo(user)}
 %endif
 %if not is_admin and not user:
 <tr>
-    <td class="ui-widget-header field">${renderer.label('TomorrowsDate', 'Tomorrows Date')}</td>
+    <td class="ui-widget-header field">${renderer.label('TomorrowsDate', _('Tomorrows Date'))}</td>
     <td class="ui-widget-content">
         <div class="field-help">Enter tomorrow's date as dd/mm/yyyy to help prevent spammers</div>
         ${renderer.errorlist('TomorrowsDate')}
         ${renderer.text('TomorrowsDate', maxlength=60)}
+    </td>
+</tr>
+%endif
+%if is_account:
+<tr>
+    <td class="ui-widget-header field">${_('Change Password')}</td>
+    <td class="ui-widget-content">
+        ## XXX do 
+        <table class="form-table">
+            <tr>
+            <td class="field-lable-clear">${renderer.label('password.CurrentPassword', _('Current Password'))}
+            <td>${renderer.errorlist('password.CurrentPassword')}
+                ${renderer.password('password.CurrentPassword')}
+            </td>
+            </tr>
+
+            <tr>
+            <td class="field-lable-clear">${renderer.label('password.Password', _('New Password'))}
+            <td>${renderer.errorlist('password.Password')}
+                ${renderer.password('password.Password')}
+            </td>
+            </tr>
+            
+            <tr>
+            <td class="field-lable-clear">${renderer.label('password.ConfirmPassword', _('Confirm New Password'))}
+            <td>${renderer.errorlist('password.ConfirmPassword')}
+                ${renderer.password('password.ConfirmPassword')}
+            </td>
+            </tr>
+
+        </table>
     </td>
 </tr>
 %endif
