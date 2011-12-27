@@ -12,7 +12,7 @@ from communitymanager.views.base import ViewBase
 
 
 @view_config(route_name="home", renderer='home.mak', permission=NO_PERMISSION_REQUIRED)
-class Login(ViewBase):
+class Home(ViewBase):
     def __call__(self):
 
         return {}

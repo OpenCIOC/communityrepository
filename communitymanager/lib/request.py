@@ -7,7 +7,6 @@
 #==================================================================
 
 #Python STD Lib
-import os
 from collections import defaultdict
 from datetime import date, datetime, time
 
@@ -21,34 +20,11 @@ from babel import Locale, dates
 
 # This app
 from communitymanager.lib.syslanguage import SystemLanguage, default_culture, is_active_culture
-from communitymanager.lib import config, connection
+from communitymanager.lib import config, connection, const
 
 class LocaleDict(defaultdict):
     def __missing__(self, key):
         return Locale.parse(key, sep="-")
-
-
-_app_path = None
-_config_file = None
-_app_name = None
-session_lock_dir = None
-
-def update_cache_values():
-    # called from application init at startup
-    global _app_path, _config_file, _app_name, session_lock_dir
-
-
-    if _app_path is None:
-        _app_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..'))
-        _app_name = os.path.split(_app_path)[1]
-        _config_file = os.path.join(_app_path, '..', '..', 'config', _app_name + '.ini')
-        session_lock_dir = os.path.join(_app_path, 'session_lock')
-
-        try:
-            os.makedirs(session_lock_dir)
-        except os.error, e:
-            pass
-
 
 
 _locales = LocaleDict()
@@ -144,7 +120,7 @@ class CommunityManagerRequest(Request):
 
     @reify
     def config(self):
-        return config.get_config(_config_file)
+        return config.get_config(const._config_file)
 
     @reify
     def connmgr(self):

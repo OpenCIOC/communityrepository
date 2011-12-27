@@ -19,7 +19,7 @@ from communitymanager.views.base import ViewBase, xml_to_dict_list
 from communitymanager.lib import validators
 
 
-class Login(ViewBase):
+class Communities(ViewBase):
     @view_config(route_name="communities", renderer='communities.mak', permission='view')
     def index(self):
         request = self.request

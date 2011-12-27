@@ -18,7 +18,7 @@ from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Allow, DENY_
 from pyramid_beaker import session_factory_from_settings
 
 # this app
-from communitymanager.lib import request
+from communitymanager.lib import request, const
 
 log = logging.getLogger('communitymanager')
 
@@ -58,8 +58,8 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
     
-    request.update_cache_values()
-    settings['beaker.session.lock_dir'] = request.session_lock_dir
+    const.update_cache_values()
+    settings['beaker.session.lock_dir'] = const.session_lock_dir
     session_factory = session_factory_from_settings(settings)
 
     authn_policy = SessionAuthenticationPolicy(callback=groupfinder, debug=True)
@@ -104,7 +104,7 @@ def main(global_config, **settings):
 
     config.add_route('downloads', '/downloads', pregenerator=passvars_pregen)
 
-    config.add_route('download', '/downloads/{dlid}', pregenerator=passvars_pregen)
+    config.add_route('download', '/downloads/{filename}', pregenerator=passvars_pregen)
 
     config.add_route('publish', '/publish', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
