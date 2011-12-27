@@ -64,6 +64,10 @@ def files_with_logs(files, logs):
 
     # omit changes not included in any published file
     first = next(next_date, None)
+    if first is None:
+        yield (None, None, list(logs))
+        return 
+
     new_items = list(takewhile(lambda x: x.MODIFIED_DATE >= first[0], logiter))
     try:
         logiter.backup()
