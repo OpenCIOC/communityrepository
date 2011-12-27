@@ -3,4 +3,4 @@
 
 <p>${_('Some blurb about this tool and how to get access.')}</p>
 
-<p>${_('Alread have an account?')} <a href="${request.route_path('login')}">${_('Login Now!')}</a> 
+<p>${_('Already have an account?')} <a href="${request.route_path('login')}">${_('Login Now!')}</a> 
