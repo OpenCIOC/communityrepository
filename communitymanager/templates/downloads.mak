@@ -1,4 +1,6 @@
 <%inherit file="master.mak"/>
+<%namespace file="changelog.mak" name="changelog"/>
+
 <%block name="title">${_('Downloads')}</%block>
 
 %if request.user.Admin:
@@ -8,7 +10,16 @@
 %if files:
 <ul>
 %for dt, fname, log in files:
-    <li><a href="${request.route_path('download', filename=fname)}">${request.format_datetime(dt)}</a></li>
+    <li>
+    %if not dt:
+    ${_('The following changes have not been released:')}
+    %else:
+    <a href="${request.route_path('download', filename=fname)}">${request.format_datetime(dt)}</a>
+    %endif
+    %if log:
+    ${changelog.makeLogTable(log)}
+    %endif
+    </li>
 %endfor
 </ul>
 %else:
