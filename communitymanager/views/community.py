@@ -95,6 +95,11 @@ class AltAreasSchema(CommunitySchema):
 
     alt_areas = validators.ForEach(validators.IntID())
 
+class DeleteCommunitySchema(validators.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+
+    ReasonForChange = validators.UnicodeString(not_empty=True)
 
 
 class Community(ViewBase):
@@ -308,36 +313,41 @@ class Community(ViewBase):
 
         cm_id = self._get_cmid()
 
-        sql = '''
-			Declare @ErrMsg as nvarchar(500), 
-			@RC as int 
+        model_state = request.model_state
+        model_state.form.variable_decode = True
+        model_state.schema = DeleteCommunitySchema()
 
-			EXECUTE @RC = dbo.sp_Community_d ?, @ErrMsg=@ErrMsg OUTPUT  
+        if model_state.validate():
+            sql = '''
+                Declare @ErrMsg as nvarchar(500), 
+                @RC as int 
 
-			SELECT @RC as [Return], @ErrMsg AS ErrMsg
-        '''
-        with request.connmgr.get_connection() as conn:
-            result = conn.execute(sql, cm_id).fetchone()
+                EXECUTE @RC = dbo.sp_Community_d ?, ?, ?, @ErrMsg=@ErrMsg OUTPUT  
 
-        _ = request.translate
-        if not result.Return:
-            request.session.flash(_('The Community was successfully deleted'))
-            return HTTPFound(location=request.route_url('communities'))
+                SELECT @RC as [Return], @ErrMsg AS ErrMsg
+            '''
+            with request.connmgr.get_connection() as conn:
+                result = conn.execute(sql, cm_id, request.user.UserName, 
+                                      model_state.value('ReasonForChange')).fetchone()
 
-        request.session.flash(_('Unable to delete Community:') + result.ErrMsg, 'errorqueue')
-        if result.Return == 3:
-            # cmid does not exist
-            return HTTPFound(location=request.route_url('communities'))
-            
-        return HTTPFound(location=request.route_url('community', cmid=cm_id))
+            _ = request.translate
+            if not result.Return:
+                request.session.flash(_('The Community was successfully deleted'))
+                return HTTPFound(location=request.route_url('communities'))
 
+            request.session.flash(_('Unable to delete Community:') + result.ErrMsg, 'errorqueue')
+            if result.Return == 3:
+                # cmid does not exist
+                return HTTPFound(location=request.route_url('communities'))
+                
+            return HTTPFound(location=request.route_url('community', cmid=cm_id))
 
         
         _ = request.translate
 
         return {'title_text': _('Delete Community/Alternate Search Area'), 
                 'prompt':_('Are you sure you want to delete this community?'), 
-                'continue_prompt': _('Delete')}
+                'continue_prompt': _('Delete'), 'use_reason_for_change': True}
 
     @view_config(route_name='community_delete', renderer='confirmdelete.mak', permission='edit')
     def delete(self):
@@ -347,7 +357,7 @@ class Community(ViewBase):
 
         return {'title_text': _('Delete Community/Alternate Search Area'), 
                 'prompt':_('Are you sure you want to delete this community?'), 
-                'continue_prompt': _('Delete')}
+                'continue_prompt': _('Delete'), 'use_reason_for_change': True}
 
     @view_config(route_name='json_parents', renderer='json', permission='view')
     @view_config(route_name='json_search_areas', renderer='json', permission='view')

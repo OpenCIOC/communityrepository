@@ -22,6 +22,17 @@ ${renderer.form_passvars()}
 %endfor
 %endif
 </div>
+%if use_reason_for_change:
+<table class="form-table">
+<tr>
+    <td class="ui-widget-header field">${renderer.label('ReasonForChange', _('Reason for Delete'))}</td>
+    <td class="ui-widget-content">
+    ${renderer.errorlist('ReasonForChange')}
+    ${renderer.textarea('ReasonForChange')}
+    </td>
+</tr>
+</table>
+%endif
 <input type="submit" value="${continue_prompt}">
 </form>
 
