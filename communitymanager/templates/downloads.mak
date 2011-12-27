@@ -8,7 +8,7 @@
 %endif
 
 %if files:
-<ul>
+<ul id="download-list">
 %for dt, fname, log in files:
     <li>
     %if not dt:

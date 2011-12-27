@@ -297,6 +297,15 @@ td.field-label-clear {
     padding-left: 0;
 }
 
+#download-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+#download-list li {
+    margin: 1em 0;
+}
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */
