@@ -143,7 +143,7 @@ class Downloads(ViewBase):
         data = [u'<?xml version="1.0" encoding="UTF-8"?><community_information>']
         with self.request.connmgr.get_connection() as conn:
             cursor = conn.execute('''
-                                  SELECT data FROM dbo.vw_CommunityXml
+                                  SELECT CAST(data AS nvarchar(max)) AS data  FROM dbo.vw_CommunityXml
                                   SELECT GETDATE() AS currentdate  
                                   ''')
 
