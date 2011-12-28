@@ -33,11 +33,11 @@ ${renderer.hidden('altarea', 'on')}
     <td class="ui-widget-header field">${_('Status')}</td>
     <td class="ui-widget-content">
 	%if community.ChildCommunities:
-		${_('The following Communities are using this Community as a parent community:')}
-        ${Markup(", ").join(x['Name'] for x in community.ChildCommunities)}
+		${_('This Community is a Parent for:')}
+        <em>${Markup(", ").join(x['Name'] for x in community.ChildCommunities)}</em>
         <% can_delete = False %>
 	%else:
-		${_('This Community <strong>is not</strong> being used by any Communities as a Parent Community.')|n}
+		${_('This Community <strong>is not</strong> being used as a Parent Community.')|n}
 	%endif
 
 	%if can_delete:
@@ -75,14 +75,14 @@ ${self.makeMgmtInfo(community)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('community.ProvinceState', _('Province/State'))}</th>
+	<td class="ui-widget-header field">${renderer.label('community.ProvinceState', _('Province, State and/or Country'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('community.ProvinceState')}
         ${renderer.select('community.ProvinceState', [('','')] + prov_state)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${_('Alternate Names')}</th>
+	<td class="ui-widget-header field">${_('Alternate Name(s)')}</th>
 	<td class="ui-widget-content">
         <table class="form-table${' hidden' if not renderer.form.data.get('alt_names') else ''}" id="alt-name-target">
         <tr><th class="ui-widget-header">${_('Delete')}</th><th class="ui-widget-header">${_('Language')}</th><th class="ui-widget-header">${_('Alt Name')}</th></tr>
