@@ -44,6 +44,11 @@
 <p>${_('Add new:')} <a href="${request.route_path('community', cmid='new')}">${_('Community')}</a> | <a href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}">${_('Alternate Search Area')}</a></p>
 %endif
 
+<p><a id="close-all-nodes" href="#">${_('Close All')}</a> 
+%if user and user.ManageAreaList:
+| <a id="reset-open-nodes" href="#">${_('Show Editable Communities')}</a>
+%endif
+</p>
 <%def name="tree_level(node, map, last=False)">
 <% children = map.get(node.CM_ID) %>
 <li class="tree-node ${'tree-leaf tree-closed' if not children else ''} ${'tree-node-last' if last else ''}" data-id="${node.CM_ID}" id="tree-node-${node.CM_ID}">
@@ -121,32 +126,65 @@
         });
         return false;
     },
+    close_all = function(evt) {
+        $('.tree-branch .tree-branch').hide();
+        $('.tree-node').removeClass('tree-open').addClass('tree-closed');
+        amplify.store('open_nodes', []);
+        return false;
+    },
+    open_node_set = function(nodes, force_parents_open) {
+        var tree_container = $('#treecontainer').hide(),
+            set = {};
+        for (var i=0; i < nodes.length; i++) {
+            set[nodes[i]] = true;
+        }
+
+        $.each(nodes, function(idx, val) {
+            var li = $('#tree-node-' + val).removeClass('tree-closed').addClass('tree-open'),
+                ul = $('#tree-branch-' + val).show();
+            if (force_parents_open) {
+                li.parents('.tree-node').removeClass('tree-closed').addClass('tree-open').
+                    each(function(idx, val) { set[val] = true; });
+                ul.parents('.tree-branch').show();
+            }
+        })
+
+        nodes = [];
+        $.each(set, function(key, val) {
+            nodes.push(key);
+        });
+
+        open_nodes = nodes;
+        amplify.store('open_nodes', open_nodes);
+
+        tree_container.show()
+    },
+    show_default = function(evt) {
+        close_all();
+        open_node_set(default_open, true);
+        return false;
+    },
     init = function($) {
-        var tree_container = null, force_parents_open;
-        open_nodes = amplify.store('open_nodes') || [];
+        var force_parents_open = false;
+        open_nodes = amplify.store('open_nodes');
         $('#tree-root').on('click', '.tree-node-icon', toggle_node).
             on('click', '.community-name', show_community_details);
-        if (!open_nodes && default_open) {
-            open_nodes = default_open;
-            amplify.store('open_nodes', open_nodes);
+        if (!open_nodes && open_nodes !== []) {
+            if (default_open) {
+                open_nodes = default_open;
+                force_parents_open = true
+            } else {
+                open_nodes = [];
+            }
         }
 
         if (open_nodes) {
-            tree_container = $('#treecontainer').hide()
-
-            $.each(open_nodes, function(idx, val) {
-                var li = $('#tree-node-' + val).removeClass('tree-closed').addClass('tree-open'),
-                    ul = $('#tree-branch-' + val).show();
-                if (force_parents_open) {
-                    li.parents('.tree-node').removeClass('tree-closed').addClass('tree-open');
-                    ul.parents('.tree-branch').show();
-                }
-            })
-
-            tree_container.show()
-            
+            open_node_set(open_nodes, force_parents_open);   
         }
         dialog = $('#dialog').dialog({autoOpen: false})
+
+        $('#close-all-nodes').click(close_all);
+        $('#reset-open-nodes').click(show_default);
     };
     $(init);
 })(jQuery);
