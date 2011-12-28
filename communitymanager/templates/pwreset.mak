@@ -1,11 +1,12 @@
+
 <%inherit file="master.mak"/>
-<%block name="title">${_('Login')}</%block>
+<%block name="title">${_('Password Reset')}</%block>
 <%block name="sitenav"/>
 
 <% renderer = request.model_state.renderer %>
 
 ${renderer.error_notice()}
-<form action="${request.route_path('login', _form=True)}" method="post">
+<form action="${request.current_route_path(_form=True)}" method="post">
 ${renderer.form_passvars()}
 <div class="hidden">
 ${renderer.hidden('came_from')}
@@ -18,16 +19,8 @@ ${renderer.hidden('came_from')}
 		${renderer.text('LoginName')}
 	</td>
 </tr>
-<tr>
-	<td class="ui-widget-header">${renderer.label('LoginPwd', _('Password:'))}</td>
-	<td class="ui-widget-content">
-		${renderer.errorlist('LoginPwd')}
-		${renderer.password('LoginPwd', maxlength=None)}
-	</td>
-</tr>
 </table>
 <br>
-<input type="submit" value="${_('Login')}">
+<input type="submit" value="${_('Email New Password')}">
 </form>
 
-<p><a href="${request.route_path('pwreset')}">${_('Forgot your password?')}</a></p>
