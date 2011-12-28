@@ -7,13 +7,16 @@
 #==================================================================
 
 #Python STD Lib
+import os
 import logging
 
 # 3rd party
 from pyramid.config import Configurator
+from pyramid.response import Response
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Allow, DENY_ALL
+from pyramid.view import view_config
 
 from pyramid_beaker import session_factory_from_settings
 
@@ -52,6 +55,12 @@ class OnlyAdminRootFactory(object):
 
     def __init__(self, request):
         pass
+
+@view_config(route_name='favicon', permission=NO_PERMISSION_REQUIRED)
+def favicon_view(request):
+    here = os.path.dirname(__file__)
+    icon = open(os.path.join(here, 'static', 'favicon.ico'), 'rb')
+    return Response(content_type='image/x-icon', app_iter=icon)
 
 
 def main(global_config, **settings):
@@ -120,6 +129,7 @@ def main(global_config, **settings):
 
     config.add_route('json_search_areas', '/json/search_areas')
 
+    config.add_route('favicon', '/favicon.ico')
 
     config.scan()
 
