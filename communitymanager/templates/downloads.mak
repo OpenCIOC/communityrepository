@@ -9,7 +9,7 @@
 
 %if files:
 <ul id="download-list">
-%for dt, fname, log in files:
+%for i, (dt, fname, log) in enumerate(files):
     <li>
     %if not dt:
     ${_('The following changes have not been released:')}
@@ -22,6 +22,7 @@
     </li>
 %endfor
 </ul>
-%else:
+%endif:
+%if not files or i==0 and not dt:
 ${self.printInfoMessage(_('No downloads available'))}
 %endif
