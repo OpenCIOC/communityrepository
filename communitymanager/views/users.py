@@ -215,7 +215,7 @@ class Users(ViewBase):
                 if is_new:
                     password = security.MakeRandomPassword()
                 else:
-                    password = form_data.get('password.Password')
+                    password = model_state.value('password.Password')
 
                 if password:
                     salt = security.MakeSalt()
