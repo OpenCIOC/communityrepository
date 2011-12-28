@@ -130,11 +130,11 @@ ${self.makeMgmtInfo(user)}
 <tr>
 	<td class="ui-widget-header field">${_('Mangage Communities')}</th>
 	<td class="ui-widget-content">
-        <strong>${_('By completing the following section you warrant that any contributions you make become the property of CIOC:')}</strong><br><br>
+        ${self.printInfoMessage(_('By completing this section, you agree that any editorial contributions made are the property of CIOC.'))}
 		${renderer.errorlist('user.ManageAreaRequest')}
-        ${renderer.checkbox('user.ManageAreaRequest', label=' ' + _('I would like to manage communities.'))}
-        <br><br><strong>${renderer.label('user.ManageAreaDetail', _('Management Request Details:'))}</strong><br>
-		${renderer.errorlist('user.ManageAreaDetail')}
+        ${renderer.checkbox('user.ManageAreaRequest', label=' ' + _('I would like to request editorial privileges for this repository.'))}
+        <br><br><strong>${renderer.label('user.ManageAreaDetail', _('Request Details (i.e. specific geographic areas you wish to manage):'))}</strong>
+		<br>${renderer.errorlist('user.ManageAreaDetail')}
         ${renderer.textarea('user.ManageAreaDetail')}
 
     </td>
@@ -144,7 +144,7 @@ ${self.makeMgmtInfo(user)}
 <tr>
     <td class="ui-widget-header field">${renderer.label('TomorrowsDate', _('Tomorrows Date'))}</td>
     <td class="ui-widget-content">
-        <div class="field-help">Enter tomorrow's date as dd/mm/yyyy to help prevent spammers</div>
+        <div class="field-help">Please enter tomorrow's date in the format dd/mm/yyyy to help prevent spammers.</div>
         ${renderer.errorlist('TomorrowsDate')}
         ${renderer.text('TomorrowsDate', maxlength=60)}
     </td>

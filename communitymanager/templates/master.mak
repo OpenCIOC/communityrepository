@@ -51,10 +51,10 @@
 <header class="ui-widget-header" style="padding-left: 1em;">
 <nav class="site-nav"><%block name="sitenav">
 %if request.user:
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('account')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('My Account')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary"></span><span class="ui-button-text">${_('My Account')}</span></a>
 %if request.user.Admin:
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('users')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Manage Users')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('users')}"><span class="ui-icon ui-icon-contact ui-button-icon-primary"></span><span class="ui-button-text">${_('Manage Users')}</span></a>
 %endif
 <%block name="browse"><a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('communities')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Browse')}</span></a></%block>
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('logout')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Logout')}</span></a>
@@ -63,7 +63,7 @@
 %endif
 </%block>
 </nav>
-<h1 style="margin: 0;">${_('CIOC Communities Management Tool')}</h1>
+<a href="${request.route_path('home')}"><h1 style="margin: 0;">${_('CIOC Communities Repository')}</h1></a>
 </header>
 <header id="pagetitle">
 <h1 class="clearfix">${self.title()}</h1>
@@ -83,8 +83,8 @@
 
     </div>
 
-<footer>
-
+<footer style="padding-left: 1em;">
+<p><small><em>${_('All content copyright &copy; 2003-2012 Community Information Online Consortium; this data may be used by specific permission only.') | n}</em></small></p>
 </footer>
 
 </div> <!-- #wrap -->

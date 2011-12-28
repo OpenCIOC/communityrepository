@@ -7,7 +7,7 @@
 <div class="hidden">
 ${renderer.form_passvars()}
 </div>
-<input type="submit" value="${_('Publish New Download')}">
+<input type="submit" value="${_('Confirm Creation of New Download')}">
 </form>
 
 %if logentries:

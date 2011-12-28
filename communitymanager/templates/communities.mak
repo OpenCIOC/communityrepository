@@ -40,13 +40,16 @@
 </style>
 
 <% user = request.user %>
-%if user and (user.Admin or user.ManageAreaList):
-<p>${_('Add new:')} <a href="${request.route_path('community', cmid='new')}">${_('Community')}</a> | <a href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}">${_('Alternate Search Area')}</a></p>
-%endif
 
-<p><a id="close-all-nodes" href="#">${_('Close All')}</a> 
+
+<p>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="close-all-nodes" href="#"><span class="ui-icon ui-icon-folder-collapsed ui-button-icon-primary"></span><span class="ui-button-text">${_('Close All')}</span></a> 
 %if user and user.ManageAreaList:
-| <a id="reset-open-nodes" href="#">${_('Show Editable Communities')}</a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="reset-open-nodes" href="#"><span class="ui-icon ui-icon-folder-open ui-button-icon-primary"></span><span class="ui-button-text">${_('My Management Areas')}</span></a>
+%endif
+%if user and (user.Admin or user.ManageAreaList):
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new')}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New Community')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}"><span class="ui-icon ui-icon-lightbulb ui-button-icon-primary"></span><span class="ui-button-text">${_('New Alternate Area')}</span></a></p>
 %endif
 </p>
 <%def name="tree_level(node, map, last=False)">
