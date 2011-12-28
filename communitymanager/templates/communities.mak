@@ -48,7 +48,7 @@
 <% children = map.get(node.CM_ID) %>
 <li class="tree-node ${'tree-leaf tree-closed' if not children else ''} ${'tree-node-last' if last else ''}" data-id="${node.CM_ID}" id="tree-node-${node.CM_ID}">
     <span class="ui-icon tree-node-icon ${'tree-node-expander' if children else ''}">${_('Open/Close')}</span>
-    <span class="community-name" data-id="${node.CM_ID}" title="${_('Click for Details')}">${node.Name}</span>
+    <a href="#" class="community-name" data-id="${node.CM_ID}" title="${_('Click for Details')}">${node.Name}</a>
     %if node.CanEdit:
         <a href="${request.route_path('community', cmid=node.CM_ID)}" class="ui-icon ui-widget-content ui-icon-document" title=${_('Edit')}>${_('Edit')}</a>
     %endif
@@ -119,6 +119,7 @@
                 dialog.dialog('open');
             }
         });
+        return false;
     },
     init = function($) {
         var tree_container = null, force_parents_open;
