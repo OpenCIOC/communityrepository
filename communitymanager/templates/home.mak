@@ -14,6 +14,6 @@
 <p>${_('The ongoing maintenance of this repository is provided by volunteers from the CIOC Community. When requesting an account, you will have the opportunity to request administrative privileges for specific geographic areas. Please be aware that we may need to limit the number of editors in order to encourage editorial consistency; therefore, not all requests for administrative privileges will be granted. Those who do participate in the maintenance of this repository will be put in touch with their co-editors to facilitate co-operative and consistent data maintenance activities.')}</p>
 <p>${_('Do you have further questions about the CIOC Communities Repository? CIOC Members should post questions on the')} <a href="http://community.cioc.ca/message-board/">${_('CIOC Community Message Board')}</a>. ${_('Non-members may get information about subscribing to the CIOC Communities Repository by')} <a href="http://www.cioc.ca/contact.aspx">${_('contacting CIOC for details')}</a></p>
 %if not request.user:
-<p>${_('Already have an account?')} <a href="${request.route_path('login')}">${_('Login Now!')}</a>}
+<p>${_('Already have an account?')} <a href="${request.route_path('login')}">${_('Login Now!')}</a>
 %endif
 
