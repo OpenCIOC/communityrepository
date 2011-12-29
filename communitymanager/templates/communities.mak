@@ -128,6 +128,9 @@
                     return;
                 }
 
+                if (dialog.dialog('isOpen')) {
+                    dialog.dialog('close');
+                }
                 dialog.html(data.community_info);
                 dialog.dialog('option', 'title', data.community_name)
                 dialog.dialog('open');
