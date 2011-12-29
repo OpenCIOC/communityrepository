@@ -43,6 +43,19 @@ ${renderer.required_field_instructions()}
 </tr>
 %endif
 %endif
+%if is_account:
+<tr>
+    <td class="ui-widget-header field">${_('Manage Areas')}</td>
+    <td class="ui-widget-content">
+    %if user.Admin:
+        ${_('You are an Admin user and can modify any community')}
+    %else:
+        ${_('You can manage sub-communities of:')}
+        ${', '.join(sorted(cm_name_map.values()))}
+    %endif
+    <td>
+</tr>
+%endif
 %if user:
 ${self.makeMgmtInfo(user)}
 %endif

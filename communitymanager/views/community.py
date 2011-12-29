@@ -381,14 +381,14 @@ class Community(ViewBase):
             cur_parent = None
 
         cur_cm_id = None
-        if request.matched_route == 'json_search_areas':
+        if request.matched_route.name == 'json_search_areas':
             try:
                 cur_cm_id = cm_id_validator.to_python(request.params.get('cmid'))
             except validators.Invalid:
                 pass
 
         retval = []
-        search_areas =  request.matched_route.name == 'json_search_areas'
+        search_areas = request.matched_route.name == 'json_search_areas'
         with request.connmgr.get_connection() as conn:
             if search_areas:
                 cursor = conn.execute('EXEC sp_Community_ls_SearchAreaSelector ?, ?, ?, ?', 
@@ -406,6 +406,6 @@ class Community(ViewBase):
         return retval
 
 
-    @view_config(context='pyramid.httpexceptions.HTTPForbidden', renderer='not_authorized.mak', permission=NO_PERMISSION_REQUIRED, custom_predicates=[lambda context, request: not not request.user])
+    @view_config(context='pyramid.httpexceptions.HTTPForbidden', route_name="community", renderer='not_authorized.mak', permission=NO_PERMISSION_REQUIRED, custom_predicates=[lambda context, request: not not request.user])
     def not_authorized(self):
         return {}

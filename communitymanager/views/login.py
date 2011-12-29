@@ -68,6 +68,8 @@ class Login(ViewBase):
 
     @view_config(route_name="login", renderer="login.mak", permission=NO_PERMISSION_REQUIRED)
     @view_config(context='pyramid.httpexceptions.HTTPForbidden', renderer="login.mak", permission=NO_PERMISSION_REQUIRED)
+    @view_config(context='pyramid.httpexceptions.HTTPForbidden', route_name="community", renderer="login.mak", permission=NO_PERMISSION_REQUIRED)
+    @view_config(context='pyramid.httpexceptions.HTTPForbidden', route_name="user", renderer="login.mak", permission=NO_PERMISSION_REQUIRED)
     def get(self):
         request = self.request
         login_url = request.route_url('login')

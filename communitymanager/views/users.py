@@ -303,6 +303,8 @@ class Users(ViewBase):
             data = model_state.data
             decoded = variable_decode(request.POST)
             data['manage_areas'] = manage_areas = decoded.get('manage_areas') or []
+            if is_account:
+                manage_areas = request.user.ManageAreaList or []
             log.debug('errors: %s', model_state.form.errors)
 
 
@@ -315,10 +317,9 @@ class Users(ViewBase):
                 else:
                     user = conn.execute('EXEC sp_Users_s ?', uid).fetchone()
 
-                if not is_account:
-                    cm_name_map = {str(x[0]): x[1] for x in 
-                                   conn.execute('EXEC sp_Community_ls_Names ?', 
-                                                ','.join(str(x) for x in manage_areas)).fetchall()}
+                cm_name_map = {str(x[0]): x[1] for x in 
+                               conn.execute('EXEC sp_Community_ls_Names ?', 
+                                            ','.join(str(x) for x in manage_areas)).fetchall()}
 
             
 
@@ -483,3 +484,7 @@ class Users(ViewBase):
             raise HTTPFound(location=request.route_url('users'))
 
         return reqid
+
+    @view_config(context='pyramid.httpexceptions.HTTPForbidden', route_name="user", renderer='not_authorized_users.mak', permission=NO_PERMISSION_REQUIRED, custom_predicates=[lambda context, request: not not request.user])
+    def not_authorized(self):
+        return {}
