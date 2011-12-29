@@ -233,11 +233,11 @@ textarea {
 .site-nav {
 	vertical-align: middle;
 	line-height: 200%;
-	margin: 0 1em 1em 1em
+	margin: 0 1em;
 }
 
 .site-nav a {
-	margin-bottom: 0.5em;
+	margin-bottom: 0.25em;
 }
 span.ui-icon.menu-icon {
 	display: inline-block; vertical-align: middle;

@@ -37,12 +37,18 @@
         display: inline-block;
         border: none;
     }
+
+    #action-bar a {
+        margin-top: 0.25em;
+    }
+
+    
 </style>
 
 <% user = request.user %>
 
 
-<p>
+<p id="action-bar">
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="close-all-nodes" href="#"><span class="ui-icon ui-icon-folder-collapsed ui-button-icon-primary"></span><span class="ui-button-text">${_('Close All')}</span></a> 
 %if user and user.ManageAreaList:
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="reset-open-nodes" href="#"><span class="ui-icon ui-icon-folder-open ui-button-icon-primary"></span><span class="ui-button-text">${_('My Management Areas')}</span></a>
@@ -132,7 +138,8 @@
     close_all = function(evt) {
         $('.tree-branch .tree-branch').hide();
         $('.tree-node').removeClass('tree-open').addClass('tree-closed');
-        amplify.store('open_nodes', []);
+        open_nodes = [];
+        amplify.store('open_nodes', open_nodes);
         return false;
     },
     open_node_set = function(nodes, force_parents_open) {
@@ -147,7 +154,7 @@
                 ul = $('#tree-branch-' + val).show();
             if (force_parents_open) {
                 li.parents('.tree-node').removeClass('tree-closed').addClass('tree-open').
-                    each(function(idx, val) { set[val] = true; });
+                    each(function(idx, val) { set[$(val).data('id')] = true; });
                 ul.parents('.tree-branch').show();
             }
         })

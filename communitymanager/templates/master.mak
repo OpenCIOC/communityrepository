@@ -48,25 +48,25 @@
 </%block>
 
 <div id="wrap">
-<header class="ui-widget-header" style="padding-left: 1em;">
+<header>
+<h1 style="margin: 0; padding-left: 1em;" class="ui-widget-header"><a href="${request.route_path('home')}">${_('CIOC Communities Repository')}</a></h1>
 <nav class="site-nav"><%block name="sitenav">
 %if request.user:
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary"></span><span class="ui-button-text">${_('My Account')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary"></span><span class="ui-button-text">${_('My Account')}</span></a>
 %if request.user.Admin:
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('users')}"><span class="ui-icon ui-icon-contact ui-button-icon-primary"></span><span class="ui-button-text">${_('Manage Users')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('users')}"><span class="ui-icon ui-icon-contact ui-button-icon-primary"></span><span class="ui-button-text">${_('Manage Users')}</span></a>
 %endif
-<%block name="browse"><a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_url('communities')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Browse')}</span></a></%block>
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('logout')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Logout')}</span></a>
+<%block name="browse"><a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('communities')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Browse')}</span></a></%block>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('logout')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Logout')}</span></a>
 %else:
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('login')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Login')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('login')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Login')}</span></a>
 %endif
 </%block>
 </nav>
-<a href="${request.route_path('home')}"><h1 style="margin: 0;">${_('CIOC Communities Repository')}</h1></a>
 </header>
-<header id="pagetitle">
-<h1 class="clearfix">${self.title()}</h1>
+<header id="pagetitle" class="clearfix">
+<h1 style="margin-top: 0">${self.title()}</h1>
 </header>
 
     <div id="main" role="main">
