@@ -25,6 +25,7 @@ ${renderer.form_passvars()}
 <input type="hidden" name="reqid" value="${account_request.Request_ID}">
 %endif
 </div>
+${renderer.required_field_instructions()}
 <table class="form-table">
 %if account_request:
 <tr>
@@ -46,49 +47,49 @@ ${renderer.form_passvars()}
 ${self.makeMgmtInfo(user)}
 %endif
 <tr>
-	<td class="ui-widget-header field">${_('User Name')}</th>
+	<td class="ui-widget-header field">${renderer.label("user.UserName", _('User Name'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 	${renderer.errorlist("user.UserName")}
 	${renderer.text("user.UserName", maxlength=50)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('user.Culture', _('Start Language'))}</th>
+	<td class="ui-widget-header field">${renderer.label('user.Culture', _('Start Language'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
         ${renderer.errorlist('user.Culture')}
         ${renderer.select('user.Culture', languages)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('user.FirstName', _('First Name'))}</th>
+	<td class="ui-widget-header field">${renderer.label('user.FirstName', _('First Name'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('user.FirstName')}
         ${renderer.text('user.FirstName', max=50)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('user.LastName', _('Last Name'))}</th>
+	<td class="ui-widget-header field">${renderer.label('user.LastName', _('Last Name'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('user.LastName')}
         ${renderer.text('user.LastName', max=50)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('user.Organization', _('Organization'))}</th>
+	<td class="ui-widget-header field">${renderer.label('user.Organization', _('Organization'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('user.Organization')}
         ${renderer.text('user.Organization')}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('user.Initials', _('Initials'))}</th>
+	<td class="ui-widget-header field">${renderer.label('user.Initials', _('Initials'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('user.Initials')}
         ${renderer.text('user.Initials', max=6)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('user.Email', _('Email'))}</th>
+	<td class="ui-widget-header field">${renderer.label('user.Email', _('Email'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('user.Email')}
         ${renderer.email('user.Email')}
@@ -142,7 +143,7 @@ ${self.makeMgmtInfo(user)}
 %endif
 %if not is_admin and not user:
 <tr>
-    <td class="ui-widget-header field">${renderer.label('TomorrowsDate', _('Tomorrows Date'))}</td>
+    <td class="ui-widget-header field">${renderer.label('TomorrowsDate', _('Tomorrows Date'))} ${renderer.required_flag()}</td>
     <td class="ui-widget-content">
         <div class="field-help">Please enter tomorrow's date in the format dd/mm/yyyy to help prevent spammers.</div>
         ${renderer.errorlist('TomorrowsDate')}

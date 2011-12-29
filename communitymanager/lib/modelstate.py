@@ -142,6 +142,16 @@ class CiocFormRenderer(FormRenderer):
         kw.update(attrs)
         return tags.password(name, id=id, **kw)
 
+    def required_flag(self):
+        _ = self.form.request.translate
+        return Markup('<span class="ui-state-error required-flag"><span class="ui-icon ui-icon-star" title="%s"><em>%s</em></span></span>') % (_('Required'), _('Required'))
+
+    def required_field_instructions(self):
+        _ = self.form.request.translate
+
+        return Markup('<p>%s %s</p>') % \
+    (_('Required fields are marked with'), self.required_flag())
+
     def errorlist(self, name=None, **attrs):
         """
         Renders errors in a <ul> element if there are multiple, otherwise will
@@ -181,10 +191,11 @@ class CiocFormRenderer(FormRenderer):
         if not self.all_errors():
             return ''
 
+        _ = self.form.request.translate
         star_err = self.errors_for('*')
         if star_err:
             star_err = star_err[0]
-        msg =  msg or star_err or 'There were validation errors'
+        msg =  msg or star_err or _('There were validation errors')
         return self.error_msg(msg)
 
     def error_msg(self, msg):

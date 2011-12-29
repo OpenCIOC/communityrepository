@@ -61,7 +61,7 @@ class BaseUserValidator(validators.Schema):
     FirstName = validators.String(max=50, not_empty=True)
     LastName = validators.String(max=50, not_empty=True)
     Initials = validators.String(max=6, not_empty=True)
-    Organization = validators.String(max=200)
+    Organization = validators.String(max=200, not_empty=True)
     Email = validators.Email(not_empty=True)
 
 

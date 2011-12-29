@@ -27,6 +27,7 @@ ${renderer.form_passvars()}
 ${renderer.hidden('altarea', 'on')}
 %endif
 </div>
+${renderer.required_field_instructions()}
 <table class="form-table">
 %if community:
 <tr>
@@ -50,7 +51,7 @@ ${renderer.hidden('altarea', 'on')}
 ${self.makeMgmtInfo(community)}
 %endif
 <tr>
-	<td class="ui-widget-header field">${_('Name')}</th>
+	<td class="ui-widget-header field">${_('Name')} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 	<table class="form-table">
 %for culture in active_cultures:
@@ -67,7 +68,7 @@ ${self.makeMgmtInfo(community)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('community.ParentCommunityWeb', _('Parent Community'))}</th>
+	<td class="ui-widget-header field">${renderer.label('community.ParentCommunityWeb', _('Parent Community'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('community.ParentCommunity')}
         ${renderer.hidden('community.ParentCommunity', id='community_ParentCommunity')}
@@ -103,7 +104,7 @@ ${self.makeMgmtInfo(community)}
 </tr>
 %endif
 <tr>
-    <td class="ui-widget-header field">${renderer.label('ReasonForChange', _('Reason for Change'))}</td>
+    <td class="ui-widget-header field">${renderer.label('ReasonForChange', _('Reason for Change'))} ${renderer.required_flag()}</td>
     <td class="ui-widget-content">
     ${renderer.errorlist('ReasonForChange')}
     ${renderer.textarea('ReasonForChange')}

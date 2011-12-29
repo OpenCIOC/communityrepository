@@ -306,6 +306,16 @@ td.field-label-clear {
     margin: 1em 0;
 }
 
+span.required-flag.ui-state-error {
+    display: inline-block;
+    border: none;
+    background: none;
+}
+
+.required-flag .ui-icon {
+    display: inline-block;
+}
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */
