@@ -180,14 +180,14 @@ ${self.makeMgmtInfo(user)}
             <tr>
             <td class="field-lable-clear">${renderer.label('password.Password', _('New Password'))}
             <td>${renderer.errorlist('password.Password')}
-                ${renderer.password('password.Password')}
+                ${renderer.password('password.Password', autocomplete="off")}
             </td>
             </tr>
             
             <tr>
             <td class="field-lable-clear">${renderer.label('password.ConfirmPassword', _('Confirm New Password'))}
             <td>${renderer.errorlist('password.ConfirmPassword')}
-                ${renderer.password('password.ConfirmPassword')}
+                ${renderer.password('password.ConfirmPassword', autocomplete="off")}
             </td>
             </tr>
 
