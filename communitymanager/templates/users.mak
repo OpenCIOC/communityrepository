@@ -2,6 +2,36 @@
 
 <%block name="title">${_('User Management')}</%block>
 
+<style type="text/css">
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+   /* background-color: #e6EEEE;
+    border: 1px solid #FFF;
+    font-size: 8pt; */
+    padding: 4px;
+    border-image: initial;
+    background-image: none;
+}
+table.tablesorter thead tr .header {
+    background-image: url(/static/img/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-right: 2em;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(/static/img/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(/static/img/desc.gif);
+}
+
+td.inactive {
+    color: #939393;
+    font-style: italic;
+    text-decoration: line-through;
+}
+</style>
+
 %if user_requests:
 <h3>${_('Account Requests')}</h3>
 <table class="form-table">
@@ -33,7 +63,8 @@
 
 <h3>${_('Existing Users')}</h3>
 %endif
-<table class="form-table">
+<table class="form-table tablesorter" id="existing-users">
+<thead>
 <tr>
 <th class="ui-widget-header">${_('User Name')}</th>
 <th class="ui-widget-header">${_('Name')}</th>
@@ -45,17 +76,32 @@
 <th class="ui-widget-header">${_('Manage Communities')}</th>
 <th class="ui-widget-header">${_('Action')}</th>
 </tr>
+</thead>
+<% my_uid = request.user.User_ID %>
 %for user in users:
 <tr>
-<td class="ui-widget-content">${user.UserName}</td>
-<td class="ui-widget-content">${u' '.join((user.FirstName,user.LastName))}</td>
-<td class="ui-widget-content">${user.Initials}</td>
-<td class="ui-widget-content">${user.Organization}</td>
-<td class="ui-widget-content">${user.Email}</td>
-<td class="ui-widget-content">${_('Yes') if user.Admin else _('No')}</td>
-<td class="ui-widget-content">${_('Yes') if not user.Inactive else _('No')}</td>
-<td class="ui-widget-content">${u', '.join(user.ManageCommunities)}</td>
-<td class="ui-widget-content"><a href="${request.route_path('user', uid=user.User_ID)}">${_('Edit')}</a></td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${user.UserName}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${u' '.join((user.FirstName,user.LastName))}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${user.Initials}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${user.Organization}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${user.Email}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${_('Yes') if user.Admin else _('No')}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${_('Yes') if not user.Inactive else _('No')}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${u', '.join(user.ManageCommunities)}</td>
+<td class="ui-widget-content">
+%if my_uid!=user.User_ID:
+    <a href="${request.route_path('user', uid=user.User_ID)}">${_('Edit')}</a>
+%endif
+</td>
 </tr>
 %endfor
 </table>
+
+<%block name="bottomscripts">
+<script type="text/javascript" src="/static/js/libs/jquery.tablesorter.min.js"></script> 
+<script type="text/javascript">
+jQuery(function($) {
+    $('#existing-users').tablesorter({headers: {8: {sorter: false}}});
+});
+</script>
+</%block>
