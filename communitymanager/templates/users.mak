@@ -34,7 +34,13 @@ td.inactive {
 
 %if user_requests:
 <h3>${_('Account Requests')}</h3>
-<table class="form-table">
+%if rejected_requests and rejected_requests[0]:
+<p><a href="${request.current_route_path(_query=[('show_rejected','on')])}">${_('Show %d Rejected Requests') % rejected_requests[0]}</a></p>
+%else:
+<p><a href="${request.current_route_path(_query=[])}">${_('Hide Rejected Requests')}</a></p>
+%endif
+<table class="form-table tablesorter">
+<thead>
 <tr>
 <th class="ui-widget-header">${_('Action')}</th>
 <th class="ui-widget-header">${_('Request Date')}</th>
@@ -44,6 +50,7 @@ td.inactive {
 <th class="ui-widget-header">${_('Email')}</th>
 <th class="ui-widget-header">${_('Manage Area')}</th>
 </tr>
+</thead>
 %for user in user_requests:
 <tr>
 <td class="ui-widget-content"><a href="${request.route_path('user_new', _query=[('reqid', user.Request_ID)])}">${_('Add')}</a>
@@ -51,12 +58,13 @@ td.inactive {
 | <a href="${request.route_path('request_reject', _query=[('reqid', user.Request_ID)])}">${_('Reject')}</a>
 %endif
 </td>
-<td class="ui-widget-content">${request.format_date(user.REQUEST_DATE)}</td>
-<td class="ui-widget-content">${user.PreferredUserName}</td>
-<td class="ui-widget-content">${u' '.join((user.FirstName,user.LastName))}</td>
-<td class="ui-widget-content">${user.Organization}</td>
-<td class="ui-widget-content">${user.Email}</td>
-<td class="ui-widget-content">${_('Yes') if user.ManageAreaRequest else _('No')}</td>
+<% rejected = user.REJECTED_DATE %>
+<td class="ui-widget-content ${'inactive' if rejected else '' |n}">${request.format_date(user.REQUEST_DATE)}</td>
+<td class="ui-widget-content ${'inactive' if rejected else '' |n}">${user.PreferredUserName}</td>
+<td class="ui-widget-content ${'inactive' if rejected else '' |n}">${u' '.join((user.FirstName,user.LastName))}</td>
+<td class="ui-widget-content ${'inactive' if rejected else '' |n}">${user.Organization}</td>
+<td class="ui-widget-content ${'inactive' if rejected else '' |n}">${user.Email}</td>
+<td class="ui-widget-content ${'inactive' if rejected else '' |n}">${_('Yes') if user.ManageAreaRequest else _('No')}</td>
 </tr>
 %endfor
 </table>
@@ -96,6 +104,11 @@ td.inactive {
 </tr>
 %endfor
 </table>
+
+%if not user_requests and rejected_requests and rejected_requests[0]:
+<h3>${_('Account Requests')}</h3>
+<p><a href="${request.current_route_path(_query=[('show_rejected','on')])}">${_('Show %d Rejected Requests') % rejected_requests[0]}</a></p>
+%endif
 
 <%block name="bottomscripts">
 <script type="text/javascript" src="/static/js/libs/jquery.tablesorter.min.js"></script> 

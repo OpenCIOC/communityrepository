@@ -142,17 +142,28 @@ class Users(ViewBase):
         request = self.request
 
 
+        rejected_requests = None
         with request.connmgr.get_connection() as conn:
             users = conn.execute('EXEC sp_Users_l').fetchall()
 
-            user_requests = conn.execute('EXEC sp_Users_AccountRequest_l ?', not not request.params.get('show_rejected')).fetchall()
+            show_rejected = not not request.params.get('show_rejected')
+
+            cursor = conn.execute('EXEC sp_Users_AccountRequest_l ?', show_rejected)
+
+            user_requests = cursor.fetchall()
+
+            if not show_rejected:
+                cursor.nextset()
+                rejected_requests = cursor.fetchone()
+
+            cursor.close()
 
 
         for user in users:
             user.ManageCommunities = [x['Name'] for x in xml_to_dict_list(user.ManageCommunities)]
 
 
-        return {'users': users, 'user_requests': user_requests}
+        return {'users': users, 'user_requests': user_requests, 'rejected_requests': rejected_requests}
 
 
 
