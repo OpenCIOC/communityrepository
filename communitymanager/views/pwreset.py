@@ -23,7 +23,7 @@ _ = lambda x: x
 pwreset_email_template = _(u'''\
 Hi %(FirstName)s,
 
-Someone requested a password reset for the CIOC Community Manager Site.
+Someone requested a password reset for the CIOC Communities Repository site.
 Your new password is:
 %(Password)s
 
