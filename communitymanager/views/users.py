@@ -13,7 +13,7 @@ from xml.etree import ElementTree as ET
 from formencode.variabledecode import variable_decode
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from pyramid.view import view_config
-from pyramid.security import NO_PERMISSION_REQUIRED
+from pyramid.security import NO_PERMISSION_REQUIRED, ALL_PERMISSIONS, Allow, Deny, DENY_ALL
 
 # this app
 from communitymanager.lib import validators, security, email
@@ -29,7 +29,7 @@ _ = lambda x: x
 welcome_email_template = _(u'''\
 Hi %(FirstName)s,
 
-Your account on the CIOC Community Manager Site has been created:
+Your account on the CIOC Communities Repository site has been created:
 User Name: %(UserName)s
 Password: %(Password)s
 
@@ -39,7 +39,7 @@ Please log in to %(url)s as soon as possible and change your password.
 request_email_template = _(u'''\
 Hi,
 
-An account has been requested on the CIOC Community Management Site:
+An account has been requested on the CIOC Communities Repository site:
 User Name: %(UserName)s
 First Name: %(FirstName)s
 Last Name: %(LastName)s
@@ -111,6 +111,30 @@ class UpdateProfileRequestAccessBase(validators.Schema):
     
     # need to add user validator when constructing
 
+
+class UserRoot(object):
+    def __init__(self, request):
+        validator = validators.IntID(not_empty=True)
+        try:
+            uid = validator.to_python(request.matchdict.get('uid'))
+        except validators.Invalid:
+            raise HTTPNotFound
+
+        with request.connmgr.get_connection() as conn:
+            cursor = conn.execute('EXEC sp_Users_s ?', uid)
+
+            self.user = cursor.fetchone()
+
+            cursor.nextset()
+
+            self.manage_areas = cursor.fetchall()
+
+            cursor.close()
+
+        if self.user is None:
+            raise HTTPNotFound
+
+        self.__acl__ = [(Deny, 'uid:%d' % self.user.User_ID, ALL_PERMISSIONS),(Allow, 'area:admin', ('edit','view')), DENY_ALL]
 
 class Users(ViewBase):
     @view_config(route_name="users", renderer='users.mak', permission='view')
@@ -194,9 +218,10 @@ class Users(ViewBase):
 
             if not is_request and not is_account:
                 root = ET.Element('ManageAreas')
-                for cmid in form_data.get('manage_areas') or []:
-                    if cmid:
-                        ET.SubElement(root, 'CM_ID').text = unicode(cmid)
+                if not user.get('Admin'):
+                    for cmid in form_data.get('manage_areas') or []:
+                        if cmid:
+                            ET.SubElement(root, 'CM_ID').text = unicode(cmid)
 
                 fields.append('ManageAreas')
                 args.append(ET.tostring(root))
@@ -315,14 +340,17 @@ class Users(ViewBase):
                 if is_new:
                     account_request = conn.execute('EXEC sp_Users_AccountRequest_s ?', reqid).fetchone()
                 else:
-                    user = conn.execute('EXEC sp_Users_s ?', uid).fetchone()
+                    if is_account:
+                        user = conn.execute('EXEC sp_Users_s ?', uid).fetchone()
+
+                    else:
+                        user = request.context.user
 
                 cm_name_map = {str(x[0]): x[1] for x in 
                                conn.execute('EXEC sp_Community_ls_Names ?', 
                                             ','.join(str(x) for x in manage_areas)).fetchall()}
 
             
-
         if is_new:
             if not account_request:
                 request.session.flash(_('Account Request Not Found'), 'errorqueue')
@@ -375,18 +403,24 @@ class Users(ViewBase):
         manage_areas = []
 
         if not is_request:
-            with request.connmgr.get_connection() as conn:
-                if is_new:
+            if is_new:
+                with request.connmgr.get_connection() as conn:
                     account_request = conn.execute('EXEC sp_Users_AccountRequest_s ?', reqid).fetchone()
+            else:
+                if is_account:
+                    with request.connmgr.get_connection() as conn:
+                        cursor = conn.execute('EXEC sp_Users_s ?', uid)
+                        user = cursor.fetchone()
+
+                        cursor.nextset()
+                        cm_tmp = cursor.fetchall()
+                        cursor.close()
                 else:
-                    cursor = conn.execute('EXEC sp_Users_s ?, 1', uid)
-                    user = cursor.fetchone()
+                    user = request.context.user
+                    cm_tmp = request.context.manage_areas
 
-                    cursor.nextset()
-                    cm_tmp = cursor.fetchall()
-
-                    manage_areas = [str(x[0]) for x in cm_tmp]
-                    cm_name_map = {str(x[0]): x[1] for x in cm_tmp}
+                manage_areas = [str(x[0]) for x in cm_tmp]
+                cm_name_map = {str(x[0]): x[1] for x in cm_tmp}
 
 
         if is_new:

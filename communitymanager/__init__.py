@@ -40,6 +40,8 @@ def groupfinder(userid, request):
         if user.Admin or user.ManageAreaList:
             groups.append('area:manager')
 
+        groups.append('uid:%d' % user.User_ID)
+
         return groups
 
     return None
@@ -98,11 +100,13 @@ def main(global_config, **settings):
 
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
+    config.add_route('suggest', '/suggest', pregenerator=passvars_pregen)
+
     config.add_route('users', '/users', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
     config.add_route('user_new', '/users/new', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
-    config.add_route('user', '/users/{uid}', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
+    config.add_route('user', '/users/{uid}', pregenerator=passvars_pregen, factory='communitymanager.views.users.UserRoot')
 
     config.add_route('account', '/account', pregenerator=passvars_pregen)
 
