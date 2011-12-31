@@ -56,7 +56,7 @@
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('suggest')}"><span class="ui-icon ui-icon-comment ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggest Change')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
 %if request.user.Admin or request.user.ManageAreaList:
-<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('review_suggestions')}"><span class="ui-icon ui-icon-mail-open ui-button-icon-primary"></span><span class="ui-button-text">${_('Review Suggestions')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('review_suggestions')}"><span class="ui-icon ui-icon-mail-open ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggestions')}</span></a>
 %endif
 %if request.user.Admin:
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('users')}"><span class="ui-icon ui-icon-contact ui-button-icon-primary"></span><span class="ui-button-text">${_('Manage Users')}</span></a>
