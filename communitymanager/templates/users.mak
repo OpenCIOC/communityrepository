@@ -2,41 +2,11 @@
 
 <%block name="title">${_('User Management')}</%block>
 
-<style type="text/css">
-table.tablesorter thead tr th, table.tablesorter tfoot tr th {
-   /* background-color: #e6EEEE;
-    border: 1px solid #FFF;
-    font-size: 8pt; */
-    padding: 4px;
-    border-image: initial;
-    background-image: none;
-}
-table.tablesorter thead tr .header {
-    background-image: url(/static/img/bg.gif);
-    background-repeat: no-repeat;
-    background-position: center right;
-    cursor: pointer;
-    padding-right: 2em;
-}
-table.tablesorter thead tr .headerSortUp {
-	background-image: url(/static/img/asc.gif);
-}
-table.tablesorter thead tr .headerSortDown {
-	background-image: url(/static/img/desc.gif);
-}
-
-td.inactive {
-    color: #939393;
-    font-style: italic;
-    text-decoration: line-through;
-}
-</style>
-
 %if user_requests:
 <h3>${_('Account Requests')}</h3>
 %if rejected_requests and rejected_requests[0]:
 <p><a href="${request.current_route_path(_query=[('show_rejected','on')])}">${_('Show %d Rejected Requests') % rejected_requests[0]}</a></p>
-%else:
+%elif not rejected_requests:
 <p><a href="${request.current_route_path(_query=[])}">${_('Hide Rejected Requests')}</a></p>
 %endif
 <table class="form-table tablesorter">

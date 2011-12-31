@@ -47,7 +47,7 @@ def groupfinder(userid, request):
     return None
 
 class RootFactory(object):
-    __acl__ = [(Allow, Authenticated, 'view'), DENY_ALL]
+    __acl__ = [(Allow, Authenticated, 'view'), (Allow, 'area:manager', ('view', 'edit')), DENY_ALL]
 
     def __init__(self, request):
         pass
@@ -101,6 +101,8 @@ def main(global_config, **settings):
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
     config.add_route('suggest', '/suggest', pregenerator=passvars_pregen)
+    config.add_route('complete_suggestion', '/review/complete', pregenerator=passvars_pregen)
+    config.add_route('review_suggestions', '/review', pregenerator=passvars_pregen)
 
     config.add_route('users', '/users', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 

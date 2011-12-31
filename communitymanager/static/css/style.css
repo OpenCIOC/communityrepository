@@ -316,6 +316,34 @@ span.required-flag.ui-state-error {
     display: inline-block;
 }
 
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+   /* background-color: #e6EEEE;
+    border: 1px solid #FFF;
+    font-size: 8pt; */
+    padding: 4px;
+    border-image: initial;
+    background-image: none;
+}
+table.tablesorter thead tr .header {
+    background-image: url(/static/img/bg.gif);
+    background-repeat: no-repeat;
+    background-position: center right;
+    cursor: pointer;
+    padding-right: 2em;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(/static/img/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(/static/img/desc.gif);
+}
+
+td.inactive {
+    color: #939393;
+    font-style: italic;
+    text-decoration: line-through;
+}
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */

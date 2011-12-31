@@ -1,12 +1,4 @@
 <%inherit file="master.mak"/>
-<%! 
-import json
-
-from markupsafe import Markup 
-from communitymanager.lib import syslanguage
-%>
-
-
 <%block name="title">${title_text}</%block>
 
 
