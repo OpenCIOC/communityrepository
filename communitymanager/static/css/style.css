@@ -382,6 +382,12 @@ a.ui-icon {
     margin-top: 0.25em;
 }
 
+#dialog ul {
+    list-style-type: none;
+    padding-left: 0;
+
+}
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */

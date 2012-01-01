@@ -68,8 +68,8 @@ class Communities(ViewBase):
         with request.connmgr.get_connection() as conn:
             community = conn.execute('EXEC sp_Community_s_MoreInfo ?', cm_id).fetchone()
 
+        _ = request.translate
         if not community:
-            _ = request.translate
             return {'fail': True, 'reason': _('Community Not Found.')}
 
         pcn = xml_to_dict_list(community.ParentCommunityName)  
@@ -85,5 +85,9 @@ class Communities(ViewBase):
         #community = dict(zip((x[0] for x in community.cursor_description), community))
         
         community_info = render('community_more_details.mak', {'community': community}, request)
+        if community.ParentCommunityName:
+            cm_title = _('%s (in %s)') % (community.Name, community.ParentCommunityName['Name'])
+        else:
+            cm_title = community.Name
 
-        return {'fail': False, 'community_info': community_info, 'community_name': community.Name}
+        return {'fail': False, 'community_info': community_info, 'community_name': cm_title}
