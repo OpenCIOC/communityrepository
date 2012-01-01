@@ -5,7 +5,7 @@ default: browse.min.js community.min.js
 %.min.js: %.js
 	java -jar c:/bin/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js $< --create_source_map ./$<.map  > $@
 
-browse.js: libs/json2.js libs/jquery.bgiframe.js libs/amplify.store-1.1.0.js
+browse.js: libs/json2.js libs/jquery.bgiframe.js libs/amplify.store-1.1.0.js mylibs/browse_base.js
 	cat $^ > $@
 	unix2dos $@
 

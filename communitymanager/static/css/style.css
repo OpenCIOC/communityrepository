@@ -344,6 +344,44 @@ td.inactive {
     text-decoration: line-through;
 }
 
+#tree-root li, #tree-root .tree-node-icon {
+    background-image:url("/static/img/d.png"); background-repeat:no-repeat; background-color:transparent;
+}
+#tree-root li { background-position:-90px 0; background-repeat:repeat-y;  line-height: 18px;}
+#tree-root li.tree-node-last { background:transparent; }
+#tree-root .tree-open > .tree-node-icon { background-position:-72px 0; }
+#tree-root .tree-closed > .tree-node-icon { background-position:-54px 0; }
+#tree-root .tree-leaf > .tree-node-icon { background-position:-36px 0; }
+#tree-root {
+    padding: 0;
+}
+
+.tree-node-expander, .community-name {
+    cursor: pointer;
+}
+ul.tree-branch {
+    list-style-type: none;
+    padding-left: 1.5em;
+    margin: 0em;
+}
+.tree-node-icon {
+    vertical-align: bottom;
+    display: inline-block;
+    text-decoration: none;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+}
+a.ui-icon {
+    display: inline-block;
+    border: none;
+}
+
+#action-bar a {
+    margin-top: 0.25em;
+}
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */

@@ -23,9 +23,9 @@ class Communities(ViewBase):
     @view_config(route_name="communities", renderer='communities.mak', permission='view')
     def index(self):
         request = self.request
-        manage_list = request.user.ManageAreaList
-        if manage_list:
-            manage_list = ','.join(manage_list)
+#        manage_list = request.user.ManageAreaList
+#        if manage_list:
+#            manage_list = ','.join(manage_list)
 
         communities = []
         with request.connmgr.get_connection() as conn:
@@ -34,6 +34,23 @@ class Communities(ViewBase):
         communities = {k:list(g) for k,g in groupby(communities, attrgetter('ParentCommunity'))}
         #raise Exception
 
+
+        return {'communities': communities}
+
+    @view_config(route_name="search", renderer='results.mak', permission='view')
+    def search(self):
+        request = self.request
+
+        model_state = request.model_state
+        model_state.validators = {
+            'terms': validators.UnicodeString(not_empty=True) 
+        }
+        model_state.method = None
+
+        communities = []
+        if model_state.validate():
+            with request.connmgr.get_connection() as conn:
+                communities = conn.execute('EXEC sp_Community_ls ?,?', request.user.User_ID, model_state.value('terms'))
 
         return {'communities': communities}
 
