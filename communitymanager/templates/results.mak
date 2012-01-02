@@ -25,7 +25,13 @@ ${renderer.text('terms')}
 <ul id="tree-root" class="tree-branch">
 %for community in communities:
 <li class="tree-node-last" data-id="${community.CM_ID}" id="tree-node-${community.CM_ID}">
+    %if community.AlternativeArea:
+    <em>
+    %endif
     <a href="#" class="community-name" data-id="${community.CM_ID}" title="${_('Click for Details')}">${community.Display}</a>
+    %if community.AlternativeArea:
+    </em>
+    %endif
     %if community.CanEdit:
         <a href="${request.route_path('community', cmid=community.CM_ID)}" class="ui-icon ui-widget-content ui-icon-document" title=${_('Edit')}>${_('Edit')}</a>
     %endif
