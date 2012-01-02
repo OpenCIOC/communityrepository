@@ -30,6 +30,7 @@ ${renderer.hidden('altarea', 'on')}
 ${renderer.required_field_instructions()}
 <table class="form-table">
 %if community:
+%if not is_alt_area:
 <tr>
     <td class="ui-widget-header field">${_('Status')}</td>
     <td class="ui-widget-content">
@@ -41,6 +42,14 @@ ${renderer.required_field_instructions()}
 		${_('This Community <strong>is not</strong> being used as a Parent Community.')|n}
 	%endif
 
+    %if community.AltSearchArea:
+        <br>${_('This Community is part of the following Alternate Search Areas:')}
+        <em>${Markup(', ').join(x['Name'] for x in community.AltSearchArea)}</em>
+        <% can_delete = False %>
+    %else:
+        <br>${_('This Community <strong>is not</strong> part of an Alternate Search Area.')|n}
+    %endif
+
 	%if can_delete:
 	<br>${_('Because this Community is not being used, you can delete it using the button at the bottom of the form.')}
 	%else:
@@ -48,6 +57,7 @@ ${renderer.required_field_instructions()}
 	%endif
     </td>
 </tr>
+%endif
 ${self.makeMgmtInfo(community)}
 %endif
 <tr>

@@ -228,6 +228,7 @@ class Community(ViewBase):
 
         if community:
             community.ChildCommunities = xml_to_dict_list(community.ChildCommunities)
+            community.AltSearchArea = xml_to_dict_list(community.AltSearchArea)
 
         log.debug('errors:', model_state.form.errors)
 
@@ -283,6 +284,7 @@ class Community(ViewBase):
 
         if community:
             community.ChildCommunities = xml_to_dict_list(community.ChildCommunities)
+            community.AltSearchArea = xml_to_dict_list(community.AltSearchArea)
 
         data = request.model_state.form.data
         data['community'] = community
