@@ -91,7 +91,7 @@
         default_open = in_default_open;
 
         troot.on('click', '.community-name', show_community_details);
-        dialog = $('#dialog').dialog({autoOpen: false})
+        dialog = $('#dialog').dialog({autoOpen: false, minWidth: 450})
 
         if (use_tree) {
             open_nodes = amplify.store('open_nodes');
