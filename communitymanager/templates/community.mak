@@ -96,7 +96,7 @@ ${self.makeMgmtInfo(community)}
 	<td class="ui-widget-header field">${_('Alternate Name(s)')}</th>
 	<td class="ui-widget-content">
         <table class="form-table${' hidden' if not renderer.form.data.get('alt_names') else ''}" id="alt-name-target">
-        <tr><th class="ui-widget-header">${_('Delete')}</th><th class="ui-widget-header">${_('Language')}</th><th class="ui-widget-header">${_('Alt Name')}</th></tr>
+        <tr><th class="ui-widget-header">${_('Alt Name')}</th><th class="ui-widget-header">${_('Language')}</th><th class="ui-widget-header">${_('Delete')}</th></tr>
         %for i,alt_name in enumerate(renderer.form.data.get('alt_names') or []):
                 <% prefix = 'alt_names-%d.' % i %>
                 ${make_alt_name(prefix)}
@@ -134,16 +134,16 @@ ${self.makeMgmtInfo(community)}
 <%def name="make_alt_name(prefix)">
 <tr>
                 <td class="ui-widget-content">
-                    ${renderer.errorlist(prefix + 'Delete')}
-                    ${renderer.checkbox(prefix + 'Delete')}
+                    ${renderer.errorlist(prefix + 'AltName')}
+                    ${renderer.text(prefix + 'AltName')}
                 </td>
                 <td class="ui-widget-content">
                     ${renderer.errorlist(prefix + 'Culture')}
                     ${renderer.select(prefix + 'Culture', self.languages)}
                 </td>
                 <td class="ui-widget-content">
-                    ${renderer.errorlist(prefix + 'AltName')}
-                    ${renderer.text(prefix + 'AltName')}
+                    ${renderer.errorlist(prefix + 'Delete')}
+                    ${renderer.checkbox(prefix + 'Delete')}
                 </td>
 </tr>
 </%def>
