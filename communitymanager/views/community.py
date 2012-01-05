@@ -136,9 +136,12 @@ class Community(ViewBase):
 
         is_alt_area = not not request.params.get('altarea')
 
-        cm_id = request.matchdict.get('cmid')
+        cm_id = self._get_cmid()
 
         if cm_id != 'new' and request.params.get('Delete'):
+            reason = request.params.get('ReasonForChange')
+            if reason:
+                request.session.flash((cm_id, reason), 'ReasonForChange')
             return HTTPFound(location=request.route_url('community_delete', cmid=cm_id))
 
         model_state = request.model_state
@@ -357,6 +360,14 @@ class Community(ViewBase):
     @view_config(route_name='community_delete', renderer='confirmdelete.mak', permission='edit')
     def delete(self):
         request = self.request
+        model_state = request.model_state
+
+        reason = request.session.pop_flash('ReasonForChange')
+        log.debug('reason: %s', reason)
+        if reason:
+            cm_id, reason = reason[0]
+            if cm_id == self._get_cmid() and reason:
+                model_state.form.data['ReasonForChange'] = reason
         
         _ = request.translate
 
