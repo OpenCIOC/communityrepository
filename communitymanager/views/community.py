@@ -33,6 +33,10 @@ class  CommunityRoot(object):
                 raise HTTPNotFound()
 
             parents = [('manager',)]
+            self.community = None
+            self.descriptions = {}
+            self.alt_names = []
+            self.alt_areas = []
 
         else:
             validator = validators.IntID(not_empty=True)
@@ -43,7 +47,30 @@ class  CommunityRoot(object):
 
             parents = []
             with request.connmgr.get_connection() as conn:
-                parents = conn.execute('EXEC sp_Community_Parents_l ?', cm_id).fetchall()
+                cursor = conn.execute('EXEC sp_Community_s ?', cm_id)
+
+                community = self.community = cursor.fetchone()
+
+                if community is None:
+                    raise HTTPNotFound()
+
+                cursor.nextset()
+
+                parents = cursor.fetchall()
+
+                cursor.nextset()
+
+                self.descriptions = {x.Culture.replace('-','_'): x for x in cursor.fetchall()}
+
+                cursor.nextset()
+
+                self.alt_names = cursor.fetchall()
+
+                cursor.nextset()
+
+                self.alt_areas = cursor.fetchall()
+
+                cursor.close()
 
             # and this one
             parents.append((cm_id,))
@@ -208,18 +235,13 @@ class Community(ViewBase):
 
 
 
-        community = None
+        community = request.context.community
+        if cm_id != 'new':
+            is_alt_area = community.AlternativeArea
+
         prov_state = []
         alt_area_name_map = {}
         with request.connmgr.get_connection() as conn:
-            if cm_id != 'new':
-                community = conn.execute('EXEC sp_Community_s ?, 1', cm_id).fetchone()
-
-                if community is None:
-                    raise HTTPNotFound()
-
-                is_alt_area = community.AlternativeArea
-
             prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry').fetchall())
 
             if is_alt_area:
@@ -243,42 +265,23 @@ class Community(ViewBase):
     @view_config(route_name="community", renderer='community.mak', permission='edit')
     def get(self):
         request = self.request
+        context = self.request.context
 
         cm_id = self._get_cmid()
         if cm_id == 'new':
             is_alt_area = not not request.params.get('altarea')
 
 
-        community = None
-        descriptions = {}
-        alt_names = []
-        alt_areas = []
+        community = context.community
+        descriptions = context.descriptions
+        alt_names = context.alt_names
+        alt_areas = context.alt_areas
+
+        if cm_id != 'new':
+            is_alt_area = community.AlternativeArea
+
         prov_state = []
         with request.connmgr.get_connection() as conn:
-            if cm_id != 'new':
-                cursor = conn.execute('EXEC sp_Community_s ?', cm_id)
-
-                community = cursor.fetchone()
-
-                cursor.nextset()
-
-                descriptions = {x.Culture.replace('-','_'): x for x in cursor.fetchall()}
-
-                cursor.nextset()
-
-                alt_names = cursor.fetchall()
-
-                cursor.nextset()
-
-                alt_areas = cursor.fetchall()
-
-                cursor.close()
-
-                if community is None:
-                    raise HTTPNotFound()
-
-                is_alt_area = community.AlternativeArea
-
             prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry').fetchall())
 
 
