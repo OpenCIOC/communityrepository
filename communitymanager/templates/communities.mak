@@ -19,7 +19,7 @@
 <div class="hidden">
 ${renderer.form_passvars()}
 </div>
-${_('Search: ')}${renderer.text('terms')}
+${_('Search: ')}${renderer.text('terms')} <button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Search')}</span></button>
 </form>
 </p>
 <%def name="tree_level(node, map, last=False)">
@@ -60,6 +60,7 @@ ${_('Search: ')}${renderer.text('terms')}
 jQuery(function($) {
     var default_open = ${json.dumps(request.user.ManageAreaList)|n},
         details_url = ${json.dumps(request.route_path('json_community', cmid='CMID'))|n};
+   // $('#search-button').button({ icons: { primary: "ui-icon-search" }, text: false });
     init_browse(details_url, true, default_open);
 });
 </script>

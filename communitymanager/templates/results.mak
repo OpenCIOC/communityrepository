@@ -5,11 +5,14 @@
 
 <% user = request.user %>
 
-%if user and (user.Admin or user.ManageAreaList):
 <p id="action-bar">
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('communities')}"><span class="ui-icon ui-icon-arrowthick-1-w ui-button-icon-primary"></span><span class="ui-button-text">${_('Back to Browse')}</span></a>
+%if user and (user.Admin or user.ManageAreaList):
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new')}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New Community')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}"><span class="ui-icon ui-icon-lightbulb ui-button-icon-primary"></span><span class="ui-button-text">${_('New Alternate Area')}</span></a></p>
 %endif
+</p>
+
 <form action="${request.route_path('search', _form=True)}">
 <div class="hidden">
 ${renderer.form_passvars()}
@@ -18,6 +21,7 @@ ${renderer.form_passvars()}
 ${renderer.errorlist('terms')}
 ${_('Search: ')} 
 ${renderer.text('terms')}
+<button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Search')}</span></button>
 </form>
 </p>
 
