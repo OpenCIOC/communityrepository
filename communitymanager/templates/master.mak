@@ -43,9 +43,7 @@
   <script src="/static/js/libs/modernizr-2.0.6-custom.min.js"></script>
 </head>
 
-<%block name="body_open_tag">
 <body>
-</%block>
 
 <div id="wrap">
 <header>

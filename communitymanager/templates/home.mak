@@ -1,7 +1,7 @@
 <%inherit file="master.mak"/>
 <%block name="title">${_('Welcome to the CIOC Communities Repository!')}</%block>
 
-<p>${_('Currently, access to this repository is available to CIOC members and other designated organizations who have subscribed to this classification system by special arrangement with CIOC. This repository acts as the source of authorized "Communities" data used by CIOC members and some of their partner agencies. Access to this repository provides the following features:')}</p>
+<p>${_('Currently, access to this repository is available to CIOC members and other designated organizations who have subscribed to this classification system by special arrangement with CIOC. This repository acts as the source of authorized "Communities" data used by CIOC members and some of their partner agencies. Access to this repository provides the following features: ')}</p>
 <ul>
 	<li>Communities searching tools</li>
 	<li>Editorial tools for reposotiry managers</li>

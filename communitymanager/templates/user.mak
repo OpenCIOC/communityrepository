@@ -50,7 +50,7 @@ ${renderer.required_field_instructions()}
     %if user.Admin:
         ${_('You are an Admin user and can modify any community')}
     %else:
-        ${_('You can manage sub-communities of:')}
+        ${_('You can manage sub-communities of: ')}
         ${', '.join(sorted(cm_name_map.values()))}
     %endif
     <td>
@@ -114,7 +114,7 @@ ${self.makeMgmtInfo(user)}
 	<td class="ui-widget-content">
         %if account_request:
             %if account_request.ManageAreaRequest:
-            <strong>${_('This user has requested area management permissions:')}</strong>
+            <strong>${_('This user has requested area management permissions: ')}</strong>
             %else:
             ${_('This user has not requested area management permissions.')}
             %endif
@@ -147,7 +147,7 @@ ${self.makeMgmtInfo(user)}
         ${self.printInfoMessage(_('By completing this section, you agree that any editorial contributions made are the property of CIOC.'))}
 		${renderer.errorlist('user.ManageAreaRequest')}
         ${renderer.checkbox('user.ManageAreaRequest', label=' ' + _('I would like to request editorial privileges for this repository.'))}
-        <br><br><strong>${renderer.label('user.ManageAreaDetail', _('Request Details (i.e. specific geographic areas you wish to manage):'))}</strong>
+        <br><br><strong>${renderer.label('user.ManageAreaDetail', _('Request Details (i.e. specific geographic areas you wish to manage): '))}</strong>
 		<br>${renderer.errorlist('user.ManageAreaDetail')}
         ${renderer.textarea('user.ManageAreaDetail')}
 

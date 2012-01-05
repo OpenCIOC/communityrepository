@@ -340,7 +340,7 @@ class Community(ViewBase):
                 request.session.flash(_('The Community was successfully deleted'))
                 return HTTPFound(location=request.route_url('communities'))
 
-            request.session.flash(_('Unable to delete Community:') + result.ErrMsg, 'errorqueue')
+            request.session.flash(_('Unable to delete Community: ') + result.ErrMsg, 'errorqueue')
             if result.Return == 3:
                 # cmid does not exist
                 return HTTPFound(location=request.route_url('communities'))

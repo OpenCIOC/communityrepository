@@ -16,7 +16,7 @@ ${renderer.form_passvars()}
 </div>
 
 ${renderer.errorlist('terms')}
-${_('Search:')} 
+${_('Search: ')} 
 ${renderer.text('terms')}
 </form>
 </p>

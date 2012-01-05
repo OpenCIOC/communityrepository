@@ -13,7 +13,7 @@ ${renderer.hidden('came_from')}
 </div>
 <table class="form-table">
 <tr>
-	<td class="ui-widget-header">${renderer.label('LoginName', _('Login:'))}</td>
+	<td class="ui-widget-header">${renderer.label('LoginName', _('Login: '))}</td>
 	<td class="ui-widget-content">
 		${renderer.errorlist('LoginName')}
 		${renderer.text('LoginName')}

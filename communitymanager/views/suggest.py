@@ -114,7 +114,7 @@ class Suggest(ViewBase):
         if not result.Return:
             request.session.flash(_('The suggestion was marked completed'))
         else:
-            request.session.flash(_('Unable mark suggestion completed:') + result.ErrMsg, 'errorqueue')
+            request.session.flash(_('Unable mark suggestion completed: ') + result.ErrMsg, 'errorqueue')
 
         return HTTPFound(location=request.route_url('review_suggestions'))
 

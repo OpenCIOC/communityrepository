@@ -12,7 +12,7 @@
 %for i, (dt, fname, log) in enumerate(files):
     <li>
     %if not dt:
-    ${_('The following changes have not been released:')}
+    ${_('The following changes have not been released: ')}
     %else:
     <a href="${request.route_path('download', filename=fname)}">${request.format_datetime(dt)}</a>
     %endif

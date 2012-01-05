@@ -35,7 +35,7 @@ ${renderer.required_field_instructions()}
     <td class="ui-widget-header field">${_('Status')}</td>
     <td class="ui-widget-content">
 	%if community.ChildCommunities:
-		${_('This Community is a Parent for:')}
+		${_('This Community is a Parent for: ')}
         <em>${Markup(", ").join(x['Name'] for x in community.ChildCommunities)}</em>
         <% can_delete = False %>
 	%else:
@@ -43,7 +43,7 @@ ${renderer.required_field_instructions()}
 	%endif
 
     %if community.AltSearchArea:
-        <br>${_('This Community is part of the following Alternate Search Areas:')}
+        <br>${_('This Community is part of the following Alternate Search Areas: ')}
         <em>${Markup(', ').join(x['Name'] for x in community.AltSearchArea)}</em>
         <% can_delete = False %>
     %else:

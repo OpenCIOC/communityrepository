@@ -19,7 +19,7 @@
 <div class="hidden">
 ${renderer.form_passvars()}
 </div>
-${_('Search:')} ${renderer.text('terms')}
+${_('Search: ')}${renderer.text('terms')}
 </form>
 </p>
 <%def name="tree_level(node, map, last=False)">

@@ -497,7 +497,7 @@ class Users(ViewBase):
             request.session.flash(_('The Account Request was successfully rejected'))
             return HTTPFound(location=request.route_url('users'))
 
-        request.session.flash(_('Unable to reject Account Request:') + result.ErrMsg, 'errorqueue')
+        request.session.flash(_('Unable to reject Account Request: ') + result.ErrMsg, 'errorqueue')
         if result.Return == 3:
             # reqid does not exist
             return HTTPFound(location=request.route_url('users'))
