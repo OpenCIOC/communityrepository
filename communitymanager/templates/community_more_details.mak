@@ -24,7 +24,7 @@
 </p>
 %endif
 <p>
-<p>
+<p class="smaller">
 <strong>${_('Managed By:')}</strong> ${'; '.join(x['UserName'] for x in community.Managers)}
 %if community.CREATED_BY or community.CREATED_DATE:
 <br><strong>${_('Created:')}</strong> ${request.format_date(community.CREATED_DATE) if community.CREATED_DATE else ''} 

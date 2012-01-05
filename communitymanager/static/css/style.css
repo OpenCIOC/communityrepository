@@ -388,6 +388,10 @@ a.ui-icon {
 
 }
 
+.smaller {
+    font-size: 85%;
+}
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */
