@@ -18,7 +18,7 @@ languages = [(x.Culture, x.LanguageName) for x in languages]
 <%block name="title">${title_text}</%block>
 
 ${renderer.error_notice()}
-<form method="post" action="${request.current_route_path(_form=True)}">
+<form method="post" action="${request.current_route_path(_form=True)}" id="EntryForm">
 <div class="hidden">
 ${renderer.form_passvars()}
 %if account_request:
