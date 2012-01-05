@@ -6,6 +6,7 @@
 </%def>
 
 <%def name="make_cm_checklist_ui(name, name_map)">
+        ${renderer.errorlist(name)}
         <% form_data = renderer.form.data.get(name) or [] %>
         <ul id="cm-checklist-target" ${'' if form_data else 'class="hidden"' |n}>
             %for i,item_id in enumerate(form_data):

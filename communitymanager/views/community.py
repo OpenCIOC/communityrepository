@@ -108,7 +108,7 @@ class AltNameSchema(validators.Schema):
 class CommunitySchema(validators.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
-    
+
     community = CommunityBaseSchema()
     descriptions = validators.CultureDictSchema(CommuntyDescriptionSchema(),
                                                pre_validators=[validators.DeleteKeyIfEmpty()],
@@ -120,7 +120,10 @@ class CommunitySchema(validators.Schema):
 
 class AltAreasSchema(CommunitySchema):
 
-    alt_areas = validators.ForEach(validators.IntID())
+    alt_areas = validators.ForEach(validators.IntID(), not_emtpy=True)
+
+    chained_validators = [validators.ForceRequire('alt_areas')]
+
 
 class DeleteCommunitySchema(validators.Schema):
     allow_extra_fields = True
@@ -147,8 +150,10 @@ class Community(ViewBase):
         model_state = request.model_state
         model_state.form.variable_decode = True
         if is_alt_area:
+            log.debug('alt area')
             model_state.schema = AltAreasSchema()
         else:
+            log.debug('community')
             model_state.schema = CommunitySchema()
 
         

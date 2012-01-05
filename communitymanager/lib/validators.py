@@ -17,6 +17,8 @@ StringBool = validators.StringBool
 Invalid = validators.Invalid
 URL = validators.URL
 Schema = schema.Schema
+NotEmpty = validators.NotEmpty
+MinLength = validators.MinLength
 
 class UnicodeString(validators.UnicodeString):
     trim = True
@@ -332,3 +334,54 @@ class CheckPassword(validators.FormValidator):
             raise Invalid('\n'.join(["%s: %s" % (name, value) 
                                 for name, value in error_list]),
                            value_dict, state, error_dict=errors)
+
+
+
+class ForceRequire(validators.FormValidator):
+    """
+    Forced fields to be required, even if they have a missing value
+    ::
+
+        >>> f = ForceRequire('pass', 'conf')
+        >>> f.to_python({'pass': 'xx', 'conf': 'xx'})
+        {'conf': 'xx', 'pass': 'xx'}
+        >>> f.to_python({'conf': 'yy'})
+        Traceback (most recent call last):
+            ...
+        Invalid: pass: Please enter a value
+    """
+
+    field_names = None
+    validate_partial_form = True
+
+    __unpackargs__ = ('*', 'field_names')
+
+    def validate_partial(self, field_dict, state):
+        self.validate_python(field_dict, state)
+
+    def validate_python(self, field_dict, state):
+        errors = {}
+        for name in self._convert_to_list(self.field_names):
+            if not field_dict.get(name):
+                errors[name] = validators.Invalid(self.message('empty', state), field_dict, state)
+
+        if errors:
+            raise validators.Invalid(schema.format_compound_error(errors),
+                            field_dict, state, error_dict=errors)
+
+        return field_dict
+
+    def _convert_to_list(self, value):
+        if isinstance(value, (str, unicode)):
+            return [value]
+        elif value is None:
+            return []
+        elif isinstance(value, (list, tuple)):
+            return value
+        try:
+            for n in value:
+                break
+            return value
+        ## @@: Should this catch any other errors?:
+        except TypeError:
+            return [value]
