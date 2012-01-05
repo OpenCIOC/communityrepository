@@ -64,6 +64,7 @@
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary"></span><span class="ui-button-text">${_('My Account')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('logout')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Logout')}</span></a>
 %else:
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('request_account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary"></span><span class="ui-button-text">${_('Request Account')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('login')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Login')}</span></a>
 %endif
 </%block>
