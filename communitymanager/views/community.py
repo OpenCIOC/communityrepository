@@ -93,7 +93,7 @@ class CommunityBaseSchema(validators.Schema):
 
     
 
-class CommuntyDescriptionSchema(validators.Schema):
+class CommunityDescriptionSchema(validators.Schema):
     Name = validators.UnicodeString(not_empty=True, max=200)
 
 class AltNameSchema(validators.Schema):
@@ -110,9 +110,9 @@ class CommunitySchema(validators.Schema):
     filter_extra_fields = True
 
     community = CommunityBaseSchema()
-    descriptions = validators.CultureDictSchema(CommuntyDescriptionSchema(),
+    descriptions = validators.CultureDictSchema(CommunityDescriptionSchema(),
                                                pre_validators=[validators.DeleteKeyIfEmpty()],
-                                               chained_validators=[validators.FlagRequiredIfNoCulture(CommuntyDescriptionSchema)])
+                                               chained_validators=[validators.FlagRequiredIfNoCulture(CommunityDescriptionSchema)])
 
     ReasonForChange = validators.UnicodeString(not_empty=True)
     alt_names = validators.ForEach(AltNameSchema())
