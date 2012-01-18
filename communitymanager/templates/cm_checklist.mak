@@ -10,7 +10,7 @@
         <% form_data = renderer.form.data.get(name) or [] %>
         <ul id="cm-checklist-target" ${'' if form_data else 'class="hidden"' |n}>
             %for i,item_id in enumerate(form_data):
-                ${make_cm_checklist_item('-'.join((name, str(i))), item_id, name_map.get(item_id))}
+                ${make_cm_checklist_item('-'.join((name, str(i))), item_id, name_map.get(str(item_id)))}
             %endfor
         </ul>
 
