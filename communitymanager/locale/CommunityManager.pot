@@ -1,0 +1,890 @@
+# Translations template for CommunityManager.
+# Copyright (C) 2012 ORGANIZATION
+# This file is distributed under the same license as the CommunityManager
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: CommunityManager 0.0\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2012-02-28 13:13-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: communitymanager/lib/modelstate.py:147
+msgid "Required"
+msgstr ""
+
+#: communitymanager/lib/modelstate.py:153
+msgid "Required fields are marked with"
+msgstr ""
+
+#: communitymanager/lib/modelstate.py:198
+msgid "There were validation errors"
+msgstr ""
+
+#: communitymanager/lib/validators.py:51
+msgid "Invalid Agency Code"
+msgstr ""
+
+#: communitymanager/lib/validators.py:257
+#, python-format
+msgid "The password cannot be less than %(min)i characters long"
+msgstr ""
+
+#: communitymanager/lib/validators.py:258
+msgid "The password must include at least one non letter characters"
+msgstr ""
+
+#: communitymanager/lib/validators.py:259
+msgid "The password must include at least one upper case character"
+msgstr ""
+
+#: communitymanager/lib/validators.py:260
+msgid "The password must include at least one lower case character"
+msgstr ""
+
+#: communitymanager/lib/validators.py:292
+msgid "Authentication failed"
+msgstr ""
+
+#: communitymanager/lib/validators.py:293
+msgid "Must match password field"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:4
+msgid "Date"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:5
+msgid "Modified By"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:6
+msgid "Type"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:7
+msgid "Community Name"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:8
+msgid "Comment"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:10
+#: communitymanager/templates/cm_checklist.mak:17
+#: communitymanager/templates/community.mak:105
+#: communitymanager/templates/community.mak:125
+#: communitymanager/templates/user.mak:200 communitymanager/templates/users.mak:26
+msgid "Add"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:10
+#: communitymanager/templates/community.mak:99
+#: communitymanager/templates/community.mak:127
+#: communitymanager/templates/user.mak:202 communitymanager/views/community.py:363
+#: communitymanager/views/community.py:381
+msgid "Delete"
+msgstr ""
+
+#: communitymanager/templates/changelog.mak:10
+#: communitymanager/templates/community.mak:125
+#: communitymanager/templates/user.mak:200
+msgid "Update"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:4
+msgid "Browse Communities"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:10
+msgid "Close All"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:12
+msgid "My Management Areas"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:15
+#: communitymanager/templates/results.mak:11
+msgid "New Community"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:16
+#: communitymanager/templates/results.mak:12
+msgid "New Alternate Area"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:22
+#: communitymanager/templates/results.mak:22
+msgid "Search: "
+msgstr ""
+
+#: communitymanager/templates/communities.mak:22
+#: communitymanager/templates/master.mak:53
+#: communitymanager/templates/results.mak:24
+msgid "Search"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:28
+msgid "Open/Close"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:32
+#: communitymanager/templates/results.mak:35
+msgid "Click for Details"
+msgstr ""
+
+#: communitymanager/templates/communities.mak:37
+#: communitymanager/templates/results.mak:40
+#: communitymanager/templates/users.mak:71
+msgid "Edit"
+msgstr ""
+
+#: communitymanager/templates/community.mak:11
+msgid "Edit Alternate Search Area"
+msgstr ""
+
+#: communitymanager/templates/community.mak:11
+#: communitymanager/templates/not_authorized.mak:2
+msgid "Edit Community"
+msgstr ""
+
+#: communitymanager/templates/community.mak:35
+msgid "Status"
+msgstr ""
+
+#: communitymanager/templates/community.mak:38
+msgid "This Community is a Parent for: "
+msgstr ""
+
+#: communitymanager/templates/community.mak:42
+msgid "This Community <strong>is not</strong> being used as a Parent Community."
+msgstr ""
+
+#: communitymanager/templates/community.mak:46
+msgid "This Community is part of the following Alternate Search Areas: "
+msgstr ""
+
+#: communitymanager/templates/community.mak:50
+msgid "This Community <strong>is not</strong> part of an Alternate Search Area."
+msgstr ""
+
+#: communitymanager/templates/community.mak:54
+msgid ""
+"Because this Community is not being used, you can delete it using the button "
+"at the bottom of the form."
+msgstr ""
+
+#: communitymanager/templates/community.mak:56
+msgid "Because this Community is being used, you cannot currently delete it."
+msgstr ""
+
+#: communitymanager/templates/community.mak:64
+#: communitymanager/templates/users.mak:18 communitymanager/templates/users.mak:48
+msgid "Name"
+msgstr ""
+
+#: communitymanager/templates/community.mak:81
+msgid "Parent Community"
+msgstr ""
+
+#: communitymanager/templates/community.mak:89
+msgid "Province, State and/or Country"
+msgstr ""
+
+#: communitymanager/templates/community.mak:96
+msgid "Alternate Name(s)"
+msgstr ""
+
+#: communitymanager/templates/community.mak:99
+msgid "Alt Name"
+msgstr ""
+
+#: communitymanager/templates/community.mak:99
+msgid "Language"
+msgstr ""
+
+#: communitymanager/templates/community.mak:110
+#: communitymanager/templates/results.mak:4
+msgid "Search Communities"
+msgstr ""
+
+#: communitymanager/templates/community.mak:117
+msgid "Reason for Change"
+msgstr ""
+
+#: communitymanager/templates/community.mak:129
+#: communitymanager/templates/user.mak:206
+msgid "Reset Form"
+msgstr ""
+
+#: communitymanager/templates/community.mak:180
+msgid "An unknown community was entered"
+msgstr ""
+
+#: communitymanager/templates/community.mak:183
+#: communitymanager/templates/user.mak:225
+msgid "Not Found"
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:3
+msgid "Other Names: "
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:8
+msgid "Parent Community: "
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:13
+msgid "Child Communities: "
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:18
+msgid "Search Communities: "
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:23
+msgid "Province/State/Country: "
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:28
+msgid "Managed By: "
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:30
+msgid "Created: "
+msgstr ""
+
+#: communitymanager/templates/community_more_details.mak:34
+msgid "Modified: "
+msgstr ""
+
+#: communitymanager/templates/confirmdelete.mak:7
+msgid "Use your back button to return to the form if you do not want to continue."
+msgstr ""
+
+#: communitymanager/templates/confirmdelete.mak:21
+msgid "Reason for Delete"
+msgstr ""
+
+#: communitymanager/templates/downloads.mak:4
+#: communitymanager/templates/master.mak:55
+msgid "Downloads"
+msgstr ""
+
+#: communitymanager/templates/downloads.mak:7
+msgid "Publish New File"
+msgstr ""
+
+#: communitymanager/templates/downloads.mak:15
+msgid "The following changes have not been released: "
+msgstr ""
+
+#: communitymanager/templates/downloads.mak:27
+msgid "No downloads available"
+msgstr ""
+
+#: communitymanager/templates/home.mak:2
+msgid "Welcome to the CIOC Communities Repository!"
+msgstr ""
+
+#: communitymanager/templates/home.mak:4
+msgid ""
+"Currently, access to this repository is available to CIOC members and other "
+"designated organizations who have subscribed to this classification system by"
+" special arrangement with CIOC. This repository acts as the source of "
+"authorized \"Communities\" data used by CIOC members and some of their "
+"partner agencies. Access to this repository provides the following features: "
+msgstr ""
+
+#: communitymanager/templates/home.mak:12
+msgid "If you wish to request an account, please visit the "
+msgstr ""
+
+#: communitymanager/templates/home.mak:12 communitymanager/templates/master.mak:65
+#: communitymanager/templates/user.mak:200 communitymanager/views/users.py:377
+#: communitymanager/views/users.py:464
+msgid "Request Account"
+msgstr ""
+
+#: communitymanager/templates/home.mak:12
+msgid ""
+" page; requests should come from official CIOC membership contacts "
+"(administrative or technical contact) whenever possible. Requests that do not"
+" come from the official membership contact may need to be vetted by those "
+"official contacts."
+msgstr ""
+
+#: communitymanager/templates/home.mak:14
+msgid ""
+"The ongoing maintenance of this repository is provided by volunteers from the"
+" CIOC Community. When requesting an account, you will have the opportunity to"
+" request administrative privileges for specific geographic areas. Please be "
+"aware that we may need to limit the number of editors in order to encourage "
+"editorial consistency; therefore, not all requests for administrative "
+"privileges will be granted. Those who do participate in the maintenance of "
+"this repository will be put in touch with their co-editors to facilitate co-"
+"operative and consistent data maintenance activities."
+msgstr ""
+
+#: communitymanager/templates/home.mak:15
+msgid ""
+"Do you have further questions about the CIOC Communities Repository? CIOC "
+"Members should post questions on the"
+msgstr ""
+
+#: communitymanager/templates/home.mak:15
+msgid "CIOC Community Message Board"
+msgstr ""
+
+#: communitymanager/templates/home.mak:15
+msgid ""
+"Non-members may get information about subscribing to the CIOC Communities "
+"Repository by"
+msgstr ""
+
+#: communitymanager/templates/home.mak:15
+msgid "contacting CIOC for details"
+msgstr ""
+
+#: communitymanager/templates/home.mak:17
+msgid "Already have an account?"
+msgstr ""
+
+#: communitymanager/templates/home.mak:17
+msgid "Login Now!"
+msgstr ""
+
+#: communitymanager/templates/login.mak:2 communitymanager/templates/login.mak:30
+#: communitymanager/templates/master.mak:66
+msgid "Login"
+msgstr ""
+
+#: communitymanager/templates/login.mak:15
+#: communitymanager/templates/pwreset.mak:16
+msgid "Login: "
+msgstr ""
+
+#: communitymanager/templates/login.mak:22
+msgid "Password: "
+msgstr ""
+
+#: communitymanager/templates/login.mak:33
+msgid "Forgot your password?"
+msgstr ""
+
+#: communitymanager/templates/master.mak:50
+msgid "CIOC Communities Repository"
+msgstr ""
+
+#: communitymanager/templates/master.mak:54
+msgid "Suggest Change"
+msgstr ""
+
+#: communitymanager/templates/master.mak:57
+msgid "Suggestions"
+msgstr ""
+
+#: communitymanager/templates/master.mak:60
+msgid "Manage Users"
+msgstr ""
+
+#: communitymanager/templates/master.mak:62
+msgid "My Account"
+msgstr ""
+
+#: communitymanager/templates/master.mak:63
+msgid "Logout"
+msgstr ""
+
+#: communitymanager/templates/master.mak:90
+msgid ""
+"All content copyright &copy; 2003-2012 Community Information Online "
+"Consortium; this data may be used by specific permission only."
+msgstr ""
+
+#: communitymanager/templates/master.mak:127
+#: communitymanager/templates/master.mak:131
+#: communitymanager/templates/master.mak:142
+#: communitymanager/templates/master.mak:146
+msgid "Unknown"
+msgstr ""
+
+#: communitymanager/templates/master.mak:130
+msgid "Date Created"
+msgstr ""
+
+#: communitymanager/templates/master.mak:131
+#: communitymanager/templates/master.mak:135
+#: communitymanager/templates/master.mak:146
+#: communitymanager/templates/master.mak:150
+msgid "set automatically"
+msgstr ""
+
+#: communitymanager/templates/master.mak:134
+msgid "Created By"
+msgstr ""
+
+#: communitymanager/templates/master.mak:145
+msgid "Last Modified"
+msgstr ""
+
+#: communitymanager/templates/master.mak:149
+msgid "Last Modified By"
+msgstr ""
+
+#: communitymanager/templates/not_authorized.mak:4
+msgid "You are not authorized to edit this community."
+msgstr ""
+
+#: communitymanager/templates/not_authorized_users.mak:2
+#: communitymanager/views/users.py:381 communitymanager/views/users.py:466
+msgid "Modify User"
+msgstr ""
+
+#: communitymanager/templates/not_authorized_users.mak:4
+msgid "You are not authorized to administer users."
+msgstr ""
+
+#: communitymanager/templates/publish.mak:4
+msgid "Publish New Download"
+msgstr ""
+
+#: communitymanager/templates/publish.mak:10
+msgid "Confirm Creation of New Download"
+msgstr ""
+
+#: communitymanager/templates/publish.mak:14
+msgid "The following changes have been made since the last file was published"
+msgstr ""
+
+#: communitymanager/templates/publish.mak:17
+msgid "There have been no changes since the last file was published"
+msgstr ""
+
+#: communitymanager/templates/pwreset.mak:3
+msgid "Password Reset"
+msgstr ""
+
+#: communitymanager/templates/pwreset.mak:24
+msgid "Email New Password"
+msgstr ""
+
+#: communitymanager/templates/request_thanks.mak:2
+msgid "Welcome"
+msgstr ""
+
+#: communitymanager/templates/request_thanks.mak:4
+msgid ""
+"Thank you for your interest in the CIOC Community Manager. Your account "
+"request has been sent to the administrators. You will get an email with "
+"further instructions when your account has been approved."
+msgstr ""
+
+#: communitymanager/templates/results.mak:9
+msgid "Back to Browse"
+msgstr ""
+
+#: communitymanager/templates/review.mak:3
+msgid "Review Suggestions"
+msgstr ""
+
+#: communitymanager/templates/review.mak:6
+msgid "No Suggestions"
+msgstr ""
+
+#: communitymanager/templates/review.mak:9
+#, python-format
+msgid "Show %d Completed Suggestions"
+msgstr ""
+
+#: communitymanager/templates/review.mak:11
+msgid "Hide Completed Suggestions"
+msgstr ""
+
+#: communitymanager/templates/review.mak:19 communitymanager/templates/users.mak:15
+#: communitymanager/templates/users.mak:55
+msgid "Action"
+msgstr ""
+
+#: communitymanager/templates/review.mak:20
+msgid "Suggestion Date"
+msgstr ""
+
+#: communitymanager/templates/review.mak:22
+msgid "Completed"
+msgstr ""
+
+#: communitymanager/templates/review.mak:23
+msgid "Completed By"
+msgstr ""
+
+#: communitymanager/templates/review.mak:25 communitymanager/templates/user.mak:63
+#: communitymanager/templates/users.mak:17 communitymanager/templates/users.mak:47
+msgid "User Name"
+msgstr ""
+
+#: communitymanager/templates/review.mak:26
+msgid "Suggestion"
+msgstr ""
+
+#: communitymanager/templates/review.mak:34
+msgid "Mark Completed"
+msgstr ""
+
+#: communitymanager/templates/suggest.mak:2
+#: communitymanager/templates/suggest.mak:15
+msgid "Community Change Suggestion"
+msgstr ""
+
+#: communitymanager/templates/suggest.mak:24
+msgid "Submit"
+msgstr ""
+
+#: communitymanager/templates/user.mak:32 communitymanager/templates/users.mak:16
+msgid "Request Date"
+msgstr ""
+
+#: communitymanager/templates/user.mak:36
+msgid "Request IP"
+msgstr ""
+
+#: communitymanager/templates/user.mak:41
+msgid "Rejected"
+msgstr ""
+
+#: communitymanager/templates/user.mak:42
+msgid "by"
+msgstr ""
+
+#: communitymanager/templates/user.mak:48
+msgid "Manage Areas"
+msgstr ""
+
+#: communitymanager/templates/user.mak:51
+msgid "You are an Admin user and can modify any community"
+msgstr ""
+
+#: communitymanager/templates/user.mak:53
+msgid "You can manage sub-communities of: "
+msgstr ""
+
+#: communitymanager/templates/user.mak:70
+msgid "Start Language"
+msgstr ""
+
+#: communitymanager/templates/user.mak:77
+msgid "First Name"
+msgstr ""
+
+#: communitymanager/templates/user.mak:84
+msgid "Last Name"
+msgstr ""
+
+#: communitymanager/templates/user.mak:91 communitymanager/templates/users.mak:19
+#: communitymanager/templates/users.mak:50
+msgid "Organization"
+msgstr ""
+
+#: communitymanager/templates/user.mak:98 communitymanager/templates/users.mak:49
+msgid "Initials"
+msgstr ""
+
+#: communitymanager/templates/user.mak:105 communitymanager/templates/users.mak:20
+#: communitymanager/templates/users.mak:51
+msgid "Email"
+msgstr ""
+
+#: communitymanager/templates/user.mak:113 communitymanager/templates/user.mak:145
+msgid "Mangage Communities"
+msgstr ""
+
+#: communitymanager/templates/user.mak:117
+msgid "This user has requested area management permissions: "
+msgstr ""
+
+#: communitymanager/templates/user.mak:119
+msgid "This user has not requested area management permissions."
+msgstr ""
+
+#: communitymanager/templates/user.mak:130
+msgid "Admin User"
+msgstr ""
+
+#: communitymanager/templates/user.mak:133
+msgid "This is an admin user"
+msgstr ""
+
+#: communitymanager/templates/user.mak:136
+msgid "Inactive"
+msgstr ""
+
+#: communitymanager/templates/user.mak:139
+msgid "This user is inactive"
+msgstr ""
+
+#: communitymanager/templates/user.mak:147
+msgid ""
+"By completing this section, you agree that any editorial contributions made "
+"are the property of CIOC."
+msgstr ""
+
+#: communitymanager/templates/user.mak:149
+msgid "I would like to request editorial privileges for this repository."
+msgstr ""
+
+#: communitymanager/templates/user.mak:150
+msgid "Request Details (i.e. specific geographic areas you wish to manage): "
+msgstr ""
+
+#: communitymanager/templates/user.mak:159
+msgid "Tomorrows Date"
+msgstr ""
+
+#: communitymanager/templates/user.mak:169
+msgid "Change Password"
+msgstr ""
+
+#: communitymanager/templates/user.mak:174
+msgid "Current Password"
+msgstr ""
+
+#: communitymanager/templates/user.mak:181
+msgid "New Password"
+msgstr ""
+
+#: communitymanager/templates/user.mak:188
+msgid "Confirm New Password"
+msgstr ""
+
+#: communitymanager/templates/user.mak:204 communitymanager/templates/users.mak:28
+#: communitymanager/views/users.py:517
+msgid "Reject"
+msgstr ""
+
+#: communitymanager/templates/users.mak:3
+msgid "User Management"
+msgstr ""
+
+#: communitymanager/templates/users.mak:6 communitymanager/templates/users.mak:79
+msgid "Account Requests"
+msgstr ""
+
+#: communitymanager/templates/users.mak:8 communitymanager/templates/users.mak:80
+#, python-format
+msgid "Show %d Rejected Requests"
+msgstr ""
+
+#: communitymanager/templates/users.mak:10
+msgid "Hide Rejected Requests"
+msgstr ""
+
+#: communitymanager/templates/users.mak:21
+msgid "Manage Area"
+msgstr ""
+
+#: communitymanager/templates/users.mak:37 communitymanager/templates/users.mak:66
+#: communitymanager/templates/users.mak:67
+msgid "Yes"
+msgstr ""
+
+#: communitymanager/templates/users.mak:37 communitymanager/templates/users.mak:66
+#: communitymanager/templates/users.mak:67
+msgid "No"
+msgstr ""
+
+#: communitymanager/templates/users.mak:42
+msgid "Existing Users"
+msgstr ""
+
+#: communitymanager/templates/users.mak:52
+msgid "Admin"
+msgstr ""
+
+#: communitymanager/templates/users.mak:53
+msgid "Active"
+msgstr ""
+
+#: communitymanager/templates/users.mak:54
+msgid "Manage Communities"
+msgstr ""
+
+#: communitymanager/views/communities.py:73
+msgid "Community Not Found."
+msgstr ""
+
+#: communitymanager/views/communities.py:89
+#, python-format
+msgid "%s (in %s)"
+msgstr ""
+
+#: communitymanager/views/community.py:222
+msgid "Alternate search area saved."
+msgstr ""
+
+#: communitymanager/views/community.py:224
+msgid "Community saved."
+msgstr ""
+
+#: communitymanager/views/community.py:348
+msgid "The Community was successfully deleted"
+msgstr ""
+
+#: communitymanager/views/community.py:351
+msgid "Unable to delete Community: "
+msgstr ""
+
+#: communitymanager/views/community.py:361 communitymanager/views/community.py:379
+msgid "Delete Community/Alternate Search Area"
+msgstr ""
+
+#: communitymanager/views/community.py:362 communitymanager/views/community.py:380
+msgid "Are you sure you want to delete this community?"
+msgstr ""
+
+#: communitymanager/views/downloads.py:170
+msgid "Download Successfully Published"
+msgstr ""
+
+#: communitymanager/views/login.py:52 communitymanager/views/login.py:58
+msgid "Invalid User Name or Password"
+msgstr ""
+
+#: communitymanager/views/pwreset.py:23
+#, python-format
+msgid ""
+"Hi %(FirstName)s,\n"
+"\n"
+"Someone requested a password reset for the CIOC Communities Repository site.\n"
+"Your new password is:\n"
+"%(Password)s\n"
+"\n"
+"Please log in to %(url)s as soon as possible and change your password.\n"
+msgstr ""
+
+#: communitymanager/views/pwreset.py:66
+msgid "CIOC Community Manager Site Password Reset"
+msgstr ""
+
+#: communitymanager/views/pwreset.py:75
+msgid "A new password was sent you your email address."
+msgstr ""
+
+#: communitymanager/views/suggest.py:60
+msgid "Thank you for your suggestion."
+msgstr ""
+
+#: communitymanager/views/suggest.py:115
+msgid "The suggestion was marked completed"
+msgstr ""
+
+#: communitymanager/views/suggest.py:117
+msgid "Unable mark suggestion completed: "
+msgstr ""
+
+#: communitymanager/views/suggest.py:127
+msgid "Complete Suggestion"
+msgstr ""
+
+#: communitymanager/views/suggest.py:128
+msgid "Are you sure you want to mark this suggestion completed?"
+msgstr ""
+
+#: communitymanager/views/suggest.py:129
+msgid "Complete"
+msgstr ""
+
+#: communitymanager/views/suggest.py:140
+msgid "Invalid Suggestion ID: "
+msgstr ""
+
+#: communitymanager/views/users.py:29
+#, python-format
+msgid ""
+"Hi %(FirstName)s,\n"
+"\n"
+"Your account on the CIOC Communities Repository site has been created:\n"
+"User Name: %(UserName)s\n"
+"Password: %(Password)s\n"
+"\n"
+"Please log in to %(url)s as soon as possible and change your password.\n"
+msgstr ""
+
+#: communitymanager/views/users.py:39
+#, python-format
+msgid ""
+"Hi,\n"
+"\n"
+"An account has been requested on the CIOC Communities Repository site:\n"
+"User Name: %(UserName)s\n"
+"First Name: %(FirstName)s\n"
+"Last Name: %(LastName)s\n"
+"Organization: %(Organization)s\n"
+"Email: %(Email)s\n"
+"Manage Area Request: %(ManageAreaRequest)s\n"
+"Manage Area Detail: %(ManageAreaDetail)s\n"
+"\n"
+"Go to %(url)s to accept or reject the account request.\n"
+msgstr ""
+
+#: communitymanager/views/users.py:307
+msgid "Your CIOC Community Manager Site Account"
+msgstr ""
+
+#: communitymanager/views/users.py:315
+msgid "User Successfully Added"
+msgstr ""
+
+#: communitymanager/views/users.py:327
+msgid "Account successfully updated"
+msgstr ""
+
+#: communitymanager/views/users.py:329
+msgid "User successfully modified"
+msgstr ""
+
+#: communitymanager/views/users.py:335
+msgid "Could not add user: "
+msgstr ""
+
+#: communitymanager/views/users.py:367 communitymanager/views/users.py:439
+msgid "Account Request Not Found"
+msgstr ""
+
+#: communitymanager/views/users.py:375 communitymanager/views/users.py:460
+msgid "Add New User"
+msgstr ""
+
+#: communitymanager/views/users.py:379 communitymanager/views/users.py:462
+msgid "Update Account"
+msgstr ""
+
+#: communitymanager/views/users.py:497
+msgid "The Account Request was successfully rejected"
+msgstr ""
+
+#: communitymanager/views/users.py:500
+msgid "Unable to reject Account Request: "
+msgstr ""
+
+#: communitymanager/views/users.py:515
+msgid "Reject Account Request"
+msgstr ""
+
+#: communitymanager/views/users.py:516
+msgid "Are you sure you want to reject this account request?"
+msgstr ""
+
+#: communitymanager/views/users.py:528
+msgid "Invalid Account Request ID: "
+msgstr ""
+

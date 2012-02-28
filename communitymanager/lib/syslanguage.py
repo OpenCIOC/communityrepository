@@ -88,7 +88,7 @@ update_culture_map()
 
 def update_cultures(cultures):
     global _culture_list
-    _culture_list = [CultureDescription(**x) for x in cultures]
+    _culture_list[:] = [CultureDescription(**x) for x in cultures]
     update_culture_map()
 
 _fetched_from_db = False

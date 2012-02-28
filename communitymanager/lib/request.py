@@ -10,6 +10,8 @@
 from collections import defaultdict
 from datetime import date, datetime, time
 
+import logging
+
 # 3rd party libs
 from pyramid.request import Request
 from pyramid.decorator import reify
@@ -21,6 +23,8 @@ from babel import Locale, dates
 # This app
 from communitymanager.lib.syslanguage import SystemLanguage, default_culture, is_active_culture
 from communitymanager.lib import config, connection, const
+
+log = logging.getLogger('communitymanager.lib.request')
 
 class LocaleDict(defaultdict):
     def __missing__(self, key):
@@ -131,6 +135,7 @@ class CommunityManagerRequest(Request):
         language = SystemLanguage(self)
 
         ln = self.params.get('Ln')
+        log.debug('Ln: %s', ln)
         if ln and is_active_culture(ln): 
             language.setSystemLanguage(ln)
 
@@ -181,7 +186,7 @@ class CommunityManagerRequest(Request):
         return None
 
 
-tsf = TranslationStringFactory('communitymanager')
+tsf = TranslationStringFactory('CommunityManager')
 
 def get_translate_fn(request, _culture=None):
     if not _culture or _culture==request._LOCALE_:

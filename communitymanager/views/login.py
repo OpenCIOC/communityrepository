@@ -63,7 +63,7 @@ class Login(ViewBase):
         if not start_ln:
             start_ln = [default_culture()]
 
-        return HTTPFound(location=model_state.value('came_from', request.route_url('communities', ln=start_ln[0])), 
+        return HTTPFound(location=(model_state.value('came_from') or request.route_url('communities', _ln=start_ln[0])), 
                          headers=headers)
 
     @view_config(route_name="login", renderer="login.mak", permission=NO_PERMISSION_REQUIRED)
@@ -75,7 +75,7 @@ class Login(ViewBase):
         login_url = request.route_url('login')
         referrer = request.url
         if referrer == login_url:
-            referrer = request.route_url('communities') # never use the login form itself as came_from
+            referrer = None # never use the login form itself as came_from
         came_from = request.params.get('came_from', referrer)
 
         request.model_state.data['came_from'] = came_from
