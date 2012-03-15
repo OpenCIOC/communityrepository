@@ -7,9 +7,6 @@ from markupsafe import Markup
 from communitymanager.lib import syslanguage
 %>
 
-
-<%block name="title">${_('Edit Alternate Search Area') if is_alt_area else _('Edit Community')}</%block>
-
 <% 
 active_cultures = syslanguage.active_cultures()
 culture_map = syslanguage.culture_map()
@@ -18,6 +15,18 @@ self.languages = [(x.Culture, x.LanguageName) for x in languages]
 is_add = not (community and community.CM_ID)
 can_delete = True
 %>
+
+<%block name="title">
+<% is_add = not (community and community.CM_ID) %>
+%if is_alt_area:
+    ${_('Add Alternate Search Area') if is_add else  _('Edit Alternate Search Area')}
+        
+%else:
+    ${_('Add Community') if is_add else _('Edit Community')}
+
+%endif
+</%block>
+
 
 ${renderer.error_notice()}
 <form method="post" action="${request.current_route_path(_form=True)}" id="EntryForm">
@@ -122,7 +131,7 @@ ${self.makeMgmtInfo(community)}
 </tr>
 <tr>
 	<td colspan="2">
-	<input type="submit" name="Submit" value="${_('Add') if action=='add' else _('Update')}"> 
+	<input type="submit" name="Submit" value="${_('Add') if is_add else _('Update')}"> 
 	%if not is_add and can_delete:
 	<input type="submit" name="Delete" value="${_('Delete')}"> 
 	%endif
