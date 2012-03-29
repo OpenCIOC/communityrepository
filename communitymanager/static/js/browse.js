@@ -844,6 +844,7 @@ if ( window.globalStorage ) {
         $.ajax({
             url: details_url.replace('CMID', cm_id),
             dataType: 'json',
+            cache: false,
             success: function(data) {
                 if (data.fail) {
                     // XXX Log something?
