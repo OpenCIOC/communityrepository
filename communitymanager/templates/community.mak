@@ -123,7 +123,7 @@ ${self.makeMgmtInfo(community)}
 </tr>
 %endif
 <tr>
-    <td class="ui-widget-header field">${renderer.label('ReasonForChange', _('Reason for Add') if is_add else _('Reason for Change'))} ${renderer.required_flag()}</td>
+    <td class="ui-widget-header field">${renderer.label('ReasonForChange', _('Reason for Addition') if is_add else _('Reason for Change'))} ${renderer.required_flag()}</td>
     <td class="ui-widget-content">
     ${renderer.errorlist('ReasonForChange')}
     ${renderer.textarea('ReasonForChange')}
