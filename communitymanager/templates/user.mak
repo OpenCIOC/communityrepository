@@ -110,7 +110,7 @@ ${self.makeMgmtInfo(user)}
 </tr>
 %if is_admin:
 <tr>
-	<td class="ui-widget-header field">${_('Mangage Communities')}</th>
+	<td class="ui-widget-header field">${_('Manage Communities')}</th>
 	<td class="ui-widget-content">
         %if account_request:
             %if account_request.ManageAreaRequest:

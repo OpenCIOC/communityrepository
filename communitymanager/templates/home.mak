@@ -6,7 +6,7 @@
 	<li>Communities searching tools</li>
 	<li>Editorial tools for reposotiry managers</li>
 	<li>A list of, and download files for, official releases of the CIOC Communities data</li>
-	<li>Log of changes made to the data in the repository for each official relase, as well as recent changes not yet incorporated into a release</li>
+	<li>Log of changes made to the data in the repository for each official release, as well as recent changes not yet incorporated into a release</li>
 </ul>
 %if not request.user:
 <p>${_('If you wish to request an account, please visit the ')}<a href="${request.route_path('request_account')}">${_('Request Account')}</a>${_(' page; requests should come from official CIOC membership contacts (administrative or technical contact) whenever possible. Requests that do not come from the official membership contact may need to be vetted by those official contacts.')}
