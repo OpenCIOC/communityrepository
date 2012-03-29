@@ -388,7 +388,7 @@ a.ui-icon {
 
 }
 
-.smaller {
+.smaller, .field-help {
     font-size: 85%;
 }
 

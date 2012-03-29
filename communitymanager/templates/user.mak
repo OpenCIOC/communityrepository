@@ -168,7 +168,6 @@ ${self.makeMgmtInfo(user)}
 <tr>
     <td class="ui-widget-header field">${_('Change Password')}</td>
     <td class="ui-widget-content">
-        ## XXX do 
         <table class="form-table">
             <tr>
             <td class="field-lable-clear">${renderer.label('password.CurrentPassword', _('Current Password'))}
@@ -192,6 +191,7 @@ ${self.makeMgmtInfo(user)}
             </tr>
 
         </table>
+        <div class="field-help">${_('Passwords must be at least 8 characters long with at least one upper case character, one lower case character and one non-letter character (number, symbol or accented letter).')}</div>
     </td>
 </tr>
 %endif
