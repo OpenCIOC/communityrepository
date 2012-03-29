@@ -13,6 +13,7 @@ import xml.etree.cElementTree as ET
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.security import Allow, DENY_ALL, NO_PERMISSION_REQUIRED
+from markupsafe import Markup
 
 from formencode.variabledecode import variable_decode   
 
@@ -355,12 +356,7 @@ class Community(ViewBase):
                 
             return HTTPFound(location=request.route_url('community', cmid=cm_id))
 
-        
-        _ = request.translate
-
-        return {'title_text': _('Delete Community/Alternate Search Area'), 
-                'prompt':_('Are you sure you want to delete this community?'), 
-                'continue_prompt': _('Delete'), 'use_reason_for_change': True}
+        return self._get_delete_page_info()
 
     @view_config(route_name='community_delete', renderer='confirmdelete.mak', permission='edit')
     def delete(self):
@@ -374,11 +370,26 @@ class Community(ViewBase):
             if cm_id == self._get_cmid() and reason:
                 model_state.form.data['ReasonForChange'] = reason
         
+        return self._get_delete_page_info()
+
+    def _get_delete_page_info(self):
+        request = self.request
         _ = request.translate
 
-        return {'title_text': _('Delete Community/Alternate Search Area'), 
-                'prompt':_('Are you sure you want to delete this community?'), 
+        cm_names = request.context.descriptions.values()
+        cm_names.sort(key=lambda x: (x.LangID!=request.language.LangID, x.LangID))
+        cm_name = cm_names[0]
+        if request.context.community.AlternativeArea:
+            title = _('Delete Alternate Search Area')
+            prompt = _('Are you sure you want to delete the alternate search area: <em>%s</em>?')
+        else:
+            title = _('Delete Community')
+            prompt = _('Are you sure you want to delete the community: <em>%s</em>?')
+
+        return {'title_text': title, 
+                'prompt':Markup(prompt) % cm_name.Name, 
                 'continue_prompt': _('Delete'), 'use_reason_for_change': True}
+
 
     @view_config(route_name='json_parents', renderer='json', permission='view')
     @view_config(route_name='json_search_areas', renderer='json', permission='view')
