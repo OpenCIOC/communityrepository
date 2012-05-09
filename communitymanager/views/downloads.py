@@ -11,6 +11,7 @@ import os
 from glob import glob
 from itertools import tee, takewhile, izip_longest, chain, repeat
 import zipfile
+from xml.sax.saxutils import quoteattr
 
 # 3rd party
 import isodate
@@ -140,7 +141,7 @@ class Downloads(ViewBase):
         request = self.request
 
         # TODO Add Schema?
-        data = [u'<?xml version="1.0" encoding="UTF-8"?><community_information>']
+        data = [u'<?xml version="1.0" encoding="UTF-8"?><community_information source=%s>' % quoteattr(request.host)]
         with self.request.connmgr.get_connection() as conn:
             cursor = conn.execute('''
                                   SELECT CAST(data AS nvarchar(max)) AS data  FROM dbo.vw_CommunityXml
