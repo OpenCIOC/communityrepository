@@ -1057,7 +1057,12 @@ var init_municipality_autocomplete = function(fields, url, errmsg) {
 						return false;
 					},
 					source: create_caching_source_fn($,url, cache),
-					minLength: 1
+					minLength: 1,
+                    close: function() {
+                        if (!input_el.is(':focus')) {
+                            on_blur_timeout();
+                        }
+                    }
 				}).
 				keypress(function (evt) {
 					if (evt.keyCode == '13') {
@@ -1089,12 +1094,14 @@ var init_municipality_autocomplete = function(fields, url, errmsg) {
                     }
                 }
 
-                this.focus();
+                setTimeout(function() { input_el[0].focus(); }, 1);
                 alert(errmsg);
             }
 
             input_el.blur(function() {
-                setTimeout(on_blur_timeout, 100);
+                if (! (input_el.autocomplete('widget')).is(':visible')) {
+                    on_blur_timeout();
+                }
             });
 				
 
