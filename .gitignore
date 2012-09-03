@@ -1,3 +1,4 @@
+*.pyc
 
 # /communitymanager/static/js/
 /communitymanager/static/js/*.map
