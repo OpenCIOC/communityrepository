@@ -1,12 +1,13 @@
 import re
 
 from formencode import validators, schema, ForEach, Pipe
+from pyramid.i18n import TranslationStringFactory
 
 from communitymanager.lib import syslanguage, security
 
 MAX_ID = 2147483647
 
-_ = lambda x: x
+_ = TranslationStringFactory('CommunityManager')
 
 DateConverter = validators.DateConverter
 FieldsMatch = validators.FieldsMatch
@@ -222,7 +223,7 @@ class RequireIfPredicate(validators.FormValidator):
             return [value]
 
 class ActiveCulture(validators.OneOf):
-    """ 
+    """
     Validator for checking a culture is one of ones that are currently
     active. Useful with formencode.foreach.ForEach for lists of cultures 
     being processed.
@@ -287,12 +288,10 @@ class CheckPassword(validators.FormValidator):
     pw_confirm   = 'ConfirmPassword'
 
     #hack to make formencode work properly with translations
-    def _(s):return s
     messages = {
             'password': _('Authentication failed'),
             'match': _('Must match password field'),
             }
-    del _
         
     def _match_pw(self, ref, confirm, value_dict, state):
         #log.debug("Password Match Check: %s, %s", ref, confirm)

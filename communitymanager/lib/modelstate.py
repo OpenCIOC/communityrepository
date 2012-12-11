@@ -14,6 +14,8 @@ from webhelpers.html.builder import HTML, literal
 from pyramid_simpleform import Form, State
 from pyramid_simpleform.renderers import FormRenderer
 
+from pyramid.i18n import TranslationString, TranslationStringFactory
+
 from communitymanager.lib import const
 
 import logging
@@ -195,7 +197,7 @@ class CiocFormRenderer(FormRenderer):
         star_err = self.errors_for('*')
         if star_err:
             star_err = star_err[0]
-        msg =  msg or star_err or _('There were validation errors')
+        msg = msg or star_err or _('There were validation errors')
         return self.error_msg(msg)
 
     def error_msg(self, msg):
@@ -216,10 +218,16 @@ class CiocFormRenderer(FormRenderer):
         return Markup('<div class="hidden">%s</div>') % \
             Markup('').join(tags.hidden(*x) for x in params)
 
+fe_tsf = TranslationStringFactory('FormEncode')
 
 class ModelState(object):
     def __init__(self, request):
-        self.form = Form(request, state=State(_=request.translate, request=request))
+        def formencode_translator(x):
+            if not isinstance(x, TranslationString):
+                x = fe_tsf(x)
+            return request.locale.translate(x)
+
+        self.form = Form(request, state=State(_=formencode_translator, request=request))
         self.renderer = CiocFormRenderer(self.form)
         self._defaults = None
 

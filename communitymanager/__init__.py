@@ -20,6 +20,8 @@ from pyramid.view import view_config
 
 from pyramid_beaker import session_factory_from_settings
 
+import formencode.api
+
 # this app
 from communitymanager.lib import request, const
 
@@ -85,7 +87,7 @@ def main(global_config, **settings):
 
     passvars_pregen = request.passvars_pregen
 
-    config.add_translation_dirs('communitymanager:locale')
+    config.add_translation_dirs('communitymanager:locale', formencode.api.get_localedir())
     config.add_subscriber('communitymanager.lib.subscribers.add_renderer_globals',
                       'pyramid.events.BeforeRender')
 
