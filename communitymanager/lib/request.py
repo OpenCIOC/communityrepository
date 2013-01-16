@@ -15,7 +15,7 @@ import logging
 # 3rd party libs
 from pyramid.request import Request
 from pyramid.decorator import reify
-from pyramid.i18n import get_localizer, TranslationStringFactory
+from pyramid.i18n import get_localizer, TranslationStringFactory, TranslationString
 from pyramid.security import unauthenticated_userid
 
 from babel import Locale, dates
@@ -26,43 +26,46 @@ from communitymanager.lib import config, connection, const
 
 log = logging.getLogger('communitymanager.lib.request')
 
+
 class LocaleDict(defaultdict):
     def __missing__(self, key):
         return Locale.parse(key, sep="-")
 
 
 _locales = LocaleDict()
+_locale_date_format = {
+    'en-CA': 'd MMM yyyy',
+    'fr-CA': 'd MMM yyyy',
+    'de': 'dd.MM.yyyy',
+    'fr': 'd MMM yyyy',
+    'es-MX': 'MM/dd/yyyy',
+    'it': 'd MMM yyyy',
+    'nl': 'd MMM yyyy',
+    'no': 'd MMM yyyy',
+    'pt': 'd-MM-yyyy',
+    'sv': 'd MMM yyyy',
+    'hu': 'MMM d. yyyy',
+    'pl': 'd MMM yyyy',
+    'ro': 'd MMM yyyy',
+    'hr': 'd MMM yyyy',
+    'sk': 'dd.MM.yyyy',
+    'sl': 'd MMM yyyy',
+    'el': 'dd/MM/yyyy',
+    'bg': 'd MMM yyyy',
+    'ru': 'd MMM yyyy',
+    'tr': 'd MMM yyyy',
+    'lv': 'd MMM yyyy',
+    'lt': 'd MMM yyyy',
+    'zh-TW': 'yyyy/MM/dd',
+    'ko': 'yyyy/MM/dd',
+    'zh-CN': 'yyyy/MM/dd',
+    'th': 'd MMM yyyy'
+}
+
+
 def get_locale(request):
     return _locales[request.language.Culture]
 
-_locale_date_format = {
-        'en-CA': 'd MMM yyyy',
-        'fr-CA': 'd MMM yyyy',
-        'de': 'dd.MM.yyyy',
-        'fr': 'd MMM yyyy',
-        'es-MX': 'MM/dd/yyyy',
-        'it': 'd MMM yyyy',
-        'nl': 'd MMM yyyy',
-        'no': 'd MMM yyyy',
-        'pt': 'd-MM-yyyy',
-        'sv': 'd MMM yyyy',
-        'hu': 'MMM d. yyyy',
-        'pl': 'd MMM yyyy',
-        'ro': 'd MMM yyyy',
-        'hr': 'd MMM yyyy',
-        'sk': 'dd.MM.yyyy',
-        'sl': 'd MMM yyyy',
-        'el': 'dd/MM/yyyy',
-        'bg': 'd MMM yyyy',
-        'ru': 'd MMM yyyy',
-        'tr': 'd MMM yyyy',
-        'lv': 'd MMM yyyy',
-        'lt': 'd MMM yyyy',
-        'zh-TW': 'yyyy/MM/dd',
-        'ko': 'yyyy/MM/dd',
-        'zh-CN': 'yyyy/MM/dd',
-        'th': 'd MMM yyyy'
-        }
 
 def format_date(d, request):
     if d is None:
@@ -74,6 +77,7 @@ def format_date(d, request):
     format = _locale_date_format.get(request.language.Culture, 'medium')
     return dates.format_date(d, locale=l, format=format)
 
+
 def format_time(t, request):
     if t is None:
         return ''
@@ -82,6 +86,7 @@ def format_time(t, request):
 
     l = get_locale(request)
     return dates.format_time(t, locale=l)
+
 
 def format_datetime(dt, request):
     if dt is None:
@@ -99,6 +104,7 @@ def format_datetime(dt, request):
 
     return ' '.join(parts)
 
+
 class CommunityManagerRequest(Request):
     def form_args(self, ln=None):
         if not ln:
@@ -110,17 +116,13 @@ class CommunityManagerRequest(Request):
 
         return extra_args
 
-
-
     @reify
     def default_form_args(self):
         return self.form_args()
 
-
     @reify
     def _LOCALE_(self):
         return self.language.Culture.replace('-', '_')
-
 
     @reify
     def config(self):
@@ -136,11 +138,10 @@ class CommunityManagerRequest(Request):
 
         ln = self.params.get('Ln')
         log.debug('Ln: %s', ln)
-        if ln and is_active_culture(ln): 
+        if ln and is_active_culture(ln):
             language.setSystemLanguage(ln)
 
         return language
-
 
     @reify
     def default_culture(self):
@@ -148,12 +149,16 @@ class CommunityManagerRequest(Request):
 
     @reify
     def translate(self):
-        if not hasattr(self,'localizer'):
+        if not hasattr(self, 'localizer'):
             self.localizer = get_localizer(self)
 
         localizer = self.localizer
+
         def auto_translate(string):
-            return localizer.translate(tsf(string))
+            if not isinstance(string, TranslationString):
+                string = tsf(string)
+
+            return localizer.translate(string)
 
         return auto_translate
 
@@ -188,10 +193,11 @@ class CommunityManagerRequest(Request):
 
 tsf = TranslationStringFactory('CommunityManager')
 
+
 def get_translate_fn(request, _culture=None):
-    if not _culture or _culture==request._LOCALE_:
+    if not _culture or _culture == request._LOCALE_:
         return request.translate
-    
+
     ln = request._LOCALE_
     try:
         request._LOCALE_ = _culture
