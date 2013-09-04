@@ -87,7 +87,7 @@
     </div>
 
 <footer style="padding-left: 1em;">
-<p><small><em>${_('All content copyright &copy; 2003-2012 Community Information Online Consortium; this data may be used by specific permission only.') | n}</em></small></p>
+<p><small><em>${_('All content copyright &copy; 2003-2013 Community Information Online Consortium; this data may be used by specific permission only.') | n}</em></small></p>
 </footer>
 
 </div> <!-- #wrap -->
