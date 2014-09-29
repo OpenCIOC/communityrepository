@@ -25,7 +25,7 @@ def email(from_, to, subject, body):
     msg['Subject'] = Header(subject, 'utf-8')
 
     if _server is None:
-        _server = os.environ.get('CIOC_MAILHOST', 'mail.oakville.ca')
+        _server = os.environ.get('CIOC_MAIL_HOST', '127.0.0.1')
 
     if _server == 'test':
         log.debug(msg.as_string())
