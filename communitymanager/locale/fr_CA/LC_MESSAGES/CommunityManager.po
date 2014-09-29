@@ -424,9 +424,9 @@ msgid "Logout"
 msgstr "Fermer la session"
 
 #: communitymanager/templates/master.mak:90
-msgid "All content copyright &copy; 2003-2012 Community Information Online Consortium; this data may be used by specific permission only."
+msgid "All content copyright &copy; 2003-2013 Community Information Online Consortium; this data may be used by specific permission only."
 msgstr ""
-"Tous droits réservés ; 2003-2012 Community Information Online Consortium ; "
+"Tous droits réservés ; 2003-2013 Community Information Online Consortium ; "
 "les données ne peuvent être utilisées qu'avec une permission spéciale"
 
 #: communitymanager/templates/master.mak:127
