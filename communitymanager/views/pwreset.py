@@ -6,7 +6,6 @@
 # software, please contact CIOC via their website above.
 #==================================================================
 
-
 # 3rd party
 from pyramid.httpexceptions import HTTPFound
 from pyramid.security import NO_PERMISSION_REQUIRED
@@ -31,11 +30,13 @@ Please log in to %(url)s as soon as possible and change your password.
 ''')
 del _
 
+
 class LoginSchema(Schema):
     allow_extra_fields = True
     filter_extra_fields = True
-    
+
     LoginName = validators.UnicodeString(max=50, not_empty=True)
+
 
 class PwReset(ViewBase):
     @view_config(route_name="pwreset", request_method="POST", renderer='pwreset.mak', permission=NO_PERMISSION_REQUIRED)
@@ -53,7 +54,7 @@ class PwReset(ViewBase):
 
         salt = security.MakeSalt()
         hash = security.Crypt(salt, password)
-        hash_args =  [security.DEFAULT_REPEAT, salt, hash]
+        hash_args = [security.DEFAULT_REPEAT, salt, hash]
 
         LoginName = model_state.value('LoginName')
         user = None
@@ -61,16 +62,16 @@ class PwReset(ViewBase):
             user = conn.execute('EXEC sp_Users_u_PwReset ?, ?, ?, ?', LoginName, *hash_args).fetchone()
 
         if user:
-            gettext = get_translate_fn(request, user.Culture) 
+            gettext = get_translate_fn(request, user.Culture)
 
             subject = gettext('CIOC Community Manager Site Password Reset')
             welcome_message = gettext(pwreset_email_template) % {
-                                    'FirstName': user.FirstName, 
-                                    'Password': password,
-                                    'url': request.route_url('login')}
+                'FirstName': user.FirstName,
+                'Password': password,
+                'url': request.route_url('login')
+            }
 
             email.email('admin@cioc.ca', user.Email, subject, welcome_message)
-
 
         request.session.flash(_('A new password was sent you your email address.'))
         return HTTPFound(location=request.route_url('home'))
@@ -79,4 +80,3 @@ class PwReset(ViewBase):
     def get(self):
 
         return {}
-

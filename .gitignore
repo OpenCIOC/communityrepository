@@ -2,3 +2,6 @@
 
 # /communitymanager/static/js/
 /communitymanager/static/js/*.map
+/communitymanager/locale/fr_CA/LC_MESSAGES/CommunityManager.csv
+/communitymanager/locale/fr_CA/LC_MESSAGES/CommunityManager.zip
+/communitymanager/locale/fr_CA/LC_MESSAGES/fr_from_translation/

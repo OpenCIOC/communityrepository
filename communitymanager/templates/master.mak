@@ -24,7 +24,7 @@
   <!-- CSS: implied media=all -->
   <!-- CSS concatenated and minified via ant build script-->
   <!-- XXX only local styles -->
-  <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/redmond/jquery-ui.css" type="text/css" />
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/redmond/jquery-ui.css" type="text/css" />
   <link rel="stylesheet" href="/static/css/style.css">
   <style type="text/css">
     /* fix the broken font handling in default jquery-ui styles */
