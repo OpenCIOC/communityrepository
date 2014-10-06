@@ -68,6 +68,10 @@ ${renderer.required_field_instructions()}
 </tr>
 %endif
 ${self.makeMgmtInfo(community)}
+<tr>
+	<td class="ui-widget-header field">${_('GUID')}</th>
+	<td class="ui-widget-content">${community.CM_GUID}</td>
+</tr>
 %endif
 <tr>
 	<td class="ui-widget-header field">${_('Name')} ${renderer.required_flag()}</th>
