@@ -1,0 +1,3 @@
+CREATE ROLE [web_user]
+AUTHORIZATION [dbo]
+GO

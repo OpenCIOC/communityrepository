@@ -1,0 +1,34 @@
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_NULLS ON
+GO
+
+
+CREATE PROCEDURE [dbo].[sp_Users_AccountRequest_l] (
+	@ShowRejected bit = 0
+)
+AS BEGIN
+
+SET NOCOUNT ON
+
+SELECT *
+FROM Users_AccountRequest u
+WHERE User_ID IS NULL AND REJECTED_DATE IS NULL OR (@ShowRejected=1 AND REJECTED_DATE IS NOT NULL)
+ORDER BY REQUEST_DATE
+
+IF @ShowRejected = 0 BEGIN
+SELECT COUNT(*) FROM Users_AccountRequest u WHERE REJECTED_DATE IS NOT NULL
+END
+
+SET NOCOUNT OFF
+
+END
+
+
+
+
+
+
+GO
+GRANT EXECUTE ON  [dbo].[sp_Users_AccountRequest_l] TO [web_user]
+GO
