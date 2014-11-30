@@ -15,6 +15,7 @@ CREATE TABLE [dbo].[Community]
 [Depth] [smallint] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -23,88 +24,66 @@ GO
 CREATE TRIGGER [dbo].[tr_Community_iu] ON [dbo].[Community]
 FOR INSERT, UPDATE AS 
 BEGIN
+	SET NOCOUNT ON
 
-SET NOCOUNT ON
-
-IF UPDATE(ProvinceState) BEGIN
-	UPDATE cmn
-		SET ProvinceStateCache = i.ProvinceState
-	FROM Community_Name cmn
-	INNER JOIN inserted i ON i.CM_ID=cmn.CM_ID
-END
-
-IF UPDATE(ParentCommunity) BEGIN		
-
-	WITH ParentList (CM_ID, Parent_CM_ID) AS
-	(
-		SELECT CM_ID, ParentCommunity
+	IF UPDATE(ProvinceState) BEGIN
+		UPDATE cmn
+			SET ProvinceStateCache = i.ProvinceState
+		FROM Community_Name cmn
+		INNER JOIN inserted i ON i.CM_ID=cmn.CM_ID
+	END
+	
+	IF UPDATE(ParentCommunity) BEGIN		
+		WITH ParentList (CM_ID, Parent_CM_ID) AS
+		(
+			SELECT CM_ID, ParentCommunity
 			FROM Community
 			WHERE ParentCommunity IS NOT NULL
-		UNION
-		SELECT aas.Search_CM_ID, aas.CM_ID
-			FROM Community_AltAreaSearch aas
-		UNION
-		SELECT aas.CM_ID, cm.ParentCommunity
-			FROM Community_AltAreaSearch aas
-			INNER JOIN Community cm
-				ON aas.Search_CM_ID=cm.CM_ID AND cm.ParentCommunity IS NOT NULL
-		UNION ALL
+		  UNION ALL
 			SELECT cm1.CM_ID, p.Parent_CM_ID
 			FROM Community cm1
 			INNER JOIN ParentList p
 				ON cm1.ParentCommunity=p.CM_ID
-	)
-	
-	MERGE INTO Community_ParentList AS cmpl
-	USING ParentList p
-	ON cmpl.CM_ID=p.CM_ID AND cmpl.Parent_CM_ID=p.Parent_CM_ID
-	WHEN NOT MATCHED BY TARGET
-		THEN INSERT (CM_ID, Parent_CM_ID) VALUES (p.CM_ID, p.Parent_CM_ID)
-	WHEN NOT MATCHED BY SOURCE
-		THEN DELETE
-	OPTION (MAXRECURSION 30);
-
-	MERGE INTO Community_ParentList AS cmpl
-	USING (
-		SELECT DISTINCT aas.CM_ID, pl.Parent_CM_ID
-			FROM Community_AltAreaSearch aas
-			INNER JOIN Community_ParentList pl
-				ON pl.CM_ID=aas.Search_CM_ID AND pl.Parent_CM_ID<>aas.CM_ID
-			) p
+		)
+		
+		MERGE INTO Community_ParentList AS cmpl
+		USING ParentList AS p
 		ON cmpl.CM_ID=p.CM_ID AND cmpl.Parent_CM_ID=p.Parent_CM_ID
-	WHEN NOT MATCHED BY TARGET
-		THEN INSERT (CM_ID, Parent_CM_ID) VALUES (p.CM_ID, p.Parent_CM_ID)
-		;
-	
-	WITH SiblingRank(CM_ID, SortCode) AS 
-	(
-		SELECT cm.CM_ID, CAST(RIGHT('0000000' + CAST(RANK() OVER (ORDER BY cmn.Name) AS VARCHAR(3)), 3) AS varchar(MAX))
+		WHEN NOT MATCHED BY TARGET
+			THEN INSERT (CM_ID, Parent_CM_ID) VALUES (p.CM_ID, p.Parent_CM_ID)
+		WHEN NOT MATCHED BY SOURCE
+			THEN DELETE
+		OPTION (MAXRECURSION 30);
+		
+		WITH SiblingRank(CM_ID, SortCode) AS 
+		(
+			SELECT cm.CM_ID, CAST(RIGHT('0000000' + CAST(RANK() OVER (ORDER BY cmn.Name) AS VARCHAR(3)), 3) AS varchar(MAX))
+			FROM Community cm
+			INNER JOIN Community_Name cmn
+				ON cm.CM_ID=cmn.CM_ID AND cmn.LangID=0
+			WHERE ParentCommunity IS NULL
+			UNION ALL
+			SELECT cm.CM_ID, s.SortCode + '-' + CAST(RIGHT('0000000' + CAST(RANK() OVER (ORDER BY cmn.Name) AS VARCHAR(3)), 3) AS varchar(MAX))
+			FROM Community cm
+			INNER JOIN Community_Name cmn
+				ON cm.CM_ID=cmn.CM_ID AND cmn.LangID=0
+			INNER JOIN SiblingRank s
+				ON s.CM_ID=cm.ParentCommunity
+		)	
+		UPDATE cm
+			SET
+				Depth = (SELECT COUNT(*) FROM Community_ParentList WHERE CM_ID=cm.CM_ID),
+				SortCode = s.SortCode
 		FROM Community cm
-		INNER JOIN Community_Name cmn
-			ON cm.CM_ID=cmn.CM_ID AND cmn.LangID=0
-		WHERE ParentCommunity IS NULL
-		UNION ALL
-		SELECT cm.CM_ID, s.SortCode + '-' + CAST(RIGHT('0000000' + CAST(RANK() OVER (ORDER BY cmn.Name) AS VARCHAR(3)), 3) AS varchar(MAX))
-		FROM Community cm
-		INNER JOIN Community_Name cmn
-			ON cm.CM_ID=cmn.CM_ID AND cmn.LangID=0
 		INNER JOIN SiblingRank s
-			ON s.CM_ID=cm.ParentCommunity
-	)	
-	UPDATE cm
-		SET
-			Depth = (SELECT COUNT(*) FROM Community_ParentList WHERE CM_ID=cm.CM_ID),
-			SortCode = s.SortCode
-	FROM Community cm
-	INNER JOIN SiblingRank s
-		ON cm.CM_ID=s.CM_ID
-END
+			ON cm.CM_ID=s.CM_ID
+	END
 
-SET NOCOUNT OFF
-
+	SET NOCOUNT OFF
 END
 
 GO
+
 ALTER TABLE [dbo].[Community] ADD CONSTRAINT [PK_Community] PRIMARY KEY CLUSTERED  ([CM_ID]) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Community] ADD CONSTRAINT [IX_Community] UNIQUE NONCLUSTERED  ([CM_GUID]) ON [PRIMARY]

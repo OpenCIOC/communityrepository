@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -53,7 +54,7 @@ SELECT
 			FOR XML PATH('community'), TYPE) 
 		FROM Community cm
 		WHERE cm.AlternativeArea=0
-		ORDER BY SortCode
+		ORDER BY Depth, CM_ID
 		FOR XML PATH(''), ROOT('communities'), TYPE) AS [node()],
 	 (SELECT
 		(SELECT
@@ -94,5 +95,6 @@ FOR XML PATH(''),TYPE
 
 
 GO
+
 GRANT SELECT ON  [dbo].[vw_CommunityXml] TO [web_user]
 GO

@@ -1,7 +1,9 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
+
 
 CREATE PROCEDURE [dbo].[sp_Community_s] 
 	@CM_ID int,
@@ -33,9 +35,8 @@ BEGIN
 		WHERE CM_ID=@CM_ID
 		
 	SELECT Parent_CM_ID
-		FROM Community_ParentList pl
+	FROM Community_ParentList 
 	WHERE CM_ID=@CM_ID
-		AND NOT EXISTS(SELECT * FROM Community cm WHERE cm.CM_ID=pl.CM_ID AND cm.AlternativeArea=1)
 		
 	IF @OnlyStatus = 0 BEGIN
 	SELECT cmn.*,
@@ -70,7 +71,7 @@ END
 
 
 
-
 GO
+
 GRANT EXECUTE ON  [dbo].[sp_Community_s] TO [web_user]
 GO
