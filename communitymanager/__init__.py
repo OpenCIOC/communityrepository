@@ -4,9 +4,9 @@
 # Developed By Katherine Lambacher / KCL Custom Software
 # If you did not receive a copy of the license agreement with this
 # software, please contact CIOC via their website above.
-#==================================================================
+# ==================================================================
 
-#Python STD Lib
+# Python STD Lib
 import os
 import logging
 
@@ -19,22 +19,26 @@ from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Allow, DENY_
 from pyramid.view import view_config
 
 from pyramid_beaker import session_factory_from_settings
+from pyramid_multiauth import MultiAuthenticationPolicy
 
 import formencode.api
 
 # this app
 from communitymanager.lib import request, const
+from communitymanager.lib.basicauthpolicy import BasicAuthenticationPolicy
+from communitymanager.lib.security import check_credentials
 
 log = logging.getLogger('communitymanager')
+
 
 def groupfinder(userid, request):
     user = request.user
     if user is not None:
-        #log.debug('user: %s, %d', user.UserName, user.ViewType)
+        # log.debug('user: %s, %d', user.UserName, user.ViewType)
         groups = []
 
         if user.ManageAreaList:
-            groups = [ 'area:' + x for x in user.ManageAreaList ]
+            groups = ['area:' + x for x in user.ManageAreaList]
 
         if user.Admin:
             groups.append('area:admin')
@@ -48,17 +52,38 @@ def groupfinder(userid, request):
 
     return None
 
+
+def check_basic_auth(credentials, request):
+    if not getattr(request, '_basic_auth_fetched_user', False):
+        with request.connmgr.get_connection() as conn:
+            request.user = conn.execute('EXEC sp_User_Login_s ?', credentials['login']).fetchone()
+            request._basic_auth_fetched_user = True
+
+            if not request.user:
+                return None
+
+            if not check_credentials(request.user, credentials['password']):
+                return None
+
+    if not hasattr(request, '_basic_auth_groups'):
+        request._basic_auth_groups = groupfinder(credentials['login'], request)
+
+    return request._basic_auth_groups
+
+
 class RootFactory(object):
     __acl__ = [(Allow, Authenticated, 'view'), (Allow, 'area:manager', ('view', 'edit')), DENY_ALL]
 
     def __init__(self, request):
         pass
 
+
 class OnlyAdminRootFactory(object):
     __acl__ = [(Allow, 'area:admin', ('edit', 'view')), DENY_ALL]
 
     def __init__(self, request):
         pass
+
 
 @view_config(route_name='favicon', permission=NO_PERMISSION_REQUIRED)
 def favicon_view(request):
@@ -70,12 +95,17 @@ def favicon_view(request):
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    
+
     const.update_cache_values()
     settings['beaker.session.lock_dir'] = const.session_lock_dir
     session_factory = session_factory_from_settings(settings)
 
-    authn_policy = SessionAuthenticationPolicy(callback=groupfinder, debug=True)
+    policies = [
+        SessionAuthenticationPolicy(callback=groupfinder, debug=True),
+        BasicAuthenticationPolicy(check_basic_auth)
+    ]
+
+    authn_policy = MultiAuthenticationPolicy(policies)
     authz_policy = ACLAuthorizationPolicy()
 
     config = Configurator(settings=settings, session_factory=session_factory,
@@ -84,7 +114,6 @@ def main(global_config, **settings):
                          authentication_policy=authn_policy,
                          authorization_policy=authz_policy)
 
-
     passvars_pregen = request.passvars_pregen
 
     config.add_translation_dirs('communitymanager:locale', formencode.api.get_localedir())
@@ -92,7 +121,6 @@ def main(global_config, **settings):
                       'pyramid.events.BeforeRender')
 
     config.add_static_view('static', 'communitymanager:static', cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
-
 
     config.add_route('home', '/', pregenerator=passvars_pregen)
 
@@ -143,4 +171,3 @@ def main(global_config, **settings):
     config.scan()
 
     return config.make_wsgi_app()
-

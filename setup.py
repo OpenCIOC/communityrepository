@@ -12,13 +12,13 @@ requires = [
     'pyramid_debugtoolbar',
     ]
 
-if sys.version_info[:3] < (2,5,0):
+if sys.version_info[:3] < (2, 5, 0):
     requires.append('pysqlite')
 
 setup(name='CommunityManager',
       version='0.0',
       description='CommunityManager',
-      long_description=README + '\n\n' +  CHANGES,
+      long_description=README + '\n\n' + CHANGES,
       classifiers=[
         "Programming Language :: Python",
         "Framework :: Pylons",
@@ -32,12 +32,11 @@ setup(name='CommunityManager',
       packages=find_packages(),
       include_package_data=True,
       zip_safe=False,
-      #test_suite='communitymanager',
-      install_requires = requires,
-      entry_points = """\
+      # test_suite='communitymanager',
+      install_requires=requires,
+      entry_points="""\
       [paste.app_factory]
       main = communitymanager:main
       """,
       paster_plugins=['pyramid'],
       )
-

@@ -22,14 +22,22 @@ DEFAULT_REPEAT = 4096
 
 
 def Crypt(salt, password, repeat=DEFAULT_REPEAT):
-	pbkdf2 = PBKDF2(password, salt, int(repeat))
-	return pbkdf2.read(33).encode('base64').strip()
+    pbkdf2 = PBKDF2(password, salt, int(repeat))
+    return pbkdf2.read(33).encode('base64').strip()
 
 
 def MakeSalt():
-	return get_random_bytes(33).encode('base64').strip()
+    return get_random_bytes(33).encode('base64').strip()
 
 
 def MakeRandomPassword(length=10, chars=gen_pass_alphabet):
-	rng = random.StrongRandom()
-	return ''.join(rng.choice(chars) for x in range(length))
+    rng = random.StrongRandom()
+    return ''.join(rng.choice(chars) for x in range(length))
+
+
+def check_credentials(user, password):
+    hash = Crypt(user.PasswordHashSalt, password, user.PasswordHashRepeat)
+    if hash != user.PasswordHash:
+        return False
+
+    return True
