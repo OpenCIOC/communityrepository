@@ -4,7 +4,7 @@
 # Developed By Katherine Lambacher / KCL Custom Software
 # If you did not receive a copy of the license agreement with this
 # software, please contact CIOC via their website above.
-#==================================================================
+# ==================================================================
 
 
 # 3rd party
@@ -15,8 +15,8 @@ from pyramid.view import view_config
 from formencode import Schema
 
 
-#this app
-from communitymanager.lib.security import Crypt
+# this app
+from communitymanager.lib.security import check_credentials
 from communitymanager.views.base import ViewBase
 from communitymanager.lib import validators
 from communitymanager.lib.syslanguage import _culture_list, default_culture
@@ -25,11 +25,12 @@ from communitymanager.lib.syslanguage import _culture_list, default_culture
 class LoginSchema(Schema):
     allow_extra_fields = True
     filter_extra_fields = True
-    
+
     LoginName = validators.UnicodeString(max=50, not_empty=True)
     LoginPwd = validators.String(not_empty=True)
 
     came_from = validators.UnicodeString()
+
 
 class Login(ViewBase):
     @view_config(route_name="login", request_method="POST", renderer='login.mak', permission=NO_PERMISSION_REQUIRED)
@@ -52,18 +53,16 @@ class Login(ViewBase):
             model_state.add_error_for('*', _('Invalid User Name or Password'))
             return {}
 
-
-        hash = Crypt(user.PasswordHashSalt, model_state.value('LoginPwd'), user.PasswordHashRepeat)
-        if hash != user.PasswordHash:
+        if not check_credentials(user, model_state.value('LoginPwd')):
             model_state.add_error_for('*', _('Invalid User Name or Password'))
             return {}
 
         headers = remember(request, user.UserName)
-        start_ln = [x.Culture for x in _culture_list if x.LangID==user.StartLanguage and x.Active]
+        start_ln = [x.Culture for x in _culture_list if x.LangID == user.StartLanguage and x.Active]
         if not start_ln:
             start_ln = [default_culture()]
 
-        return HTTPFound(location=(model_state.value('came_from') or request.route_url('communities', _ln=start_ln[0])), 
+        return HTTPFound(location=(model_state.value('came_from') or request.route_url('communities', _ln=start_ln[0])),
                          headers=headers)
 
     @view_config(route_name="login", renderer="login.mak", permission=NO_PERMISSION_REQUIRED)
@@ -75,7 +74,7 @@ class Login(ViewBase):
         login_url = request.route_url('login')
         referrer = request.url
         if referrer == login_url:
-            referrer = None # never use the login form itself as came_from
+            referrer = None  # never use the login form itself as came_from
         came_from = request.params.get('came_from', referrer)
 
         request.model_state.data['came_from'] = came_from
@@ -83,10 +82,8 @@ class Login(ViewBase):
         return {}
 
 
-
 @view_config(route_name="logout", permission=NO_PERMISSION_REQUIRED)
 def logout(request):
     headers = forget(request)
-    return HTTPFound(location = request.route_url('login'),
-                     headers = headers)
-
+    return HTTPFound(location=request.route_url('login'),
+                     headers=headers)

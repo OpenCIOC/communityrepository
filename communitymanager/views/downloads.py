@@ -4,7 +4,7 @@
 # Developed By Katherine Lambacher / KCL Custom Software
 # If you did not receive a copy of the license agreement with this
 # software, please contact CIOC via their website above.
-#==================================================================
+# ==================================================================
 
 # std lib
 import os
@@ -23,8 +23,9 @@ from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from communitymanager.views.base import ViewBase
 from communitymanager.lib import const
 
-import logging 
+import logging
 log = logging.getLogger('communitymanager.views.downloads')
+
 
 class rewindable_iterator(object):
     not_started = object()
@@ -51,6 +52,7 @@ class rewindable_iterator(object):
             raise RuntimeError("Can't backup past the beginning.")
         self._use_save = True
 
+
 def files_with_logs(files, logs):
     # make sure we have an infinate supply of logs
     logiter = chain(iter(logs), repeat(None))
@@ -59,7 +61,6 @@ def files_with_logs(files, logs):
     # since it will take one extra item from the iterator
     logiter = rewindable_iterator(logiter)
 
-
     # we need to be able to preview the the next date
     next_date, filenames = tee(files)
 
@@ -67,19 +68,19 @@ def files_with_logs(files, logs):
     first = next(next_date, None)
     if first is None:
         yield (None, None, list(logs))
-        return 
+        return
 
-    new_items = list(takewhile(lambda x: x.MODIFIED_DATE >= first[0], logiter))
+    new_items = list(takewhile(lambda x: x and x.MODIFIED_DATE >= first[0], logiter))
     try:
         logiter.backup()
     except RuntimeError:
         pass
 
-    #log.debug('new_items: %r,%r', first[0], [x.MODIFIED_DATE for x in new_items])
+    # log.debug('new_items: %r,%r', first[0], [x.MODIFIED_DATE for x in new_items])
     if new_items:
         yield (None, None, new_items)
 
-    for next_date,filenames in izip_longest(next_date,filenames):
+    for next_date, filenames in izip_longest(next_date, filenames):
         if next_date is None:
             # we are already at the last published file
             changes = list(takewhile(lambda x: x is not None, logiter))
@@ -92,16 +93,18 @@ def files_with_logs(files, logs):
         except RuntimeError:
             pass
 
-        #log.debug('changes: %r, %r', next_date, [x.MODIFIED_DATE for x in changes])
+        # log.debug('changes: %r, %r', next_date, [x.MODIFIED_DATE for x in changes])
         yield filenames + (changes,)
 
 
 bad_filename_contents = ['/', '\\', '..', ':']
+
+
 class Downloads(ViewBase):
     @view_config(route_name="downloads", renderer='downloads.mak', permission='view')
     def index(self):
         request = self.request
-        
+
         with request.connmgr.get_connection() as conn:
             logentries = conn.execute('EXEC sp_Community_ChangeHistory_l').fetchall()
 
@@ -118,23 +121,28 @@ class Downloads(ViewBase):
 
         if not filename.endswith('.xml.zip'):
             raise HTTPNotFound()
-        
+
+        if filename == 'latest.xml.zip':
+            try:
+                filename = next(self._get_files())[1]
+            except StopIteration:
+                raise HTTPNotFound()
+
         # this should not happend because the routing engine will not match, but lets be sure
         if any(x in filename for x in bad_filename_contents):
             raise HTTPNotFound()
 
         fullpath = os.path.join(const.publish_dir, filename)
 
-
         relativepath = os.path.relpath(fullpath, const.publish_dir)
-        
+
         if any(x in relativepath for x in bad_filename_contents):
             raise HTTPNotFound()
 
         xmlfile = open(fullpath, 'rb')
-        return Response(content_type='application/zip', app_iter=xmlfile)
-
-
+        res = Response(content_type='application/zip', app_iter=xmlfile)
+        res.headers['Content-Disposition'] = 'attachment;filename=%s' % filename
+        return res
 
     @view_config(route_name="publish", request_method='POST', renderer='publish.mak', permission='edit')
     def publish_post(self):
@@ -145,9 +153,8 @@ class Downloads(ViewBase):
         with self.request.connmgr.get_connection() as conn:
             cursor = conn.execute('''
                                   SELECT CAST(data AS nvarchar(max)) AS data  FROM dbo.vw_CommunityXml
-                                  SELECT GETDATE() AS currentdate  
+                                  SELECT GETDATE() AS currentdate
                                   ''')
-
 
             tmp = cursor.fetchall()
             log.debug('length of tmp: %d', len(tmp))
@@ -161,11 +168,10 @@ class Downloads(ViewBase):
 
         data.append(u'</community_information>')
 
-        fname = date.isoformat().replace(':', '_') + '.xml' 
-        with open(os.path.join(const.publish_dir, fname+'.zip'), 'wb') as f:
+        fname = date.isoformat().replace(':', '_') + '.xml'
+        with open(os.path.join(const.publish_dir, fname + '.zip'), 'wb') as f:
             with zipfile.ZipFile(f, 'w', zipfile.ZIP_DEFLATED) as zip:
                 zip.writestr(fname, ''.join(data).encode('utf-8'))
-
 
         _ = request.translate
         request.session.flash(_('Download Successfully Published'))
@@ -177,7 +183,6 @@ class Downloads(ViewBase):
         with self.request.connmgr.get_connection() as conn:
             logentries = conn.execute('EXEC sp_Community_ChangeHistory_l ?', files[0][0] if files else None).fetchall()
 
-
         return {'logentries': logentries}
 
     def _get_files(self):
@@ -185,4 +190,4 @@ class Downloads(ViewBase):
 
         files = (os.path.basename(f) for f in files)
 
-        return ((isodate.parse_datetime(f.rsplit('.',2)[0].replace('_',':')),f) for f in files)
+        return ((isodate.parse_datetime(f.rsplit('.', 2)[0].replace('_', ':')), f) for f in files)
