@@ -85,13 +85,6 @@ class OnlyAdminRootFactory(object):
         pass
 
 
-@view_config(route_name='favicon', permission=NO_PERMISSION_REQUIRED)
-def favicon_view(request):
-    here = os.path.dirname(__file__)
-    icon = open(os.path.join(here, 'static', 'favicon.ico'), 'rb')
-    return Response(content_type='image/x-icon', app_iter=icon)
-
-
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -120,7 +113,7 @@ def main(global_config, **settings):
     config.add_subscriber('communitymanager.lib.subscribers.add_renderer_globals',
                       'pyramid.events.BeforeRender')
 
-    config.add_static_view('static', 'communitymanager:static', cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
+    config.add_static_view('static', '../../static', cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
 
     config.add_route('home', '/', pregenerator=passvars_pregen)
 
@@ -166,7 +159,7 @@ def main(global_config, **settings):
 
     config.add_route('json_search_areas', '/json/search_areas')
 
-    config.add_route('favicon', '/favicon.ico')
+    config.add_static_view('favicon.ico', '../../favicon.ico')
 
     config.scan()
 

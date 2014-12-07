@@ -1,21 +1,25 @@
-import os, time
+import os
+import time
 import logging.handlers
 
 _app_name = None
 
+
 def _get_app_name():
 	global _app_name
 	if _app_name is None:
-		app_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..'))
+		app_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 		_app_name = os.path.split(app_path)[1]
 
 	return _app_name
 
 _log_root = None
+
+
 class TimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
 	"""
-	A version of logging.handlers.TimedRotatingFileHandler that knows about the 
-	location to store log files and calculates the path based on the app name. It also 
+	A version of logging.handlers.TimedRotatingFileHandler that knows about the
+	location to store log files and calculates the path based on the app name. It also
 	always stores to a dated filename.
 	"""
 	def __init__(self, name):
@@ -64,12 +68,12 @@ class TimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
 		newRolloverAt = self.computeRollover(currentTime)
 		while newRolloverAt <= currentTime:
 			newRolloverAt = newRolloverAt + self.interval
-		#If DST changes and midnight or weekly rollover, adjust for this.
+		# If DST changes and midnight or weekly rollover, adjust for this.
 		if (self.when == 'MIDNIGHT' or self.when.startswith('W')) and not self.utc:
 			dstNow = time.localtime(currentTime)[-1]
 			dstAtRollover = time.localtime(newRolloverAt)[-1]
 			if dstNow != dstAtRollover:
-				if not dstNow:	# DST kicks in before next rollover, so we need to deduct an hour
+				if not dstNow:  # DST kicks in before next rollover, so we need to deduct an hour
 					newRolloverAt = newRolloverAt - 3600
 				else:			# DST bows out before next rollover, so we need to add an hour
 					newRolloverAt = newRolloverAt + 3600
@@ -77,17 +81,18 @@ class TimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
 
 
 _server = None
+
+
 class SMTPHandler(logging.handlers.SMTPHandler):
 	def __init__(self, server, fromaddr, toaddrs, subject, credentials=None, secure=None):
 		global _server
 		if server is None:
 			if _server is None:
-				_server = os.environ.get('CIOC_MAILHOST', 'mail.oakville.ca')
+				_server = os.environ.get('CIOC_MAILHOST', '127.0.0.1')
 			server = _server
-		
+
 		app_name = _get_app_name()
 
 		subject = subject.format(site_name=app_name)
 
 		logging.handlers.SMTPHandler.__init__(self, server, fromaddr, toaddrs, subject, credentials, secure)
-
