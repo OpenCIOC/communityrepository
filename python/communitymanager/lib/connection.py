@@ -4,20 +4,21 @@
 # Developed By Katherine Lambacher / KCL Custom Software
 # If you did not receive a copy of the license agreement with this
 # software, please contact CIOC via their website above.
-#==================================================================
+# ==================================================================
 import pyodbc
 from pyramid.decorator import reify
+
 
 class ConnectionManager(object):
     def __init__(self, request):
         self.request = request
-        self.config= request.config
+        self.config = request.config
 
     @reify
     def connection_string(self):
         config = self.config
         settings = [
-            ('Driver', '{SQL Server Native Client 10.0}'),
+            ('Driver', '{%s}' % config.get('driver', 'SQL Server Native Client 10.0')),
             ('Server', config['server']),
             ('Database', config['database']),
             ('UID', config['uid']),
@@ -32,6 +33,5 @@ class ConnectionManager(object):
 
         conn = pyodbc.connect(self.connection_string, autocommit=True, unicode_results=True)
         conn.execute("SET LANGUAGE '" + language + "'")
-        
-        return conn
 
+        return conn
