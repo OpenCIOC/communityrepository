@@ -24,7 +24,7 @@ from pyramid_multiauth import MultiAuthenticationPolicy
 import formencode.api
 
 # this app
-from communitymanager.lib import request, const
+from communitymanager.lib import request, const, config as ciocconfig
 from communitymanager.lib.basicauthpolicy import BasicAuthenticationPolicy
 from communitymanager.lib.security import check_credentials
 
@@ -91,6 +91,10 @@ def main(global_config, **settings):
 
     const.update_cache_values()
     settings['beaker.session.lock_dir'] = const.session_lock_dir
+    cnf = ciocconfig.get_config(const._config_file)
+    redis_url = cnf.get('session.url')
+    if redis_url:
+        settings['beaker.session.url'] = redis_url
     session_factory = session_factory_from_settings(settings)
 
     policies = [
