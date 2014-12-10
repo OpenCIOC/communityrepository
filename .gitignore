@@ -1,7 +1,7 @@
 *.pyc
 
 # /communitymanager/static/js/
-/static/js/*.map
+/python/communitymanager/static/js/*.map
 /python/communitymanager/locale/fr_CA/LC_MESSAGES/CommunityManager.csv
 /python/communitymanager/locale/fr_CA/LC_MESSAGES/CommunityManager.zip
 /python/communitymanager/locale/fr_CA/LC_MESSAGES/fr_from_translation/
