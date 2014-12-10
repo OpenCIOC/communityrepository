@@ -117,7 +117,8 @@ def main(global_config, **settings):
     config.add_subscriber('communitymanager.lib.subscribers.add_renderer_globals',
                       'pyramid.events.BeforeRender')
 
-    config.add_static_view('static', '../../static', cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
+    here = os.path.join(os.path.dirname(__file__))
+    config.add_static_view('static', os.path.abspath(os.path.join(here, '../../static')), cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
 
     config.add_route('home', '/', pregenerator=passvars_pregen)
 
