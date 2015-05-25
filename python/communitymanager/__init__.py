@@ -7,16 +7,13 @@
 # ==================================================================
 
 # Python STD Lib
-import os
 import logging
 
 # 3rd party
 from pyramid.config import Configurator
-from pyramid.response import Response
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Allow, DENY_ALL
-from pyramid.view import view_config
 
 from pyramid_beaker import session_factory_from_settings
 from pyramid_multiauth import MultiAuthenticationPolicy
