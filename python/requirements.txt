@@ -23,10 +23,5 @@ pyramid_redis_sessions==1.0a2
 dogpile.core==0.4.1
 dogpile.cache==0.5.4
 lxml==3.3.5
-pycrypto==2.6.1
 pyramid_debugtoolbar==2.2
 pyramid_multiauth==0.4.0
-
-Beaker==1.6.4
-pyramid_beaker==0.8
-https://github.com/lambacck/beaker_extensions/zipball/master#egg=beaker-extensions==0.1.2dev
