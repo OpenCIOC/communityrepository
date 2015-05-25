@@ -149,7 +149,37 @@ class Downloads(ViewBase):
         request = self.request
 
         # TODO Add Schema?
-        data = [u'<?xml version="1.0" encoding="UTF-8"?><community_information source=%s>' % quoteattr(request.host)]
+        data = [
+            u'''
+<?xml version="1.0" encoding="UTF-8"?><community_information source=%s>
+<!--
+    All user geography data contributed to the CIOC Community Repository is cc-by-sa 4.0 licensed.
+    For details of the license see: http://creativecommons.org/licenses/by-sa/4.0/
+
+    Our cc-by-sa 4.0 licensing, while intentionally permissive, does *require attribution*:
+
+    "Attribution - You must give appropriate credit, provide a link to the
+            license, and indicate if changes were made. You may do so in any
+            reasonable manner, but not in any way that suggests the licensor
+            endorses you or your use."
+
+    Specifically the attribution requirements are as follows:
+
+      1.  Visually display or otherwise indicate the source of the content as
+          coming from the CIOC Community Repository. This requirement is
+          satisfied with a discreet text blurb, or some other unobtrusive but
+          clear visual indication.
+
+      2.  Ensure that any Internet use of the content includes a hyperlink directly
+          to the CIOC Community Repository (https://community-repository.cioc.ca/) in
+          standard HTML (i.e. not through a Tinyurl or other such indirect hyperlink,
+          form of obfuscation or redirection), without any “nofollow” command or any
+          other such means of avoiding detection by search engines, and visible even
+          with JavaScript disabled.
+
+    Change suggestions can be submitted to https://community-repository.cioc.ca/suggest.
+-->
+            ''' % quoteattr(request.host)]
         with self.request.connmgr.get_connection() as conn:
             cursor = conn.execute('''
                                   SELECT CAST(data AS nvarchar(max)) AS data  FROM dbo.vw_CommunityXml
