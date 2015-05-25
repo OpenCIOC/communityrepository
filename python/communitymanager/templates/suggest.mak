@@ -6,8 +6,6 @@ ${renderer.error_notice()}
 <form method="post" action="${request.current_route_path(_form=True)}">
 <div class="hidden">
 ${renderer.form_passvars()}
-%if extra_hidden_params:
-%endif
 </div>
 ${renderer.required_field_instructions()}
 <table class="form-table">

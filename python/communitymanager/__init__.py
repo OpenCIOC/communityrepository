@@ -13,7 +13,7 @@ import logging
 from pyramid.config import Configurator
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Allow, DENY_ALL
+from pyramid.security import NO_PERMISSION_REQUIRED, Everyone, Authenticated, Allow, DENY_ALL
 
 from pyramid_multiauth import MultiAuthenticationPolicy
 
@@ -70,6 +70,13 @@ def check_basic_auth(credentials, request):
 
 
 class RootFactory(object):
+    __acl__ = [(Allow, Everyone, 'view'), (Allow, 'area:manager', ('view', 'edit')), DENY_ALL]
+
+    def __init__(self, request):
+        pass
+
+
+class LoggedInRootFactory(object):
     __acl__ = [(Allow, Authenticated, 'view'), (Allow, 'area:manager', ('view', 'edit')), DENY_ALL]
 
     def __init__(self, request):
@@ -148,7 +155,7 @@ def main(global_config, **settings):
 
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
-    config.add_route('suggest', '/suggest', pregenerator=passvars_pregen)
+    config.add_route('suggest', '/suggest', pregenerator=passvars_pregen, factory=LoggedInRootFactory)
     config.add_route('complete_suggestion', '/review/complete', pregenerator=passvars_pregen)
     config.add_route('review_suggestions', '/review', pregenerator=passvars_pregen)
 
@@ -158,7 +165,7 @@ def main(global_config, **settings):
 
     config.add_route('user', '/users/{uid}', pregenerator=passvars_pregen, factory='communitymanager.views.users.UserRoot')
 
-    config.add_route('account', '/account', pregenerator=passvars_pregen)
+    config.add_route('account', '/account', pregenerator=passvars_pregen, factory=LoggedInRootFactory)
 
     config.add_route('request_account', '/request_account', pregenerator=passvars_pregen)
     config.add_route('request_account_thanks', '/request_account/thanks', pregenerator=passvars_pregen)

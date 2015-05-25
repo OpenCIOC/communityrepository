@@ -3,7 +3,7 @@
 
 <%block name="title">${_('Downloads')}</%block>
 
-%if request.user.Admin:
+%if request.user and request.user.Admin:
 <p><a href="${request.route_path('publish')}">${_('Publish New File')}</a></p>
 %endif
 
