@@ -86,8 +86,8 @@
 
     </div>
 
-<footer style="padding-left: 1em;">
-<p><small><em>${_('All content copyright &copy; 2003-2013 Community Information Online Consortium; this data may be used by specific permission only.') | n}</em></small></p>
+<footer class="footer">
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a><br>${_('The geography data on this site is licensed under a ')}<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">${_('Creative Commons Attribution-ShareAlike 4.0 International License')}</a>.
 </footer>
 
 </div> <!-- #wrap -->

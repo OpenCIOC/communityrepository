@@ -173,7 +173,7 @@ class Downloads(ViewBase):
       2.  Ensure that any Internet use of the content includes a hyperlink directly
           to the CIOC Community Repository (https://community-repository.cioc.ca/) in
           standard HTML (i.e. not through a Tinyurl or other such indirect hyperlink,
-          form of obfuscation or redirection), without any “nofollow” command or any
+          form of obfuscation or redirection), without any "nofollow" command or any
           other such means of avoiding detection by search engines, and visible even
           with JavaScript disabled.
 

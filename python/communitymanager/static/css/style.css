@@ -463,6 +463,12 @@ a.ui-icon {
 	text-indent: 0;
 }
 
+.footer {
+    margin-top: 2em;
+    padding: 1em;
+    border-top: 1px solid #c5dbec;
+}
+
 
 
 /* ==|== print styles =======================================================
