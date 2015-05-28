@@ -153,10 +153,10 @@ class Downloads(ViewBase):
             u'''
 <?xml version="1.0" encoding="UTF-8"?><community_information source=%s>
 <!--
-    All user geography data contributed to the CIOC Community Repository is cc-by-sa 4.0 licensed.
-    For details of the license see: http://creativecommons.org/licenses/by-sa/4.0/
+    All user geography data contributed to the CIOC Community Repository is cc-by 4.0 licensed.
+    For details of the license see: https://creativecommons.org/licenses/by/4.0/
 
-    Our cc-by-sa 4.0 licensing, while intentionally permissive, does *require attribution*:
+    Our cc-by 4.0 licensing, while intentionally permissive, does *require attribution*:
 
     "Attribution - You must give appropriate credit, provide a link to the
             license, and indicate if changes were made. You may do so in any
