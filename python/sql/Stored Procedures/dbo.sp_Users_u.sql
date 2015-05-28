@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -19,6 +20,7 @@ CREATE PROCEDURE [dbo].[sp_Users_u] (
 	@PasswordHash char(44),
 	@ErrMsg nvarchar(500) OUTPUT,
 	@ManageAreas xml = NULL,
+	@ManageExternalSystems xml = NULL,
 	@Admin bit = NULL,
 	@Inactive bit = NULL,
 	@Request_ID int = NULL
@@ -44,7 +46,7 @@ DECLARE @StartLanguage smallint
 SELECT @StartLanguage = LangID FROM Language WHERE @Culture=Culture AND Active=1
 
 DECLARE @ManageAreasTable TABLE (
-	CM_ID int NOT NULL
+	CM_ID int NOT NULL PRIMARY KEY
 )
 
 IF @ManageAreas IS NOT NULL BEGIN
@@ -54,6 +56,20 @@ IF @ManageAreas IS NOT NULL BEGIN
 	SELECT DISTINCT
 	N.value('.', 'int') AS CM_ID
 	FROM @ManageAreas.nodes('//CM_ID') AS T(N)
+	INNER JOIN dbo.Community cm ON N.value('.', 'int') = cm.CM_ID
+END
+
+DECLARE @ManageSystemsTable TABLE (
+	SystemCode varchar(30) NOT NULL PRIMARY KEY
+)
+
+IF @ManageExternalSystems IS NOT NULL BEGIN
+	INSERT INTO @ManageSystemsTable
+	        ( SystemCode )
+	SELECT DISTINCT
+	N.value('.', 'varchar(30)') AS SystemCode
+	FROM @ManageAreas.nodes('//SystemCode') AS T(N)
+	INNER JOIN dbo.External_System es ON N.value('.', 'varchar(30)') = es.SystemCode
 END
 
 IF @StartLanguage IS NULL BEGIN
@@ -134,13 +150,22 @@ END ELSE BEGIN
 			ON ma.User_ID=@User_ID AND ma.CM_ID=nt.CM_ID
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (User_ID, CM_ID) VALUES (@User_ID, nt.CM_ID)
-			
 		WHEN NOT MATCHED BY SOURCE AND ma.User_ID=@User_ID THEN
 			DELETE
-			
 			;
 	END
-		
+	
+	IF @ManageExternalSystems IS NOT NULL BEGIN
+		MERGE INTO dbo.Users_ManageExternalSystem me
+		USING (SELECT SystemCode FROM @ManageSystemsTable met
+				WHERE EXISTS(SELECT * FROM dbo.External_System WHERE met.SystemCode=SystemCode)) nt
+			ON me.User_ID=@User_ID AND me.SystemCode=nt.SystemCode
+		WHEN NOT MATCHED BY TARGET THEN
+			INSERT (User_ID, SystemCode) VALUES (@User_ID, nt.SystemCode)
+		WHEN NOT MATCHED BY SOURCE AND me.User_ID=@User_ID THEN
+			DELETE	
+			;
+	END
 END 
 
 SET NOCOUNT OFF
@@ -152,5 +177,6 @@ END
 
 
 GO
+
 GRANT EXECUTE ON  [dbo].[sp_Users_u] TO [web_user]
 GO

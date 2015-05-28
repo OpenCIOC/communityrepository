@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -20,9 +21,15 @@ WHERE User_ID = @User_ID
 SELECT cmn.CM_ID, cmn.Name 
 FROM Users_ManageArea ma
 INNER JOIN Community_Name cmn
-	ON cmn.CM_ID=ma.CM_ID AND cmn.LangID=(SELECT TOP 1 LangID FROM Community_Name 
-									WHERE CM_ID=cmn.CM_ID ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
+	ON cmn.CM_ID=ma.CM_ID
+		AND cmn.LangID=(SELECT TOP 1 LangID FROM Community_Name WHERE CM_ID=cmn.CM_ID ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
 WHERE ma.User_ID=@User_ID
+
+SELECT es.SystemCode, ISNULL(es.SystemName,es.SystemCode) AS SystemName
+FROM dbo.Users_ManageExternalSystem me
+INNER JOIN External_System es
+	ON es.SystemCode=me.SystemCode
+WHERE me.User_ID=@User_ID
 
 SET NOCOUNT OFF
 
@@ -35,5 +42,6 @@ END
 
 
 GO
+
 GRANT EXECUTE ON  [dbo].[sp_Users_s] TO [web_user]
 GO

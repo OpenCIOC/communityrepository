@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -8,7 +9,7 @@ AS
 BEGIN
 	SET NOCOUNT ON
 
-	SELECT [User_ID], UserName, FirstName, LastName, Initials, Email, [Admin], ManageAreaList, Inactive, PasswordHash, PasswordHashRepeat, PasswordHashSalt
+	SELECT [User_ID], UserName, FirstName, LastName, Initials, Email, [Admin], ManageAreaList, ManageExternalSystemList, Inactive, PasswordHash, PasswordHashRepeat, PasswordHashSalt
 	FROM Users WHERE UserName=@UserName
 	
 	SET NOCOUNT OFF
@@ -17,5 +18,6 @@ END
 
 
 GO
+
 GRANT EXECUTE ON  [dbo].[sp_User_Login_s] TO [web_user]
 GO
