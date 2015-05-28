@@ -147,6 +147,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'communitymanager:static', cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
 
     config.add_route('home', '/', pregenerator=passvars_pregen)
+    config.add_route('faq', '/faq', pregenerator=passvars_pregen)
 
     config.add_route('search', '/communities/search', pregenerator=passvars_pregen)
     config.add_route('community_delete', '/communities/{cmid}/delete', pregenerator=passvars_pregen, factory='communitymanager.views.community.CommunityRoot')

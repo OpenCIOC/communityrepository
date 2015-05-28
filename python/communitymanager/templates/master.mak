@@ -87,7 +87,7 @@
     </div>
 
 <footer class="footer">
-<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a><br>${_('The geography data on this site is licensed under a ')}<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">${_('Creative Commons Attribution-ShareAlike 4.0 International License')}</a>.
+<a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br>${_('The geography data on this site is licensed under a ')}<a rel="license" href="https://creativecommons.org/licenses/by/4.0/">${_('Creative Commons Attribution 4.0 International License')}</a>.
 </footer>
 
 </div> <!-- #wrap -->
