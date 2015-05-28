@@ -1,10 +1,18 @@
-# =================================================================
-# Copyright (C) 2011 Community Information Online Consortium (CIOC)
-# http://www.cioc.ca
-# Developed By Katherine Lambacher / KCL Custom Software
-# If you did not receive a copy of the license agreement with this
-# software, please contact CIOC via their website above.
-#==================================================================
+# =========================================================================================
+#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# =========================================================================================
 
 # std lib
 from xml.etree import ElementTree as ET
@@ -50,7 +58,9 @@ Manage Area Detail: %(ManageAreaDetail)s
 
 Go to %(url)s to accept or reject the account request.
 ''')
+
 del _
+
 
 class BaseUserValidator(validators.Schema):
     allow_extra_fields = True
@@ -68,8 +78,10 @@ class BaseUserValidator(validators.Schema):
 class NewUserValidator(BaseUserValidator):
     Admin = validators.Bool()
 
+
 class ManageUsersValidator(NewUserValidator):
     Inactive = validators.Bool()
+
 
 class PasswordValidator(validators.Schema):
     if_key_missing = None
@@ -81,21 +93,23 @@ class PasswordValidator(validators.Schema):
 
     chained_validators = [validators.CheckPassword()]
 
+
 def is_manage_area_detail_required(value_dict, state):
     return value_dict.get('ManageAreaRequest')
+
 
 class RequestAccessValidator(BaseUserValidator):
 
     ManageAreaRequest = validators.Bool()
     ManageAreaDetail = validators.UnicodeString()
 
+    chained_validators = [validators.RequireIfPredicate(is_manage_area_detail_required, 'ManageAreaDetail')]
 
-    chained_validators = [validators.RequireIfPredicate(is_manage_area_detail_required, 'ManageAreaDetail')] 
-
-#captcha validator
+# captcha validator
 TomorrowsDateValidator = validators.Pipe(
-    validators.DateConverter(month_style='dd/mm/yyyy', not_empty=True), 
+    validators.DateConverter(month_style='dd/mm/yyyy', not_empty=True),
     validators.TomorrowsDate(not_empty=True))
+
 
 class ManageUserAddUserWrapper(validators.Schema):
     allow_extra_fields = True
@@ -105,10 +119,11 @@ class ManageUserAddUserWrapper(validators.Schema):
 
     manage_areas = validators.ForEach(validators.IntID())
 
+
 class UpdateProfileRequestAccessBase(validators.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
-    
+
     # need to add user validator when constructing
 
 
@@ -134,13 +149,13 @@ class UserRoot(object):
         if self.user is None:
             raise HTTPNotFound
 
-        self.__acl__ = [(Deny, 'uid:%d' % self.user.User_ID, ALL_PERMISSIONS),(Allow, 'area:admin', ('edit','view')), DENY_ALL]
+        self.__acl__ = [(Deny, 'uid:%d' % self.user.User_ID, ALL_PERMISSIONS), (Allow, 'area:admin', ('edit', 'view')), DENY_ALL]
+
 
 class Users(ViewBase):
     @view_config(route_name="users", renderer='users.mak', permission='view')
     def index(self):
         request = self.request
-
 
         rejected_requests = None
         with request.connmgr.get_connection() as conn:
@@ -158,14 +173,10 @@ class Users(ViewBase):
 
             cursor.close()
 
-
         for user in users:
             user.ManageCommunities = [x['Name'] for x in xml_to_dict_list(user.ManageCommunities)]
 
-
         return {'users': users, 'user_requests': user_requests, 'rejected_requests': rejected_requests}
-
-
 
     @view_config(route_name="user_new", renderer='user.mak', request_method='POST', permission='edit')
     @view_config(route_name="user", renderer='user.mak', request_method='POST', permission='edit')
@@ -179,8 +190,7 @@ class Users(ViewBase):
         is_request = not not request.matched_route.name == 'request_account'
         is_account = not not request.matched_route.name == 'account'
 
-        reqid=None
-
+        reqid = None
 
         if is_new:
             reqid = self._get_request_id()
@@ -194,8 +204,7 @@ class Users(ViewBase):
                 raise HTTPNotFound()
 
         if is_new and request.params.get('Reject'):
-            return HTTPFound(location=request.route_url('request_reject', _query=[('reqid',reqid)]))
-
+            return HTTPFound(location=request.route_url('request_reject', _query=[('reqid', reqid)]))
 
         extra_validators = {}
         if is_new:
@@ -226,7 +235,6 @@ class Users(ViewBase):
             fields = schema.fields['user'].fields.keys()
             args = [user.get(x) for x in fields]
 
-
             if not is_request and not is_account:
                 root = ET.Element('ManageAreas')
                 if not user.get('Admin'):
@@ -245,7 +253,6 @@ class Users(ViewBase):
                 fields.append('MODIFIED_BY')
                 args.append(request.user.UserName)
 
-
             password = None
             if not is_request:
                 if is_new:
@@ -256,10 +263,9 @@ class Users(ViewBase):
                 if password:
                     salt = security.MakeSalt()
                     hash = security.Crypt(salt, password)
-                    hash_args =  [security.DEFAULT_REPEAT, salt, hash]
+                    hash_args = [security.DEFAULT_REPEAT, salt, hash]
                 else:
                     hash_args = [None, None, None]
-
 
                 fields.extend(['PasswordHashRepeat', 'PasswordHashSalt', 'PasswordHash'])
                 args.extend(hash_args)
@@ -271,7 +277,6 @@ class Users(ViewBase):
                 fields.append('User_ID')
                 args.append(uid)
 
-            
             if is_request:
                 sql = '''
                     DECLARE @RT int, @ErrMsg nvarchar(500), @Request_ID int
@@ -290,26 +295,25 @@ class Users(ViewBase):
 
                     SELECT @RT AS [Return], @ErrMsg AS ErrMsg, @User_ID AS [User_ID]
 
-                ''' 
-            
+                '''
+
             sql = sql % (user_id_sql, ','.join('@%s=?' % x for x in fields))
 
             with request.connmgr.get_connection() as conn:
                 result = conn.execute(sql, args).fetchone()
 
-
             if not result.Return:
 
                 if is_new:
-                    ### force to language of request?
-                    gettext = get_translate_fn(request, user['Culture']) 
+                    # force to language of request?
+                    gettext = get_translate_fn(request, user['Culture'])
 
                     subject = gettext('Your CIOC Community Manager Site Account')
                     welcome_message = gettext(welcome_email_template) % {
-                                            'FirstName': user['FirstName'], 
-                                            'UserName': user['UserName'], 
-                                            'Password': password,
-                                            'url': request.route_url('login')}
+                        'FirstName': user['FirstName'],
+                        'UserName': user['UserName'],
+                        'Password': password,
+                        'url': request.route_url('login')}
 
                     email.email('admin@cioc.ca', user['Email'], subject, welcome_message)
                     request.session.flash(_('User Successfully Added'))
@@ -322,16 +326,14 @@ class Users(ViewBase):
                     email.email('admin@cioc.ca', 'admin@cioc.ca', subject, request_message)
 
                     return HTTPFound(location=request.route_url('request_account_thanks'))
-                
+
                 if is_account:
                     request.session.flash(_('Account successfully updated'))
                 else:
                     request.session.flash(_('User successfully modified'))
 
                 return HTTPFound(location=request.current_route_url())
-                
 
-            
             model_state.add_error_for('*', _('Could not add user: ') + result.ErrMsg)
             manage_areas = form_data.get('manage_areas') or []
 
@@ -342,7 +344,6 @@ class Users(ViewBase):
             if is_account:
                 manage_areas = request.user.ManageAreaList or []
             log.debug('errors: %s', model_state.form.errors)
-
 
         account_request = user = None
         cm_name_map = {}
@@ -357,11 +358,10 @@ class Users(ViewBase):
                     else:
                         user = request.context.user
 
-                cm_name_map = {str(x[0]): x[1] for x in 
-                               conn.execute('EXEC sp_Community_ls_Names ?', 
+                cm_name_map = {str(x[0]): x[1] for x in
+                               conn.execute('EXEC sp_Community_ls_Names ?',
                                             ','.join(str(x) for x in manage_areas)).fetchall()}
 
-            
         if is_new:
             if not account_request:
                 request.session.flash(_('Account Request Not Found'), 'errorqueue')
@@ -369,7 +369,6 @@ class Users(ViewBase):
         elif not is_request:
             if not user:
                 raise HTTPNotFound()
-
 
         if is_new:
             title_text = _('Add New User')
@@ -380,10 +379,9 @@ class Users(ViewBase):
         else:
             title_text = _('Modify User')
 
-        return {'title_text': title_text, 'account_request': account_request, 
-                'user': user, 'cm_name_map': cm_name_map, 'is_admin': not is_request and not is_account, 
-                'is_account': is_account  }
-
+        return {'title_text': title_text, 'account_request': account_request,
+                'user': user, 'cm_name_map': cm_name_map, 'is_admin': not is_request and not is_account,
+                'is_account': is_account}
 
     @view_config(route_name="user_new", renderer='user.mak', permission='edit')
     @view_config(route_name="user", renderer='user.mak', permission='edit')
@@ -433,7 +431,6 @@ class Users(ViewBase):
                 manage_areas = [str(x[0]) for x in cm_tmp]
                 cm_name_map = {str(x[0]): x[1] for x in cm_tmp}
 
-
         if is_new:
             if not account_request:
                 request.session.flash(_('Account Request Not Found'), 'errorqueue')
@@ -441,7 +438,6 @@ class Users(ViewBase):
         elif not is_request:
             if not user:
                 return HTTPNotFound()
-
 
         data = request.model_state.data
         if is_new:
@@ -465,29 +461,27 @@ class Users(ViewBase):
         else:
             title_text = _('Modify User')
 
-        return {'title_text': title_text, 'account_request': account_request, 
+        return {'title_text': title_text, 'account_request': account_request,
                 'cm_name_map': cm_name_map, 'user': user, 'is_admin': not is_request and not is_account,
                 'is_account': is_account}
-
 
     @view_config(route_name='request_account_thanks', renderer='request_thanks.mak', permission=NO_PERMISSION_REQUIRED)
     def thanks(self):
         return {}
 
-
     @view_config(route_name='request_reject', renderer='confirmdelete.mak', request_method='POST', permission='edit')
     def reject_confirm(self):
-        request = self.request 
+        request = self.request
 
         reqid = self._get_request_id()
 
         sql = '''
-			Declare @ErrMsg as nvarchar(500), 
-			@RC as int 
+            Declare @ErrMsg as nvarchar(500),
+            @RC as int
 
-			EXECUTE @RC = dbo.sp_Users_AccountRequest_Reject ?, ?, @ErrMsg=@ErrMsg OUTPUT  
+            EXECUTE @RC = dbo.sp_Users_AccountRequest_Reject ?, ?, @ErrMsg=@ErrMsg OUTPUT
 
-			SELECT @RC as [Return], @ErrMsg AS ErrMsg
+            SELECT @RC as [Return], @ErrMsg AS ErrMsg
         '''
         with request.connmgr.get_connection() as conn:
             result = conn.execute(sql, reqid, request.user.UserName).fetchone()
@@ -507,13 +501,13 @@ class Users(ViewBase):
 
     @view_config(route_name='request_reject', renderer='confirmdelete.mak', permission='edit')
     def reject(self):
-        request = self.request 
+        request = self.request
         _ = request.translate
-        
+
         reqid = self._get_request_id()
 
-        return {'title_text': _('Reject Account Request'), 
-                'prompt': _('Are you sure you want to reject this account request?'), 
+        return {'title_text': _('Reject Account Request'),
+                'prompt': _('Are you sure you want to reject this account request?'),
                 'continue_prompt': _('Reject'),
                 'extra_hidden_params': [('reqid', reqid)]}
 

@@ -1,12 +1,22 @@
-# =================================================================
-# Copyright (C) 2011 Community Information Online Consortium (CIOC)
-# http://www.cioc.ca
-# Developed By Katherine Lambacher / KCL Custom Software
-# If you did not receive a copy of the license agreement with this
-# software, please contact CIOC via their website above.
-#==================================================================
+# =========================================================================================
+#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# =========================================================================================
+
 import os
 from ConfigParser import SafeConfigParser as ConfigParser
+
 
 class ConfigManager(object):
 	def __init__(self, config_file):
@@ -33,6 +43,8 @@ class ConfigManager(object):
 
 
 _config = None
+
+
 def get_config(config_file, include_changed=False):
 	global _config
 	if not _config:
@@ -44,6 +56,6 @@ def get_config(config_file, include_changed=False):
 		changed = _config._changed != before
 
 	if include_changed:
-		return _config.config_dict.copy(),changed
-	
+		return (_config.config_dict.copy(), changed)
+
 	return _config.config_dict.copy()
