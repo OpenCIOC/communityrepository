@@ -12,8 +12,15 @@ CREATE TABLE [dbo].[Community]
 [Source] [nvarchar] (200) COLLATE Latin1_General_100_CI_AI NULL,
 [Code] [varchar] (20) COLLATE Latin1_General_100_CI_AI NULL,
 [SortCode] [varchar] (max) COLLATE Latin1_General_100_CI_AI NULL,
-[Depth] [smallint] NULL
+[Depth] [smallint] NULL,
+[PrimaryAreaType] [varchar] (30) COLLATE Latin1_General_100_CI_AI NULL,
+[SubAreaType] [varchar] (30) COLLATE Latin1_General_100_CI_AI NULL,
+[Notes] [nvarchar] (max) COLLATE Latin1_General_100_CI_AI NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+ALTER TABLE [dbo].[Community] ADD
+CONSTRAINT [FK_Community_Community_Type_Primary] FOREIGN KEY ([PrimaryAreaType]) REFERENCES [dbo].[Community_Type] ([Code])
+ALTER TABLE [dbo].[Community] ADD
+CONSTRAINT [FK_Community_Community_Type_Sub] FOREIGN KEY ([SubAreaType]) REFERENCES [dbo].[Community_Type] ([Code])
 GO
 
 SET QUOTED_IDENTIFIER ON

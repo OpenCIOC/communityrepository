@@ -5,7 +5,7 @@
   <DefaultSchema>dbo</DefaultSchema>
   <DefaultUser>dbo</DefaultUser>
   <DefaultFilegroup>PRIMARY</DefaultFilegroup>
-  <DatabaseVersion>10</DatabaseVersion>
+  <DatabaseVersion>12</DatabaseVersion>
   <MaxDataFileSize>10485760</MaxDataFileSize>
   <WriteToFileOptions>
     <Prefixes>
