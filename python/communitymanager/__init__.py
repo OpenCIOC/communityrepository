@@ -40,11 +40,17 @@ def groupfinder(userid, request):
         if user.ManageAreaList:
             groups = ['area:' + x for x in user.ManageAreaList]
 
+        if user.ManageExternalSystemList:
+            groups.extend(['area-external:' + x for x in user.ManageExternalSystemList])
+
         if user.Admin:
             groups.append('area:admin')
 
         if user.Admin or user.ManageAreaList:
             groups.append('area:manager')
+
+        if user.Admin or user.ManageExternalSystemList:
+            groups.append('area:externalsystem')
 
         groups.append('uid:%d' % user.User_ID)
 

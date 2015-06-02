@@ -104,6 +104,7 @@ class ManageUserAddUserWrapper(validators.Schema):
     # need to add user validator when constructing
 
     manage_areas = validators.ForEach(validators.IntID())
+    manage_external = validators.ForEach(validators.String(max=30))
 
 class UpdateProfileRequestAccessBase(validators.Schema):
     allow_extra_fields = True
@@ -128,6 +129,10 @@ class UserRoot(object):
             cursor.nextset()
 
             self.manage_areas = cursor.fetchall()
+
+            cursor.nextset()
+
+            self.manage_external = cursor.fetchall()
 
             cursor.close()
 
@@ -161,6 +166,7 @@ class Users(ViewBase):
 
         for user in users:
             user.ManageCommunities = [x['Name'] for x in xml_to_dict_list(user.ManageCommunities)]
+            user.ManageExternalSystems = [x['Name'] for x in xml_to_dict_list(user.ManageExternalSystems)]
 
 
         return {'users': users, 'user_requests': user_requests, 'rejected_requests': rejected_requests}
@@ -236,6 +242,18 @@ class Users(ViewBase):
 
                 fields.append('ManageAreas')
                 args.append(ET.tostring(root))
+
+                root = ET.Element('ManageExternal')
+                if not user.get('Admin'):
+                    for code in form_data.get('manage_external') or []:
+                        if code:
+                            ET.SubElement(root, 'SystemCode').text = unicode(code)
+
+                fields.append('ManageExternalSystems')
+                args.append(ET.tostring(root))
+
+                log.debug('args: %s', args)
+
 
             if is_new:
                 fields.append('Request_ID')
@@ -412,11 +430,21 @@ class Users(ViewBase):
         user = None
         cm_name_map = {}
         manage_areas = []
+        manage_external = []
+        external_systems = []
 
         if not is_request:
             if is_new:
                 with request.connmgr.get_connection() as conn:
-                    account_request = conn.execute('EXEC sp_Users_AccountRequest_s ?', reqid).fetchone()
+                    cursor = conn.execute('EXEC sp_Users_AccountRequest_s ?; sp_ExternalSystem_l', reqid)
+                    account_request = cursor.fetchone()
+
+                    cursor.nextset()
+
+                    external_systems = cursor.fetchall()
+
+                    cursor.close()
+
             else:
                 if is_account:
                     with request.connmgr.get_connection() as conn:
@@ -425,12 +453,24 @@ class Users(ViewBase):
 
                         cursor.nextset()
                         cm_tmp = cursor.fetchall()
+
+                        cursor.nextset()
+                        ex_tmp = cursor.fetchall()
                         cursor.close()
                 else:
+                    with request.connmgr.get_connection() as conn:
+                        cursor = conn.execute('EXEC sp_ExternalSystem_l')
+
+                        external_systems = cursor.fetchall()
+
+                        cursor.close()
+
                     user = request.context.user
                     cm_tmp = request.context.manage_areas
+                    ex_tmp = request.context.manage_external
 
                 manage_areas = [str(x[0]) for x in cm_tmp]
+                manage_external = [str(x[0]) for x in ex_tmp]
                 cm_name_map = {str(x[0]): x[1] for x in cm_tmp}
 
 
@@ -455,6 +495,7 @@ class Users(ViewBase):
         elif not is_request:
             data['user'] = user
             data['manage_areas'] = manage_areas
+            data['manage_external'] = manage_external
 
         if is_new:
             title_text = _('Add New User')
@@ -467,7 +508,7 @@ class Users(ViewBase):
 
         return {'title_text': title_text, 'account_request': account_request, 
                 'cm_name_map': cm_name_map, 'user': user, 'is_admin': not is_request and not is_account,
-                'is_account': is_account}
+                'is_account': is_account, 'external_systems': external_systems}
 
 
     @view_config(route_name='request_account_thanks', renderer='request_thanks.mak', permission=NO_PERMISSION_REQUIRED)

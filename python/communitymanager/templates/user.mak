@@ -126,6 +126,18 @@ ${self.makeMgmtInfo(user)}
         ${cc.make_cm_checklist_ui('manage_areas', cm_name_map)}
 	</td>
 </tr>
+%if external_systems:
+<tr>
+	<td class="ui-widget-header field">${_('Manage External Systems')}</th>
+	<td class="ui-widget-content">
+        <ul>
+        %for external in external_systems:
+        <li>${renderer.ms_checkbox('manage_external', external.SystemCode, label=' ' + external.SystemName)}</li>
+        %endfor
+        </ul>
+	</td>
+</tr>
+%endif
 <tr>
 	<td class="ui-widget-header field">${_('Admin User')}</th>
 	<td class="ui-widget-content">

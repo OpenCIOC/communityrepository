@@ -68,7 +68,7 @@ IF @ManageExternalSystems IS NOT NULL BEGIN
 	        ( SystemCode )
 	SELECT DISTINCT
 	N.value('.', 'varchar(30)') AS SystemCode
-	FROM @ManageAreas.nodes('//SystemCode') AS T(N)
+	FROM @ManageExternalSystems.nodes('//SystemCode') AS T(N)
 	INNER JOIN dbo.External_System es ON N.value('.', 'varchar(30)') = es.SystemCode
 END
 
@@ -159,7 +159,7 @@ END ELSE BEGIN
 		MERGE INTO dbo.Users_ManageExternalSystem me
 		USING (SELECT SystemCode FROM @ManageSystemsTable met
 				WHERE EXISTS(SELECT * FROM dbo.External_System WHERE met.SystemCode=SystemCode)) nt
-			ON me.User_ID=@User_ID AND me.SystemCode=nt.SystemCode
+			ON me.SystemCode=nt.SystemCode AND me.User_ID=@User_ID
 		WHEN NOT MATCHED BY TARGET THEN
 			INSERT (User_ID, SystemCode) VALUES (@User_ID, nt.SystemCode)
 		WHEN NOT MATCHED BY SOURCE AND me.User_ID=@User_ID THEN
@@ -177,6 +177,7 @@ END
 
 
 GO
+
 
 GRANT EXECUTE ON  [dbo].[sp_Users_u] TO [web_user]
 GO

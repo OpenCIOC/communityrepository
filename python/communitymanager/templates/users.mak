@@ -52,6 +52,7 @@
 <th class="ui-widget-header">${_('Admin')}</th>
 <th class="ui-widget-header">${_('Active')}</th>
 <th class="ui-widget-header">${_('Manage Communities')}</th>
+<th class="ui-widget-header">${_('Manage External Systems')}</th>
 <th class="ui-widget-header">${_('Action')}</th>
 </tr>
 </thead>
@@ -66,6 +67,7 @@
 <td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${_('Yes') if user.Admin else _('No')}</td>
 <td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${_('Yes') if not user.Inactive else _('No')}</td>
 <td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${u', '.join(user.ManageCommunities)}</td>
+<td class="ui-widget-content ${'inactive' if user.Inactive else '' |n}">${u', '.join(user.ManageExternalSystems)}</td>
 <td class="ui-widget-content">
 %if my_uid!=user.User_ID:
     <a href="${request.route_path('user', uid=user.User_ID)}">${_('Edit')}</a>

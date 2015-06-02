@@ -186,6 +186,9 @@ class CommunityManagerRequest(Request):
                 if user.ManageAreaList:
                     user.ManageAreaList = user.ManageAreaList.split(',')
 
+                if user.ManageExternalSystemList:
+                    user.ManageExternalSystemList = user.ManageExternalSystemList.split(',')
+
             return user
 
         return None
