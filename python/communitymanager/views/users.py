@@ -436,7 +436,7 @@ class Users(ViewBase):
         if not is_request:
             if is_new:
                 with request.connmgr.get_connection() as conn:
-                    cursor = conn.execute('EXEC sp_Users_AccountRequest_s ?; sp_ExternalSystem_l', reqid)
+                    cursor = conn.execute('EXEC sp_Users_AccountRequest_s ?; sp_External_System_l', reqid)
                     account_request = cursor.fetchone()
 
                     cursor.nextset()
@@ -459,7 +459,7 @@ class Users(ViewBase):
                         cursor.close()
                 else:
                     with request.connmgr.get_connection() as conn:
-                        cursor = conn.execute('EXEC sp_ExternalSystem_l')
+                        cursor = conn.execute('EXEC sp_External_System_l')
 
                         external_systems = cursor.fetchall()
 
