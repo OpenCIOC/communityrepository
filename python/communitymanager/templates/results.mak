@@ -51,7 +51,7 @@ ${renderer.text('terms')}
 <script type="text/javascript" src="${request.static_path('communitymanager:static/js/browse.js')}"></script>
 <script type="text/javascript">
 jQuery(function($) {
-    var default_open = ${json.dumps(request.user.ManageAreaList)|n},
+    var default_open = ${json.dumps(request.user.ManageAreaList if request.user else [])|n},
         details_url = ${json.dumps(request.route_path('json_community', cmid='CMID'))|n};
     init_browse(details_url, true, default_open);
 });

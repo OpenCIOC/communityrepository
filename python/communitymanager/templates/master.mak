@@ -49,10 +49,10 @@
 <header>
 <h1 style="margin: 0; padding-left: 1em;" class="ui-widget-header"><a href="${request.route_path('home')}">${_('CIOC Communities Repository')}</a></h1>
 <nav class="site-nav"><%block name="sitenav">
-%if request.user:
 <%block name="browse"><a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('communities')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Search')}</span></a></%block>
-<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('suggest')}"><span class="ui-icon ui-icon-comment ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggest Change')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
+%if request.user:
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('suggest')}"><span class="ui-icon ui-icon-comment ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggest Change')}</span></a>
 %if request.user.Admin or request.user.ManageAreaList:
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('review_suggestions')}"><span class="ui-icon ui-icon-mail-open ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggestions')}</span></a>
 %endif
@@ -86,8 +86,8 @@
 
     </div>
 
-<footer style="padding-left: 1em;">
-<p><small><em>${_('All content copyright &copy; 2003-2013 Community Information Online Consortium; this data may be used by specific permission only.') | n}</em></small></p>
+<footer class="footer">
+<a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br>${_('The geography data on this site is licensed under a ')}<a rel="license" href="https://creativecommons.org/licenses/by/4.0/">${_('Creative Commons Attribution 4.0 International License')}</a>.
 </footer>
 
 </div> <!-- #wrap -->
