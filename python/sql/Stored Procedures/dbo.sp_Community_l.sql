@@ -1,10 +1,12 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
 
 CREATE PROCEDURE [dbo].[sp_Community_l] (
-	@User_ID int
+	@User_ID int,
+	@SystemCode varchar(30) = NULL
 )
 AS BEGIN
 
@@ -18,10 +20,13 @@ SELECT cm.CM_ID, cmn.Name, cm.AlternativeArea, cm.ParentCommunity,
 					WHERE u.[User_ID]=uma.[User_ID] AND (uma.CM_ID=cm.CM_ID OR EXISTS(SELECT * FROM Community_ParentList cmpl WHERE cmpl.Parent_CM_ID=uma.CM_ID AND cmpl.CM_ID=cm.CM_ID))
 				)
 			)
-		) THEN 1 ELSE 0 END AS CanEdit
+		) THEN 1 ELSE 0 END AS CanEdit,
+	CAST(CASE WHEN ec.EXT_ID IS NOT NULL THEN 1 ELSE 0 END AS bit) AS ExternalSystemMatch
 FROM Community cm
 INNER JOIN Community_Name cmn
 	ON cm.CM_ID=cmn.CM_ID AND cmn.LangID=(SELECT TOP 1 LangID FROM Community_Name WHERE CM_ID=cm.CM_ID ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
+LEFT JOIN dbo.External_Community ec
+	ON ec.CM_ID = cm.CM_ID AND ec.SystemCode=@SystemCode
 ORDER BY ParentCommunity, cmn.Name
 
 SET NOCOUNT OFF
@@ -34,5 +39,6 @@ END
 
 
 GO
+
 GRANT EXECUTE ON  [dbo].[sp_Community_l] TO [web_user]
 GO
