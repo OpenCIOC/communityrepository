@@ -1,1 +1,0 @@
-CommunityManager README

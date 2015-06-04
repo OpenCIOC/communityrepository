@@ -1,4 +1,21 @@
 <!doctype html>
+<%doc>
+  =========================================================================================
+   Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  =========================================================================================
+</%doc>
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -49,10 +66,10 @@
 <header>
 <h1 style="margin: 0; padding-left: 1em;" class="ui-widget-header"><a href="${request.route_path('home')}">${_('CIOC Communities Repository')}</a></h1>
 <nav class="site-nav"><%block name="sitenav">
-%if request.user:
 <%block name="browse"><a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('communities')}"><span class="ui-icon ui-icon-search ui-button-icon-primary"></span><span class="ui-button-text">${_('Search')}</span></a></%block>
-<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('suggest')}"><span class="ui-icon ui-icon-comment ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggest Change')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
+%if request.user:
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('suggest')}"><span class="ui-icon ui-icon-comment ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggest Change')}</span></a>
 %if request.user.Admin or request.user.ManageAreaList:
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('review_suggestions')}"><span class="ui-icon ui-icon-mail-open ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggestions')}</span></a>
 %endif
@@ -86,8 +103,8 @@
 
     </div>
 
-<footer style="padding-left: 1em;">
-<p><small><em>${_('All content copyright &copy; 2003-2013 Community Information Online Consortium; this data may be used by specific permission only.') | n}</em></small></p>
+<footer class="footer">
+<a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/80x15.png" /></a><br>${_('The geography data on this site is licensed under a ')}<a rel="license" href="https://creativecommons.org/licenses/by/4.0/">${_('Creative Commons Attribution 4.0 International License')}</a>.
 </footer>
 
 </div> <!-- #wrap -->

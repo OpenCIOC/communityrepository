@@ -1,10 +1,18 @@
-# =================================================================
-# Copyright (C) 2011 Community Information Online Consortium (CIOC)
-# http://www.cioc.ca
-# Developed By Katherine Lambacher / KCL Custom Software
-# If you did not receive a copy of the license agreement with this
-# software, please contact CIOC via their website above.
-# ==================================================================
+# =========================================================================================
+#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# =========================================================================================
 
 # std lib
 import os
@@ -149,7 +157,37 @@ class Downloads(ViewBase):
         request = self.request
 
         # TODO Add Schema?
-        data = [u'<?xml version="1.0" encoding="UTF-8"?><community_information source=%s>' % quoteattr(request.host)]
+        data = [
+            u'''
+<?xml version="1.0" encoding="UTF-8"?><community_information source=%s>
+<!--
+    All user geography data contributed to the CIOC Community Repository is cc-by 4.0 licensed.
+    For details of the license see: https://creativecommons.org/licenses/by/4.0/
+
+    Our cc-by 4.0 licensing, while intentionally permissive, does *require attribution*:
+
+    "Attribution - You must give appropriate credit, provide a link to the
+            license, and indicate if changes were made. You may do so in any
+            reasonable manner, but not in any way that suggests the licensor
+            endorses you or your use."
+
+    Specifically the attribution requirements are as follows:
+
+      1.  Visually display or otherwise indicate the source of the content as
+          coming from the CIOC Community Repository. This requirement is
+          satisfied with a discreet text blurb, or some other unobtrusive but
+          clear visual indication.
+
+      2.  Ensure that any Internet use of the content includes a hyperlink directly
+          to the CIOC Community Repository (https://community-repository.cioc.ca/) in
+          standard HTML (i.e. not through a Tinyurl or other such indirect hyperlink,
+          form of obfuscation or redirection), without any "nofollow" command or any
+          other such means of avoiding detection by search engines, and visible even
+          with JavaScript disabled.
+
+    Change suggestions can be submitted to https://community-repository.cioc.ca/suggest.
+-->
+            ''' % quoteattr(request.host)]
         with self.request.connmgr.get_connection() as conn:
             cursor = conn.execute('''
                                   SELECT CAST(data AS nvarchar(max)) AS data  FROM dbo.vw_CommunityXml

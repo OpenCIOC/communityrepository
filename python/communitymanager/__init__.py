@@ -1,25 +1,31 @@
-# =================================================================
-# Copyright (C) 2011 Community Information Online Consortium (CIOC)
-# http://www.cioc.ca
-# Developed By Katherine Lambacher / KCL Custom Software
-# If you did not receive a copy of the license agreement with this
-# software, please contact CIOC via their website above.
-# ==================================================================
+# =========================================================================================
+#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# =========================================================================================
 
 # Python STD Lib
-import os
 import logging
 
 # 3rd party
 from pyramid.config import Configurator
-from pyramid.response import Response
 from pyramid.authentication import SessionAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
-from pyramid.security import NO_PERMISSION_REQUIRED, Authenticated, Allow, DENY_ALL
-from pyramid.view import view_config
+from pyramid.security import NO_PERMISSION_REQUIRED, Everyone, Authenticated, Allow, DENY_ALL
 
-from pyramid_beaker import session_factory_from_settings
 from pyramid_multiauth import MultiAuthenticationPolicy
+
+from redis import ConnectionPool
 
 import formencode.api
 
@@ -78,6 +84,13 @@ def check_basic_auth(credentials, request):
 
 
 class RootFactory(object):
+    __acl__ = [(Allow, Everyone, 'view'), (Allow, 'area:manager', ('view', 'edit')), DENY_ALL]
+
+    def __init__(self, request):
+        pass
+
+
+class LoggedInRootFactory(object):
     __acl__ = [(Allow, Authenticated, 'view'), (Allow, 'area:manager', ('view', 'edit')), DENY_ALL]
 
     def __init__(self, request):
@@ -91,17 +104,37 @@ class OnlyAdminRootFactory(object):
         pass
 
 
+def get_redis_pool(config):
+    url = config.get('session.url', '172.23.16.12:6379')
+
+    host, port = url.split(':')
+    redispool = ConnectionPool(host=host, port=int(port))
+
+    return redispool
+
+
+def get_session_settings(cnf, settings):
+    settings['redis.sessions.connection_pool'] = get_redis_pool(cnf)
+
+    session_secret = cnf.get('session.secret')
+    if session_secret:
+        settings['redis.sessions.secret'] = session_secret
+
+    settings['redis.sessions.prefix'] = const._app_name + '-session:'
+
+    cookie_secure = cnf.get('session.cookie_secure')
+    if cookie_secure:
+        settings['redis.sessions.cookie_secure'] = cookie_secure
+
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
 
     const.update_cache_values()
-    settings['beaker.session.lock_dir'] = const.session_lock_dir
     cnf = ciocconfig.get_config(const._config_file)
-    redis_url = cnf.get('session.url')
-    if redis_url:
-        settings['beaker.session.url'] = redis_url
-    session_factory = session_factory_from_settings(settings)
+
+    get_session_settings(cnf, settings)
 
     policies = [
         SessionAuthenticationPolicy(callback=groupfinder, debug=True),
@@ -111,11 +144,13 @@ def main(global_config, **settings):
     authn_policy = MultiAuthenticationPolicy(policies)
     authz_policy = ACLAuthorizationPolicy()
 
-    config = Configurator(settings=settings, session_factory=session_factory,
+    config = Configurator(settings=settings,
                           root_factory=RootFactory,
                           request_factory='communitymanager.request.CommunityManagerRequest',
                          authentication_policy=authn_policy,
                          authorization_policy=authz_policy)
+
+    config.include('pyramid_redis_sessions')
 
     passvars_pregen = request.passvars_pregen
 
@@ -126,6 +161,7 @@ def main(global_config, **settings):
     config.add_static_view('static', 'communitymanager:static', cache_max_age=3600, permission=NO_PERMISSION_REQUIRED)
 
     config.add_route('home', '/', pregenerator=passvars_pregen)
+    config.add_route('faq', '/faq', pregenerator=passvars_pregen)
 
     config.add_route('search', '/communities/search', pregenerator=passvars_pregen)
     config.add_route('community_delete', '/communities/{cmid}/delete', pregenerator=passvars_pregen, factory='communitymanager.views.community.CommunityRoot')
@@ -134,7 +170,7 @@ def main(global_config, **settings):
 
     config.add_route('communities', '/communities', pregenerator=passvars_pregen)
 
-    config.add_route('suggest', '/suggest', pregenerator=passvars_pregen)
+    config.add_route('suggest', '/suggest', pregenerator=passvars_pregen, factory=LoggedInRootFactory)
     config.add_route('complete_suggestion', '/review/complete', pregenerator=passvars_pregen)
     config.add_route('review_suggestions', '/review', pregenerator=passvars_pregen)
 
@@ -144,7 +180,7 @@ def main(global_config, **settings):
 
     config.add_route('user', '/users/{uid}', pregenerator=passvars_pregen, factory='communitymanager.views.users.UserRoot')
 
-    config.add_route('account', '/account', pregenerator=passvars_pregen)
+    config.add_route('account', '/account', pregenerator=passvars_pregen, factory=LoggedInRootFactory)
 
     config.add_route('request_account', '/request_account', pregenerator=passvars_pregen)
     config.add_route('request_account_thanks', '/request_account/thanks', pregenerator=passvars_pregen)

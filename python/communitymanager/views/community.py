@@ -1,10 +1,18 @@
-# =================================================================
-# Copyright (C) 2011 Community Information Online Consortium (CIOC)
-# http://www.cioc.ca
-# Developed By Katherine Lambacher / KCL Custom Software
-# If you did not receive a copy of the license agreement with this
-# software, please contact CIOC via their website above.
-#==================================================================
+# =========================================================================================
+#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# =========================================================================================
 
 # std lib
 import xml.etree.cElementTree as ET
@@ -15,17 +23,17 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.security import Allow, DENY_ALL, NO_PERMISSION_REQUIRED
 from markupsafe import Markup
 
-from formencode.variabledecode import variable_decode   
+from formencode.variabledecode import variable_decode
 
 # this app
 from communitymanager.views.base import ViewBase, xml_to_dict_list
 from communitymanager.lib import validators
 
-
 import logging
 log = logging.getLogger('communitymanager.views.community')
 
-class  CommunityRoot(object):
+
+class CommunityRoot(object):
     def __init__(self, request):
         cm_id = request.matchdict.get('cmid')
 
@@ -61,7 +69,7 @@ class  CommunityRoot(object):
 
                 cursor.nextset()
 
-                self.descriptions = {x.Culture.replace('-','_'): x for x in cursor.fetchall()}
+                self.descriptions = {x.Culture.replace('-', '_'): x for x in cursor.fetchall()}
 
                 cursor.nextset()
 
@@ -75,27 +83,29 @@ class  CommunityRoot(object):
 
             # and this one
             parents.append((cm_id,))
-        
+
         self.__acl__ = [(Allow, 'area:' + str(x[0]), 'edit') for x in parents]
         self.__acl__.append((Allow, 'area:admin', 'edit'))
         self.__acl__.append(DENY_ALL)
+
 
 def cannot_save_without_parent(value_dict, state):
     user = state.request.user
     return not (user and user.Admin)
 
+
 class CommunityBaseSchema(validators.Schema):
-    
+
     ParentCommunity = validators.IntID()
     ParentCommunityName = validators.UnicodeString()
     ProvinceState = validators.IntID()
 
     chained_validators = [validators.RequireIfPredicate(cannot_save_without_parent, ['ParentCommunity'])]
 
-    
 
 class CommunityDescriptionSchema(validators.Schema):
     Name = validators.UnicodeString(not_empty=True, max=200)
+
 
 class AltNameSchema(validators.Schema):
     if_key_missing = None
@@ -104,7 +114,8 @@ class AltNameSchema(validators.Schema):
     Culture = validators.ActiveCulture()
     AltName = validators.UnicodeString(max=200)
 
-    #chained_validators = [validators.RequireIfPredicate(lambda x,y: not x.get('Delete'), ['AltName', 'LangID'])]
+    # chained_validators = [validators.RequireIfPredicate(lambda x,y: not x.get('Delete'), ['AltName', 'LangID'])]
+
 
 class CommunitySchema(validators.Schema):
     allow_extra_fields = True
@@ -157,14 +168,12 @@ class Community(ViewBase):
             log.debug('community')
             model_state.schema = CommunitySchema()
 
-        
         if model_state.validate():
             data = model_state.form.data
             cm_data = data.get('community', {})
-            args = [cm_id if cm_id != 'new' else None, 
-                    request.user.User_ID, is_alt_area, cm_data.get('ParentCommunity'), 
+            args = [cm_id if cm_id != 'new' else None,
+                    request.user.User_ID, is_alt_area, cm_data.get('ParentCommunity'),
                     cm_data.get('ProvinceState'), data.get('ReasonForChange')]
-
 
             root = ET.Element('DESCS')
 
@@ -190,8 +199,6 @@ class Community(ViewBase):
 
             args.append(ET.tostring(root))
 
-
-
             if is_alt_area:
                 root = ET.Element('ALTAREAS')
                 for area in data.get('alt_areas') or []:
@@ -202,7 +209,6 @@ class Community(ViewBase):
             else:
                 args.append(None)
 
-
             sql = '''
                 DECLARE @RC int, @CM_ID int, @ErrMsg nvarchar(500)
 
@@ -212,7 +218,7 @@ class Community(ViewBase):
 
                 SELECT @RC AS [Return], @CM_ID AS CM_ID, @ErrMsg AS ErrMsg
 
-                ''' % (', '.join('?' * (len(args)-1)))
+                ''' % (', '.join('?' * (len(args) - 1)))
 
             with request.connmgr.get_connection() as conn:
                 result = conn.execute(sql, args).fetchone()
@@ -240,9 +246,6 @@ class Community(ViewBase):
 
             data['alt_areas'] = alt_areas
             data['alt_names'] = decoded.get('alt_names') or []
-            
-
-
 
         community = request.context.community
         if cm_id != 'new':
@@ -256,20 +259,14 @@ class Community(ViewBase):
             if is_alt_area:
                 alt_area_name_map = {str(x[0]): x[1] for x in conn.execute('EXEC sp_Community_ls_Names ?', ','.join(str(x) for x in alt_areas)).fetchall()}
 
-
         if community:
             community.ChildCommunities = xml_to_dict_list(community.ChildCommunities)
             community.AltSearchArea = xml_to_dict_list(community.AltSearchArea)
 
         log.debug('errors:', model_state.form.errors)
 
-        return {'community': community, 'alt_area_name_map': alt_area_name_map, 
+        return {'community': community, 'alt_area_name_map': alt_area_name_map,
                 'is_alt_area': is_alt_area, 'prov_state': prov_state}
-
-
-
-
-        
 
     @view_config(route_name="community", renderer='community.mak', permission='edit')
     def get(self):
@@ -279,7 +276,6 @@ class Community(ViewBase):
         cm_id = self._get_cmid()
         if cm_id == 'new':
             is_alt_area = not not request.params.get('altarea')
-
 
         community = context.community
         descriptions = context.descriptions
@@ -292,7 +288,6 @@ class Community(ViewBase):
         prov_state = []
         with request.connmgr.get_connection() as conn:
             prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry').fetchall())
-
 
         if community:
             community.ChildCommunities = xml_to_dict_list(community.ChildCommunities)
@@ -320,7 +315,6 @@ class Community(ViewBase):
 
         return cm_id
 
-
     @view_config(route_name='community_delete', renderer='confirmdelete.mak', request_method='POST', permission='edit')
     def confirm_delete(self):
         request = self.request
@@ -333,15 +327,15 @@ class Community(ViewBase):
 
         if model_state.validate():
             sql = '''
-                Declare @ErrMsg as nvarchar(500), 
-                @RC as int 
+                Declare @ErrMsg as nvarchar(500),
+                @RC as int
 
-                EXECUTE @RC = dbo.sp_Community_d ?, ?, ?, @ErrMsg=@ErrMsg OUTPUT  
+                EXECUTE @RC = dbo.sp_Community_d ?, ?, ?, @ErrMsg=@ErrMsg OUTPUT
 
                 SELECT @RC as [Return], @ErrMsg AS ErrMsg
             '''
             with request.connmgr.get_connection() as conn:
-                result = conn.execute(sql, cm_id, request.user.UserName, 
+                result = conn.execute(sql, cm_id, request.user.UserName,
                                       model_state.value('ReasonForChange')).fetchone()
 
             _ = request.translate
@@ -353,7 +347,7 @@ class Community(ViewBase):
             if result.Return == 3:
                 # cmid does not exist
                 return HTTPFound(location=request.route_url('communities'))
-                
+
             return HTTPFound(location=request.route_url('community', cmid=cm_id))
 
         return self._get_delete_page_info()
@@ -369,7 +363,7 @@ class Community(ViewBase):
             cm_id, reason = reason[0]
             if cm_id == self._get_cmid() and reason:
                 model_state.form.data['ReasonForChange'] = reason
-        
+
         return self._get_delete_page_info()
 
     def _get_delete_page_info(self):
@@ -377,7 +371,7 @@ class Community(ViewBase):
         _ = request.translate
 
         cm_names = request.context.descriptions.values()
-        cm_names.sort(key=lambda x: (x.LangID!=request.language.LangID, x.LangID))
+        cm_names.sort(key=lambda x: (x.LangID != request.language.LangID, x.LangID))
         cm_name = cm_names[0]
         if request.context.community.AlternativeArea:
             title = _('Delete Alternate Search Area')
@@ -386,10 +380,9 @@ class Community(ViewBase):
             title = _('Delete Community')
             prompt = _('Are you sure you want to delete the community: <em>%s</em>?')
 
-        return {'title_text': title, 
-                'prompt':Markup(prompt) % cm_name.Name, 
+        return {'title_text': title,
+                'prompt': Markup(prompt) % cm_name.Name,
                 'continue_prompt': _('Delete'), 'use_reason_for_change': True}
-
 
     @view_config(route_name='json_parents', renderer='json', permission='view')
     @view_config(route_name='json_search_areas', renderer='json', permission='view')
@@ -398,7 +391,6 @@ class Community(ViewBase):
 
         if not (request.user.Admin or request.user.ManageAreaList):
             return []
-
 
         term_validator = validators.UnicodeString(not_empty=True)
         try:
@@ -423,10 +415,10 @@ class Community(ViewBase):
         search_areas = request.matched_route.name == 'json_search_areas'
         with request.connmgr.get_connection() as conn:
             if search_areas:
-                cursor = conn.execute('EXEC sp_Community_ls_SearchAreaSelector ?, ?, ?, ?', 
+                cursor = conn.execute('EXEC sp_Community_ls_SearchAreaSelector ?, ?, ?, ?',
                                       request.user.User_ID, cur_cm_id, cur_parent, terms)
             else:
-                cursor = conn.execute('EXEC sp_Community_ls_ParentSelector ?, ?, ?', 
+                cursor = conn.execute('EXEC sp_Community_ls_ParentSelector ?, ?, ?',
                                       request.user.User_ID, cur_parent, terms)
 
             cols = ['chkid', 'value', 'label']
@@ -436,7 +428,6 @@ class Community(ViewBase):
             cursor.close()
 
         return retval
-
 
     @view_config(context='pyramid.httpexceptions.HTTPForbidden', route_name="community", renderer='not_authorized.mak', permission=NO_PERMISSION_REQUIRED, custom_predicates=[lambda context, request: not not request.user])
     def not_authorized(self):
