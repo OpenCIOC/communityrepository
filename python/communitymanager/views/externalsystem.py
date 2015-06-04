@@ -19,7 +19,7 @@
 # 3rd party
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config, view_defaults
-from pyramid.security import Allow, DENY_ALL
+from pyramid.security import Allow, DENY_ALL, Everyone
 from markupsafe import Markup
 
 # this app
@@ -50,6 +50,7 @@ class ExternalSystemRoot(object):
             raise HTTPNotFound
 
         self.__acl__ = [
+            (Allow, Everyone, 'view'),
             (Allow, 'area:admin', ('edit', 'view')),
             (Allow, 'area-external:' + self.external_system.SystemCode, ('edit', 'view')),
             DENY_ALL
@@ -100,9 +101,9 @@ class ExternalSystems(ViewBase):
         can_edit = False
 
         user = request.user
-        ManageExternalSystemList = user.ManageExternalSystemList or []
+        ManageExternalSystemList = (user and user.ManageExternalSystemList) or []
 
-        if user.Admin or external_system.SystemCode in ManageExternalSystemList:
+        if (user and user.Admin) or external_system.SystemCode in ManageExternalSystemList:
             can_edit = True
 
         return {'external_communities': external_communities, 'external_system': external_system, 'can_edit': can_edit}
