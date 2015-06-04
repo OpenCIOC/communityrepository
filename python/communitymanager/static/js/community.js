@@ -519,6 +519,22 @@ function prop(n) {
 }
 
 })(jQuery);
+/* =========================================================================================
+   Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  ========================================================================================= */
+
 function get_form_values(selector) {
 	var values = {};
 	jQuery(selector).find('input,select,textarea').each(function (index) {
@@ -641,6 +657,22 @@ function init_cached_state(formselector) {
 }
 
 
+/* =========================================================================================
+   Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  ========================================================================================= */
+
 (function() {
 var string_ci_ai = function(s) {
 	var r=s.toLowerCase();
@@ -727,6 +759,22 @@ var input_el = $("#" + id).
 
 window['init_community_autocomplete'] = init_community_autocomplete;
 })();
+
+/* =========================================================================================
+   Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  ========================================================================================= */
 
 if (typeof(entryform) == 'undefined') {
 	entryform = {};
@@ -1043,6 +1091,22 @@ function init_check_for_autochecklist (confirm_string) {
 
 }
 
+/* =========================================================================================
+   Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  ========================================================================================= */
+
 (function() {
 var $ = jQuery
 var init_municipality_autocomplete = function(fields, url, errmsg) {
@@ -1110,6 +1174,22 @@ var init_municipality_autocomplete = function(fields, url, errmsg) {
 };
 window['init_municipality_autocomplete'] = init_municipality_autocomplete;
 })();
+/* =========================================================================================
+   Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+ 
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+       http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+  ========================================================================================= */
+
 (function() {
 window['init_cm_checklist'] = function($, url, options) {
     var cache = {}, source_fn = create_caching_source_fn($, url, cache, 'label'),
