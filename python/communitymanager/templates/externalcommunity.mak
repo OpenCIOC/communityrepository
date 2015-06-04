@@ -59,7 +59,7 @@ ${renderer.required_field_instructions()}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('external_community.ParentCommunityWeb', _('Parent Community'))} ${renderer.required_flag()}</th>
+	<td class="ui-widget-header field">${renderer.label('external_community_CM_IDWeb', _('Community Mapping'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.CM_ID')}
         ${renderer.hidden('external_community.CM_ID', id='external_community_CM_ID')}

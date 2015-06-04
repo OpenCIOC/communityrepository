@@ -8,8 +8,8 @@ ${renderer.error_notice()}
 <form method="post" action="${request.current_route_path(_form=True)}">
 <div class="hidden">
 ${renderer.form_passvars()}
-%if extra_hidden_params:
-%for name, value in extra_hidden_params:
+%if context.get('extra_hidden_params'):
+%for name, value in context.get('extra_hidden_params'):
     <input type="hidden" name="${name}" value="${value}">
 %endfor
 %endif
