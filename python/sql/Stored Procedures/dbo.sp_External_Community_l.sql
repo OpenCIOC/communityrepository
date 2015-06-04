@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -13,19 +14,27 @@ BEGIN
 	SELECT	excm.EXT_ID,
 			excm.AreaName,
 		    excm.ExternalID,
-			patn.Name AS PrimaryAreaTypeName, satn.Name AS SubAreaTypeName, psc.ProvinceStateCountry,
+			patn.Name AS PrimaryAreaTypeName,
+			-- satn.Name AS SubAreaTypeName,
+			psc.ProvinceStateCountry,
 			cmn.Name AS MappedCommunityName,
-			pst.ProvinceStateCountry AS MappedProvinceStateCountry,
-			cmn2.Name AS MappedParentCommunityName
+			--pst.ProvinceStateCountry AS MappedProvinceStateCountry,
+			cmn2.Name AS MappedParentCommunityName,
+			excm2.AreaName AS ParentName,
+			excm.AIRSExportType
 	FROM External_Community excm
+	LEFT JOIN External_Community excm2
+		ON excm2.EXT_ID=excm.Parent_ID
 	LEFT JOIN Community_Type pat
 		ON pat.Code = excm.PrimaryAreaType
 	LEFT JOIN Community_Type_Name patn
 		ON patn.Code = pat.Code AND patn.LangID=(SELECT TOP 1 LangID FROM Community_Type_Name WHERE pat.Code=Code ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
+		/*
 	LEFT JOIN Community_Type sat
 		ON sat.Code = excm.SubAreaType
 	LEFT JOIN Community_Type_Name satn
 		ON satn.Code = sat.Code AND satn.LangID=(SELECT TOP 1 LangID FROM Community_Type_Name WHERE sat.Code=Code ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
+		*/
 	LEFT JOIN dbo.vw_ProvinceStateCountry psc
 		ON excm.ProvinceState=psc.ProvID
 	LEFT JOIN Community cm
@@ -37,9 +46,11 @@ BEGIN
 	LEFT JOIN Community_Name cmn2
 		ON cm2.CM_ID=cmn2.CM_ID
 			AND cmn2.LangID=(SELECT TOP 1 LangID FROM Community_Name WHERE CM_ID=cm2.CM_ID ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
+			/*
 	LEFT JOIN vw_ProvinceStateCountry pst
 		ON cm.ProvinceState=pst.ProvID AND pst.LangID=(SELECT TOP 1 LangID FROM vw_ProvinceStateCountry WHERE ProvID=pst.ProvID ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
-	WHERE SystemCode=@SystemCode
+		*/
+	WHERE excm.SystemCode=@SystemCode
 	ORDER BY AreaName
 
 	SET NOCOUNT OFF
@@ -50,5 +61,6 @@ END
 
 
 GO
+
 GRANT EXECUTE ON  [dbo].[sp_External_Community_l] TO [web_user]
 GO
