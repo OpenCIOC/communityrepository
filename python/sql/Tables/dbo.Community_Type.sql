@@ -5,6 +5,8 @@ CREATE TABLE [dbo].[Community_Type]
 [HierarchyLevel] [tinyint] NOT NULL CONSTRAINT [DF_Community_Type_HierarchyLevel] DEFAULT ((0)),
 [HighlightColour] [varchar] (7) COLLATE Latin1_General_100_CI_AI NULL
 ) ON [PRIMARY]
+ALTER TABLE [dbo].[Community_Type] ADD
+CONSTRAINT [FK_Community_Type_AIRSExportType] FOREIGN KEY ([AIRSExportType]) REFERENCES [dbo].[AIRSExportType] ([AIRSExportType])
 GO
 ALTER TABLE [dbo].[Community_Type] ADD CONSTRAINT [PK_Community_Type] PRIMARY KEY CLUSTERED  ([Code]) ON [PRIMARY]
 GO

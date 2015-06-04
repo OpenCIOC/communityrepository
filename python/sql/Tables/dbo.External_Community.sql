@@ -5,13 +5,20 @@ CREATE TABLE [dbo].[External_Community]
 [AreaName] [nvarchar] (200) COLLATE Latin1_General_100_CI_AI NOT NULL,
 [PrimaryAreaType] [varchar] (30) COLLATE Latin1_General_100_CI_AI NULL,
 [SubAreaType] [varchar] (30) COLLATE Latin1_General_100_CI_AI NULL,
-[ProvinceState] [int] NOT NULL,
+[AIRSExportType] [varchar] (20) COLLATE Latin1_General_100_CI_AI NULL,
+[ProvinceState] [int] NULL,
 [ExternalID] [varchar] (50) COLLATE Latin1_General_100_CI_AI NULL,
-[CM_ID] [int] NULL
+[CM_ID] [int] NULL,
+[Parent_ID] [int] NULL
 ) ON [PRIMARY]
+ALTER TABLE [dbo].[External_Community] ADD
+CONSTRAINT [FK_External_Community_AIRSExportType] FOREIGN KEY ([AIRSExportType]) REFERENCES [dbo].[AIRSExportType] ([AIRSExportType])
 ALTER TABLE [dbo].[External_Community] ADD 
 CONSTRAINT [PK_External_Community] PRIMARY KEY CLUSTERED  ([EXT_ID]) ON [PRIMARY]
-CREATE UNIQUE NONCLUSTERED INDEX [IX_External_Community] ON [dbo].[External_Community] ([AreaName], [PrimaryAreaType], [SubAreaType], [ProvinceState], [SystemCode]) ON [PRIMARY]
+CREATE UNIQUE NONCLUSTERED INDEX [IX_External_Community] ON [dbo].[External_Community] ([SystemCode], [AreaName], [ProvinceState], [PrimaryAreaType]) ON [PRIMARY]
+
+
+
 
 ALTER TABLE [dbo].[External_Community] ADD
 CONSTRAINT [FK_External_Community_Community_Type_Primary] FOREIGN KEY ([PrimaryAreaType]) REFERENCES [dbo].[Community_Type] ([Code])
