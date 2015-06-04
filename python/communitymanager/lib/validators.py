@@ -1,6 +1,23 @@
-import re
+# =========================================================================================
+#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# =========================================================================================
 
-from formencode import validators, schema, ForEach, Pipe
+import re
+from datetime import date, timedelta
+
+from formencode import validators, schema
 from pyramid.i18n import TranslationStringFactory
 
 from communitymanager.lib import syslanguage, security
@@ -21,37 +38,42 @@ Schema = schema.Schema
 NotEmpty = validators.NotEmpty
 MinLength = validators.MinLength
 
+
 class UnicodeString(validators.UnicodeString):
     trim = True
     if_empty = None
+
 
 class String(validators.String):
     trim = True
     if_empty = None
     encoding = 'cp1252'
 
+
 class IntID(validators.Int):
     if_empty = None
     min = 1
     max = MAX_ID
 
+
 class Email(validators.Email):
     trim = True
     if_empty = None
 
-    #update re from dev version of Formencode
+    # update re from dev version of Formencode
     usernameRE = re.compile(r"^[\w!#$%&'*+\-/=?^`{|}~.]+$")
     domainRE = re.compile(r'''
         ^(?:[a-z0-9][a-z0-9\-]{,62}\.)+ # (sub)domain - alpha followed by 62max chars (63 total)
         [a-z]{2,}$                       # TLD
     ''', re.I | re.VERBOSE)
 
+
 class AgencyCode(validators.Regex):
     strip = True
     regex = '^[A-Z][A-Z][A-Z]$'
     messages = {'invalid': _("Invalid Agency Code")}
 
-from datetime import date, timedelta
+
 class TomorrowsDate(validators.DateValidator):
 
     @property
@@ -77,7 +99,8 @@ class DeleteKeyIfEmpty(validators.FancyValidator):
             pass
 
         return value_dict
-    
+
+
 class CultureDictSchema(schema.Schema):
     """
     Validated a dictionary keyed on form valid culture names (i.e. en_CA,
@@ -116,7 +139,7 @@ class CultureDictSchema(schema.Schema):
         retval = schema.Schema._to_python(self, value_dict, state)
         if self.delete_empty:
             retval = DeleteKeyIfEmpty().to_python(retval, state)
-        return retval 
+        return retval
 
 
 class FlagRequiredIfNoCulture(validators.FormValidator):
@@ -133,22 +156,21 @@ class FlagRequiredIfNoCulture(validators.FormValidator):
         active_cultures = sl.active_record_cultures() if self.record_cultures else sl.active_cultures()
         errors = {}
 
-        #raise Exception
-        #log.debug('active_cultures: %s', active_cultures)
         for fieldname, validator in self.targetvalidator.fields.iteritems():
             if not validator.not_empty:
                 continue
 
             for culture in active_cultures:
-                culture = culture.replace('-','_')
+                culture = culture.replace('-', '_')
 
-                errors[culture + '.' + fieldname] = validators.Invalid(self.message('empty', state), value_dict,state)
+                errors[culture + '.' + fieldname] = validators.Invalid(self.message('empty', state), value_dict, state)
 
         if errors:
             raise validators.Invalid(schema.format_compound_error(errors),
                             value_dict, state, error_dict=errors)
-    
+
         return value_dict
+
 
 class RequireIfPredicate(validators.FormValidator):
     """
@@ -161,7 +183,7 @@ class RequireIfPredicate(validators.FormValidator):
     # XXX Update further documentation
 
     """
-    
+
     ::
 
         >>> from formencode import validators
@@ -218,14 +240,15 @@ class RequireIfPredicate(validators.FormValidator):
             for n in value:
                 break
             return value
-        ## @@: Should this catch any other errors?:
+        # @@: Should this catch any other errors?:
         except TypeError:
             return [value]
+
 
 class ActiveCulture(validators.OneOf):
     """
     Validator for checking a culture is one of ones that are currently
-    active. Useful with formencode.foreach.ForEach for lists of cultures 
+    active. Useful with formencode.foreach.ForEach for lists of cultures
     being processed.
 
     record_cultures keyword arg to constructor indicates whether the valid langauges
@@ -239,7 +262,7 @@ class ActiveCulture(validators.OneOf):
     def list(self):
         if self.record_cultures:
             return syslanguage.active_record_cultures()
-        
+
         return syslanguage.active_cultures()
 
 
@@ -251,8 +274,9 @@ class SecurePassword(validators.FancyValidator):
     uc_letter_regex = re.compile(r'[A-Z]')
     lc_letter_regex = re.compile(r'[a-z]')
 
-    #hack to make formencode work properly with translations
-    def _(s):return s
+    # hack to make formencode work properly with translations
+    def _(s):
+        return s
 
     messages = {
         'too_few': _('The password cannot be less than %(min)i characters long'),
@@ -280,21 +304,26 @@ class SecurePassword(validators.FancyValidator):
         finally:
             self.gettextargs = gt_args
 
+
 class CheckPassword(validators.FormValidator):
     """Dumb docstring"""
     validate_partial_form = True
-    pw_current   = 'CurrentPassword'
-    pw_ref       = 'Password'
-    pw_confirm   = 'ConfirmPassword'
+    pw_current = 'CurrentPassword'
+    pw_ref = 'Password'
+    pw_confirm = 'ConfirmPassword'
 
-    #hack to make formencode work properly with translations
+    # hack to make formencode work properly with translations
+    def _(s):
+        return s
+
     messages = {
-            'password': _('Authentication failed'),
-            'match': _('Must match password field'),
-            }
-        
+        'password': _('Authentication failed'),
+        'match': _('Must match password field'),
+    }
+
+    del _
+
     def _match_pw(self, ref, confirm, value_dict, state):
-        #log.debug("Password Match Check: %s, %s", ref, confirm)
         if not ref:
             return {self.pw_ref: Invalid(self.message('empty', state), value_dict, state)}
         if ref != confirm:
@@ -330,10 +359,9 @@ class CheckPassword(validators.FormValidator):
             self.gettextargs = gt_args
         if errors:
             error_list = errors.items()
-            raise Invalid('\n'.join(["%s: %s" % (name, value) 
-                                for name, value in error_list]),
-                           value_dict, state, error_dict=errors)
-
+            raise Invalid(
+                '\n'.join(["%s: %s" % (name, value) for name, value in error_list]),
+                value_dict, state, error_dict=errors)
 
 
 class ForceRequire(validators.FormValidator):
@@ -381,6 +409,6 @@ class ForceRequire(validators.FormValidator):
             for n in value:
                 break
             return value
-        ## @@: Should this catch any other errors?:
+        # @@: Should this catch any other errors?:
         except TypeError:
             return [value]

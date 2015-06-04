@@ -1,5 +1,6 @@
 # From the Pyramid Cookbook:
 # http://pyramid-cookbook.readthedocs.org/en/latest/auth/basic.html
+
 import binascii
 
 from paste.httpheaders import AUTHORIZATION

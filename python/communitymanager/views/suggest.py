@@ -1,10 +1,18 @@
-# =================================================================
-# Copyright (C) 2011 Community Information Online Consortium (CIOC)
-# http://www.cioc.ca
-# Developed By Katherine Lambacher / KCL Custom Software
-# If you did not receive a copy of the license agreement with this
-# software, please contact CIOC via their website above.
-#==================================================================
+# =========================================================================================
+#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+# =========================================================================================
 
 # std lib
 
@@ -25,7 +33,7 @@ log = logging.getLogger('communitymanager.views.suggest')
 class SuggestSchema(validators.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
-    
+
     Suggestion = validators.UnicodeString(not_empty=True)
 
 
@@ -38,7 +46,6 @@ class Suggest(ViewBase):
         model_state.form.variable_decode = True
         model_state.schema = SuggestSchema()
 
-        
         if model_state.validate():
             data = model_state.form.data
             args = [request.user.User_ID, data.get('Suggestion')]
@@ -66,13 +73,10 @@ class Suggest(ViewBase):
 
         return {}
 
-        
-
     @view_config(route_name="suggest", renderer='suggest.mak', permission='view')
     def get(self):
 
         return {}
-
 
     @view_config(route_name="review_suggestions", renderer='review.mak', permission='edit')
     def review(self):
@@ -90,7 +94,7 @@ class Suggest(ViewBase):
                 completed_suggestions = cursor.fetchone()
 
             cursor.close()
-        
+
         return {'suggestions': suggestions, 'completed_suggestions': completed_suggestions}
 
     @view_config(route_name="complete_suggestion", request_method='POST', renderer='confirmdelete.mak', permission='edit')
@@ -100,12 +104,12 @@ class Suggest(ViewBase):
         sjid = self._get_suggestion_id()
 
         sql = '''
-			Declare @ErrMsg as nvarchar(500), 
-			@RC as int 
+            Declare @ErrMsg as nvarchar(500),
+            @RC as int
 
-			EXECUTE @RC = dbo.sp_Suggestion_u_Complete ?, ?, @ErrMsg=@ErrMsg OUTPUT  
+            EXECUTE @RC = dbo.sp_Suggestion_u_Complete ?, ?, @ErrMsg=@ErrMsg OUTPUT
 
-			SELECT @RC as [Return], @ErrMsg AS ErrMsg
+            SELECT @RC as [Return], @ErrMsg AS ErrMsg
         '''
         with request.connmgr.get_connection() as conn:
             result = conn.execute(sql, sjid, request.user.UserName).fetchone()
@@ -118,16 +122,17 @@ class Suggest(ViewBase):
 
         return HTTPFound(location=request.route_url('review_suggestions'))
 
-
     @view_config(route_name="complete_suggestion", renderer='confirmdelete.mak', permission='edit')
     def complete(self):
         request = self.request
         _ = request.translate
-        
-        return {'title_text': _('Complete Suggestion'), 
-                'prompt': _('Are you sure you want to mark this suggestion completed?'),
-                'continue_prompt': _('Complete'),
-                'extra_hidden_params': [('sjid', self._get_suggestion_id())]}
+
+        return {
+            'title_text': _('Complete Suggestion'),
+            'prompt': _('Are you sure you want to mark this suggestion completed?'),
+            'continue_prompt': _('Complete'),
+            'extra_hidden_params': [('sjid', self._get_suggestion_id())]
+        }
 
     def _get_suggestion_id(self):
         request = self.request
@@ -141,4 +146,3 @@ class Suggest(ViewBase):
             raise HTTPFound(location=request.route_url('review_suggestions'))
 
         return sjid
-
