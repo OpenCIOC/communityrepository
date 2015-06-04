@@ -22,7 +22,7 @@
 
 <h2>${_(u'''What do I need to do if I want to use the Community Taxonomy in my project?''')|n}</h2>
 
-<p>${_(u'''The Community Taxonomy data is available with a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 license.</a> That means that you can use the Taxonomy freely, but should provide attribution back to this website to allow others to make use of this resource. An ideal place for this type of attribution would be somewhere that you allow detailed browsing of the Community Taxonomy, but any appropriate spot (like an FAQ, copyright statement, or About page) is fine as long as it can be reasonable found.''')|n}</p>
+<p>${_(u'''The Community Taxonomy data is available with a <a href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 license.</a> That means that you can use the Taxonomy freely, but should provide attribution back to this website to allow others to make use of this resource. An ideal place for this type of attribution would be somewhere that you allow detailed browsing of the Community Taxonomy, but any appropriate spot (like an FAQ, copyright statement, or About page) is fine as long as it can be reasonably found.''')|n}</p>
 
 <h2>${_(u'''Do I have to contribute back my changes?''')|n}</h2>
 

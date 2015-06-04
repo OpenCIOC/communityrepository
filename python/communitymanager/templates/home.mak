@@ -29,7 +29,7 @@
 	<li>Editorial tools for repository managers</li>
 </ul>
 %if not request.user:
-<p>${_('If you wish to request an account, please visit the ')}<a href="${request.route_path('request_account')}">${_('Request Account')}</a>${_(' page. Accounts must be approved; note that accounts are not required to search or download the Community Taxonomy, but are required to become an editor or suggest a change.')}</p>
+<p>${_('If you wish to request an account, please visit the ')}<a href="${request.route_path('request_account')}">${_('Request Account')}</a>${_(' page; accounts must be approved. <em>Note that accounts are not required to search or download the Community Taxonomy</em>, but are required to become an editor or suggest a change.')}</p>
 %endif
 <p>${_('The ongoing maintenance of this repository is provided by volunteers. When requesting an account, you will have the opportunity to request administrative privileges for specific geographic areas. Please be aware that we may need to limit the number of editors in order to encourage editorial consistency; therefore, not all requests for administrative privileges will be granted. Training is required for all editors, and those who participate in the maintenance of this repository must work collaboratively with their co-editors to facilitate co-operative and consistent data maintenance activities.')}</p>
 <p>${_('Do you have further questions about the CIOC Communities Repository? Please visit the ')} <a href="${request.route_path('faq')}">${_('Frequently Asked Questions')}</a>${_(' page')}.</p>
