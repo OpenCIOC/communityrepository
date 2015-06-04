@@ -20,8 +20,7 @@
 
 <%block name="title">${_('External Communities for %s') % _context.external_system.SystemName}</%block>
 
-<% user = request.user %>
-%if user and (user.Admin or user.ManageExternalSystemList):
+%if can_edit:
 <p id="action-bar">
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_add', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New External Community')}</span></a>
 </p>

@@ -32,6 +32,9 @@ is_add = not (external_community and external_community.EXT_ID)
     ${_('Add External Community') if is_add else _('Edit External Community')}
 </%block>
 
+<p id="action-bar">
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_list', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-link ui-button-icon-primary"></span><span class="ui-button-text">${_('Back To External Community List')}</span></a>
+</p>
 
 ${renderer.error_notice()}
 <form method="post" action="${request.current_route_path(_form=True)}" id="EntryForm">
