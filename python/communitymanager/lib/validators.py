@@ -17,10 +17,13 @@
 import re
 from datetime import date, timedelta
 
-from formencode import validators, schema
+from formencode import validators, schema, ForEach, Pipe
 from pyramid.i18n import TranslationStringFactory
 
 from communitymanager.lib import syslanguage, security
+
+ForEach
+Pipe
 
 MAX_ID = 2147483647
 
