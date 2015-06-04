@@ -1,10 +1,8 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
 GO
-
-
-
 
 CREATE VIEW [dbo].[vw_ProvinceStateCountry]
 AS
@@ -13,14 +11,14 @@ SELECT pv.ProvID, pvn.LangID, pv.NameOrCode,
 	+ CASE WHEN COALESCE (pvn.Name, pv.NameOrCode) IS NULL
 		THEN ''
 		ELSE ', ' + pv.Country
-	END AS ProvinceStateCountry
+	END AS ProvinceStateCountry,
+	pv.Country
 FROM [dbo].ProvinceState pv
 LEFT JOIN [dbo].ProvinceState_Name pvn
 	ON pv.ProvID = pvn.ProvID AND pvn.LangID=(SELECT TOP 1 LangID FROM [dbo].ProvinceState_Name WHERE ProvID = pvn.ProvID ORDER BY CASE WHEN LangID=@@LangID THEN 0 ELSE 1 END)
 
-
-
 GO
+
 GRANT SELECT ON  [dbo].[vw_ProvinceStateCountry] TO [web_user]
 GO
 EXEC sp_addextendedproperty N'MS_DiagramPane1', N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
