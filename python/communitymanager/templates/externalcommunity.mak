@@ -47,58 +47,58 @@ ${renderer.required_field_instructions()}
 	<td class="ui-widget-header field">${renderer.label('external_community.AreaName', _('Area Name'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 	${renderer.errorlist("external_community.AreaName")}
-	${renderer.text("external_community.AreaName", maxlength=200)}
+	${renderer.text("external_community.AreaName", maxlength=200, class_='text wide')}
 	</td>
 </tr>
 <tr>
 	<td class="ui-widget-header field">${renderer.label('external_community.PrimaryAreaType', _('Primary Area Type'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.PrimaryAreaType')}
-        ${renderer.select('external_community.PrimaryAreaType', [('','')] + area_types)}
+        ${renderer.select('external_community.PrimaryAreaType', [('','')] + area_types, class_='wide')}
 	</td>
 </tr>
 <tr>
 	<td class="ui-widget-header field">${renderer.label('external_community.SubAreaType', _('Sub Area Type'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.SubAreaType')}
-        ${renderer.select('external_community.SubAreaType', [('','')] + area_types)}
+        ${renderer.select('external_community.SubAreaType', [('','')] + area_types, class_='wide')}
 	</td>
 </tr>
 <tr>
 	<td class="ui-widget-header field">${renderer.label('external_community.ProvinceState', _('Province, State and/or Country'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.ProvinceState')}
-        ${renderer.select('external_community.ProvinceState', [('','')] + prov_state)}
+        ${renderer.select('external_community.ProvinceState', [('','')] + prov_state, class_='wide')}
 	</td>
 </tr>
 <tr>
 	<td class="ui-widget-header field">${renderer.label('external_community.AIRSExportType', _('AIRS Export Type'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.AIRSExportType')}
-        ${renderer.select('external_community.AIRSExportType', [''] + airs_export_types)}
+        ${renderer.select('external_community.AIRSExportType', [''] + airs_export_types, class_='wide')}
 	</td>
 </tr>
 <tr>
 	<td class="ui-widget-header field">${renderer.label('external_community.ExternalID', _('External ID'))}</th>
 	<td class="ui-widget-content">
 	${renderer.errorlist("external_community.ExternalID")}
-	${renderer.text("external_community.ExternalID", maxlength=50)}
+	${renderer.text("external_community.ExternalID", maxlength=50, class_='text wide')}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('external_community_Parent_IDWeb', _('Parent Community'))} ${renderer.required_flag()}</th>
+	<td class="ui-widget-header field">${renderer.label('external_community_Parent_IDWeb', _('Parent Community'))}}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.Parent_ID')}
         ${renderer.hidden('external_community.Parent_ID', id='external_community_Parent_ID')}
-        ${renderer.text('external_community.Parent_IDName', id='external_community_Parent_IDWeb')}
+        ${renderer.text('external_community.Parent_IDName', id='external_community_Parent_IDWeb', class_='text wide')}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('external_community_CM_IDWeb', _('Community Mapping'))} ${renderer.required_flag()}</th>
+	<td class="ui-widget-header field">${renderer.label('external_community_CM_IDWeb', _('Community Mapping'))}}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.CM_ID')}
         ${renderer.hidden('external_community.CM_ID', id='external_community_CM_ID')}
-        ${renderer.text('external_community.CM_IDName', id='external_community_CM_IDWeb')}
+        ${renderer.text('external_community.CM_IDName', id='external_community_CM_IDWeb', class_='text wide')}
 	</td>
 </tr>
 <tr>

@@ -447,6 +447,10 @@ a.ui-icon {
 		margin: 0 1em;
 	}
 
+    .url.wide, .email.wide, .text.wide, .password.wide, select.wide {
+		min-width: 40em;
+    }
+
 	textarea {
 		min-width: 40em;
 		min-height: 5em;
