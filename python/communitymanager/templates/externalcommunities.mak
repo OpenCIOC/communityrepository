@@ -31,12 +31,14 @@
 <thead>
 <tr>
 <th class="ui-widget-header">${_('Area Name')}</th>
+<th class="ui-widget-header">${_('Parent Community')}</th>
 <th class="ui-widget-header">${_('Primary Area Type')}</th>
-<th class="ui-widget-header">${_('Sub Area Type')}</th>
+##<th class="ui-widget-header">${_('Sub Area Type')}</th>
 <th class="ui-widget-header">${_('Province/State/Country')}</th>
-<th class="ui-widget-header">${_('External ID')}</th>
+##<th class="ui-widget-header">${_('External ID')}</th>
+<th class="ui-widget-header">${_('AIRS Export Type')}</th>
 <th class="ui-widget-header">${_('Mapped Community')}</th>
-<th class="ui-widget-header">${_('Mapped Community Province/State/Country')}</th>
+##<th class="ui-widget-header">${_('Mapped Community Province/State/Country')}</th>
 <th class="ui-widget-header">${_('Mapped Community Parent')}</th>
 %if can_edit:
 <th class="ui-widget-header">${_('Action')}</th>
@@ -46,12 +48,14 @@
 %for community in external_communities:
 <tr>
 <td class="ui-widget-content">${community.AreaName}</td>
+<td class="ui-widget-content">${community.ParentName or ''}</td>
 <td class="ui-widget-content">${community.PrimaryAreaTypeName or ''}</td>
-<td class="ui-widget-content">${community.SubAreaTypeName or ''}</td>
+##<td class="ui-widget-content">${community.SubAreaTypeName or ''}</td>
 <td class="ui-widget-content">${community.ProvinceStateCountry or ''}</td>
-<td class="ui-widget-content">${community.ExternalID or ''}</td>
+##<td class="ui-widget-content">${community.ExternalID or ''}</td>
+<td class="ui-widget-content">${community.AIRSExportType or ''}</td>
 <td class="ui-widget-content">${community.MappedCommunityName or ''}</td>
-<td class="ui-widget-content">${community.MappedProvinceStateCountry or ''}</td>
+##<td class="ui-widget-content">${community.MappedProvinceStateCountry or ''}</td>
 <td class="ui-widget-content">${community.MappedParentCommunityName or ''}</td>
 %if can_edit:
 <td class="ui-widget-content">
@@ -66,7 +70,15 @@
 <script type="text/javascript" src="/static/js/libs/jquery.tablesorter.min.js"></script> 
 <script type="text/javascript">
 jQuery(function($) {
-    $('#mapped-communities').tablesorter({headers: {8: {sorter: false}}});
+    var mapped_communities = $('#mapped-communities')
+%if can_edit:
+    var number_of_elements = mapped_communities.find('thead tr th').length; 
+    var args = {headers: {}};
+    args.headers[number_of_elements-1] = {sorter: false}
+%else:  
+    var args = {};
+%endif
+    mapped_communities.tablesorter(args);
 });
 </script>
 </%block>
