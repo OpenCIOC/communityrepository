@@ -14,6 +14,7 @@ CREATE PROCEDURE [dbo].[sp_External_Community_u]
 	@ProvinceState int,
 	@ExternalID varchar(50),
 	@AIRSExportType varchar(20),
+	@Parent_ID int,
 	@CM_ID int,
 	@ErrMsg [nvarchar](500) OUTPUT
 WITH EXECUTE AS CALLER
@@ -64,6 +65,9 @@ END IF @SubAreaType IS NOT NULL AND NOT EXISTS(SELECT * FROM Community_Type WHER
 END IF @AIRSExportType IS NOT NULL AND NOT EXISTS(SELECT * FROM AIRSExportType WHERE AIRSExportType=@AIRSExportType) BEGIN
 	SET @Error = 3 -- No Such Record
 	SET @ErrMsg = cioc_shared.dbo.fn_SHR_STP_FormatError(@Error, CAST(@AIRSExportType AS varchar), @AIRSExportTypeObjectName)
+END IF @Parent_ID IS NOT NULL AND NOT EXISTS(SELECT * FROM External_Community WHERE SystemCode=@SystemCode AND EXT_ID=@Parent_ID AND (@EXT_ID IS NULL OR EXT_ID<>@EXT_ID)) BEGIN
+	SET @Error = 3 -- No Such Record
+	SET @ErrMsg = cioc_shared.dbo.fn_SHR_STP_FormatError(@Error, CAST(@Parent_ID AS varchar), @ParentObjectName)
 END
 
 IF @Error = 0 BEGIN
@@ -76,6 +80,7 @@ IF @Error = 0 BEGIN
 			ProvinceState,
 			ExternalID,
 			AIRSExportType,
+			Parent_ID,
 			CM_ID
 		) VALUES (
 			@SystemCode, -- SystemCode - varchar(30)
@@ -85,6 +90,7 @@ IF @Error = 0 BEGIN
 			@ProvinceState, -- ProvinceState - int
 			@ExternalID, -- ExternalID - varchar(50)
 			@AIRSExportType,
+			@Parent_ID,
 			@CM_ID  -- CM_ID - int
 		)
 		SET @EXT_ID = SCOPE_IDENTITY()
@@ -97,6 +103,7 @@ IF @Error = 0 BEGIN
 			ProvinceState	= @ProvinceState,
 			ExternalID = @ExternalID,
 			AIRSExportType = @AIRSExportType,
+			Parent_ID = @Parent_ID,
 			CM_ID = @CM_ID
 		WHERE EXT_ID = @EXT_ID	
 	END
@@ -120,6 +127,7 @@ SET NOCOUNT OFF
 
 
 GO
+
 
 GRANT EXECUTE ON  [dbo].[sp_External_Community_u] TO [web_user]
 GO

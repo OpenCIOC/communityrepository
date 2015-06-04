@@ -86,6 +86,14 @@ ${renderer.required_field_instructions()}
 	</td>
 </tr>
 <tr>
+	<td class="ui-widget-header field">${renderer.label('external_community_Parent_IDWeb', _('Parent Community'))} ${renderer.required_flag()}</th>
+	<td class="ui-widget-content">
+		${renderer.errorlist('external_community.Parent_ID')}
+        ${renderer.hidden('external_community.Parent_ID', id='external_community_Parent_ID')}
+        ${renderer.text('external_community.Parent_IDName', id='external_community_Parent_IDWeb')}
+	</td>
+</tr>
+<tr>
 	<td class="ui-widget-header field">${renderer.label('external_community_CM_IDWeb', _('Community Mapping'))} ${renderer.required_flag()}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.CM_ID')}
@@ -111,11 +119,19 @@ ${renderer.required_field_instructions()}
 </form>
 </div>
 <script type="text/javascript" src="${request.static_path('communitymanager:static/js/community.min.js')}"></script>
+<%
+parent_kw = {}
+if external_community and external_community.EXT_ID:
+    parent_kw = {'_query': [('extid', external_community.EXT_ID)]}
+%>
 <script type="text/javascript">
 (function($) {
-    var community_link = ${json.dumps(request.route_path('json_parents'))|n};
+    var parents_link = ${json.dumps(request.route_path('json_external_community_parents', SystemCode=_context.external_system.SystemCode, **parent_kw))|n};
+    var community_link = ${json.dumps(request.route_path('json_communities'))|n};
     $(function() {
         init_cached_state();
+
+        init_municipality_autocomplete($('#external_community_Parent_IDWeb'), parents_link, '${_("An unknown external community was entered")}');
 
         init_municipality_autocomplete($('#external_community_CM_IDWeb'), community_link, '${_("An unknown community was entered")}');
 

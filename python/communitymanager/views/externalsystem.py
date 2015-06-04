@@ -77,6 +77,9 @@ class ExternalCommunityBaseSchema(validators.Schema):
     ExternalID = validators.String(max=50)
     AIRSExportType = validators.String(max=20)
 
+    Parent_ID = validators.IntID()
+    Parent_IDName = validators.UnicodeString()
+
     CM_ID = validators.IntID()
     CM_IDName = validators.UnicodeString()
 
@@ -131,7 +134,7 @@ class ExternalCommunties(ViewBase):
         if model_state.validate():
             cm_data = model_state.value('external_community', {})
             args = [EXTID, external_system.SystemCode]
-            fields = ['AreaName', 'PrimaryAreaType', 'SubAreaType', 'ProvinceState', 'ExternalID', 'AIRSExportType', 'CM_ID']
+            fields = ['AreaName', 'PrimaryAreaType', 'SubAreaType', 'ProvinceState', 'ExternalID', 'AIRSExportType', 'Parent_ID', 'CM_ID']
             args += [cm_data.get(x) for x in fields]
 
             sql = '''
@@ -251,8 +254,6 @@ class ExternalCommunties(ViewBase):
 
         return HTTPFound(location=request.current_route_url(action='edit'))
 
-
-
     @view_config(match_param='action=delete', renderer='confirmdelete.mak', permission='edit')
     def delete(self):
         request = self.request
@@ -274,3 +275,55 @@ class ExternalCommunties(ViewBase):
         return {'title_text': title,
                 'prompt': Markup(prompt) % external_community.AreaName,
                 'continue_prompt': _('Delete'), 'use_reason_for_change': False}
+
+    @view_config(route_name='json_external_community_parents', renderer='json', permission='edit')
+    def autocomplete_parents(self):
+        request = self.request
+
+        term_validator = validators.UnicodeString(not_empty=True)
+        try:
+            terms = term_validator.to_python(request.params.get('term'))
+        except validators.Invalid:
+            return []
+
+        SystemCode = request.context.external_system.SystemCode
+
+        retval = []
+        with request.connmgr.get_connection() as conn:
+            ext_id_validator = validators.IntID()
+            try:
+                ext_id = ext_id_validator.to_python(request.params.get('extid'))
+            except validators.Invalid:
+                ext_id = None
+
+            cursor = conn.execute('EXEC sp_External_Community_ls_ParentSelector ?, ?, ?', SystemCode, ext_id, terms)
+
+            cols = ['chkid', 'value', 'label']
+
+            retval = [dict(zip(cols, x)) for x in cursor.fetchall()]
+
+            cursor.close()
+
+        return retval
+
+    @view_config(route_name='json_communities', renderer='json', permission='view')
+    def autocomplete_communities(self):
+        request = self.request
+
+        term_validator = validators.UnicodeString(not_empty=True)
+        try:
+            terms = term_validator.to_python(request.params.get('term'))
+        except validators.Invalid:
+            return []
+
+        retval = []
+        with request.connmgr.get_connection() as conn:
+            cursor = conn.execute('EXEC sp_Community_ls_Autocomplete ?', terms)
+
+            cols = ['chkid', 'value', 'label']
+
+            retval = [dict(zip(cols, x)) for x in cursor.fetchall()]
+
+            cursor.close()
+
+        return retval
