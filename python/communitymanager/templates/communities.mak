@@ -31,8 +31,10 @@
 %endif
 %if user and (user.Admin or user.ManageAreaList):
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new')}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New Community')}</span></a>
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}"><span class="ui-icon ui-icon-lightbulb ui-button-icon-primary"></span><span class="ui-button-text">${_('New Alternate Area')}</span></a></p>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}"><span class="ui-icon ui-icon-lightbulb ui-button-icon-primary"></span><span class="ui-button-text">${_('New Alternate Area')}</span></a>
 %endif
+</p>
+<p>
 <form action="${request.route_path('search', _form=True)}">
 <div class="hidden">
 ${renderer.form_passvars()}
@@ -40,10 +42,23 @@ ${renderer.form_passvars()}
 ${_('Search: ')}${renderer.text('terms')} <button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Search')}</span></button>
 </form>
 </p>
+%if external_systems:
+<p>
+<form action="${request.current_route_path(_form=True)}" method="GET">
+<div class="hidden">
+${renderer.form_passvars()}
+</div>
+${_('Show External Mapping: ')} ${renderer.select('ExternalSystem', options = [('','')] + external_systems)} <button id="show-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Show')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Show')}</span></button>
+</form>
+</p>
+%endif
 <%def name="tree_level(node, map, last=False)">
 <% children = map.get(node.CM_ID) %>
 <li class="tree-node ${'tree-leaf tree-closed' if not children else ''} ${'tree-node-last' if last else ''}" data-id="${node.CM_ID}" id="tree-node-${node.CM_ID}">
     <span class="ui-icon tree-node-icon ${'tree-node-expander' if children else ''}">${_('Open/Close')}</span>
+    %if node.ExternalSystemMatch:
+        <img src="/static/img/greencheck.gif">
+    %endif
     %if node.AlternativeArea:
     <em>
     %endif

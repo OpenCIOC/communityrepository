@@ -33,12 +33,25 @@ class Communities(ViewBase):
         request = self.request
 
         communities = []
+
+        external_system_code = request.params.get('ExternalSystem')
         with request.connmgr.get_connection() as conn:
-            communities = conn.execute('EXEC sp_Community_l ?', (request.user and request.user.User_ID)).fetchall()
+            sql = 'EXEC sp_Community_l ?, ? ; EXEC sp_External_System_l'
+            cursor = conn.execute(sql, (request.user and request.user.User_ID), external_system_code)
+
+            communities = cursor.fetchall()
+
+            cursor.nextset()
+
+            external_systems = map(tuple, cursor.fetchall())
+
+            cursor.close()
 
         communities = {k: list(g) for k, g in groupby(communities, attrgetter('ParentCommunity'))}
 
-        return {'communities': communities}
+        request.model_state.form.data['ExternalSystem'] = external_system_code
+
+        return {'communities': communities, 'external_systems': external_systems}
 
     @view_config(route_name="search", renderer='results.mak', permission='view')
     def search(self):
