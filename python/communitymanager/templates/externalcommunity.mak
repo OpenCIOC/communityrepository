@@ -65,10 +65,17 @@ ${renderer.required_field_instructions()}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('external_community.ProvinceState', _('Province, State and/or Country'))} ${renderer.required_flag()}</th>
+	<td class="ui-widget-header field">${renderer.label('external_community.ProvinceState', _('Province, State and/or Country'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.ProvinceState')}
-        ${renderer.select('external_community.ProvinceState', ([('','')] if is_add else []) + prov_state)}
+        ${renderer.select('external_community.ProvinceState', [('','')] + prov_state)}
+	</td>
+</tr>
+<tr>
+	<td class="ui-widget-header field">${renderer.label('external_community.AIRSExportType', _('AIRS Export Type'))}</th>
+	<td class="ui-widget-content">
+		${renderer.errorlist('external_community.AIRSExportType')}
+        ${renderer.select('external_community.AIRSExportType', [''] + airs_export_types)}
 	</td>
 </tr>
 <tr>

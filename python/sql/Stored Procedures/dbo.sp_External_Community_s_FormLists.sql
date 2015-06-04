@@ -21,6 +21,10 @@ BEGIN
 	FROM dbo.vw_ProvinceStateCountry
 	ORDER BY Country, ProvinceStateCountry
 
+	SELECT AIRSExportType
+	FROM AIRSExportType
+	ORDER BY AIRSExportType
+
 	SET NOCOUNT OFF
 END
 
@@ -30,6 +34,7 @@ END
 
 
 GO
+
 
 GRANT EXECUTE ON  [dbo].[sp_External_Community_s_FormLists] TO [web_user]
 GO

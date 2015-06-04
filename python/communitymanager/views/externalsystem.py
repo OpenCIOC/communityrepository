@@ -73,8 +73,9 @@ class ExternalCommunityBaseSchema(validators.Schema):
     AreaName = validators.UnicodeString(max=200, not_empty=True)
     PrimaryAreaType = validators.String(max=30)
     SubAreaType = validators.String(max=30)
-    ProvinceState = validators.IntID(not_empty=True)
+    ProvinceState = validators.IntID()
     ExternalID = validators.String(max=50)
+    AIRSExportType = validators.String(max=20)
 
     CM_ID = validators.IntID()
     CM_IDName = validators.UnicodeString()
@@ -88,7 +89,7 @@ class ExternalCommunitySchema(validators.Schema):
 
 
 @view_defaults(route_name="external_community")
-class ExternalSystems(ViewBase):
+class ExternalCommunties(ViewBase):
 
     @view_config(route_name="external_community_list", renderer='externalcommunities.mak', permission='view')
     def list(self):
@@ -130,7 +131,7 @@ class ExternalSystems(ViewBase):
         if model_state.validate():
             cm_data = model_state.value('external_community', {})
             args = [EXTID, external_system.SystemCode]
-            fields = ['AreaName', 'PrimaryAreaType', 'SubAreaType', 'ProvinceState', 'ExternalID', 'CM_ID']
+            fields = ['AreaName', 'PrimaryAreaType', 'SubAreaType', 'ProvinceState', 'ExternalID', 'AIRSExportType', 'CM_ID']
             args += [cm_data.get(x) for x in fields]
 
             sql = '''
@@ -204,12 +205,17 @@ class ExternalSystems(ViewBase):
 
             prov_state = cursor.fetchall()
 
+            cursor.nextset()
+
+            airs_export_types = cursor.fetchall()
+
             cursor.close()
 
         return {
             'external_community': external_community,
             'area_types': map(tuple, area_types),
             'prov_state': map(tuple, prov_state),
+            'airs_export_types': [x[0] for x in airs_export_types],
             'is_add': is_add
         }
 
