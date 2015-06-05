@@ -26,6 +26,7 @@
 </p>
 %endif
 
+%if external_communities:
 <table class="form-table tablesorter" id="mapped-communities">
 <thead>
 <tr>
@@ -64,8 +65,12 @@
 </tr>
 %endfor
 </table>
+%else:
+   <em>${_('No external communities found.')}</em> 
+%endif
 
 <%block name="bottomscripts">
+%if external_communities:
 <script type="text/javascript" src="/static/js/libs/jquery.tablesorter.min.js"></script> 
 <script type="text/javascript">
 jQuery(function($) {
@@ -80,4 +85,5 @@ jQuery(function($) {
     mapped_communities.tablesorter(args);
 });
 </script>
+%endif
 </%block>
