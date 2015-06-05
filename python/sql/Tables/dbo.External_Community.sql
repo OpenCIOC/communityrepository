@@ -13,6 +13,8 @@ CREATE TABLE [dbo].[External_Community]
 [SortCode] [varchar] (max) COLLATE Latin1_General_100_CI_AI NULL,
 [Depth] [smallint] NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+CREATE UNIQUE NONCLUSTERED INDEX [IX_External_Community] ON [dbo].[External_Community] ([SystemCode], [AreaName], [ProvinceState], [PrimaryAreaType], [Parent_ID]) ON [PRIMARY]
+
 GO
 SET QUOTED_IDENTIFIER ON
 GO
@@ -55,7 +57,7 @@ ALTER TABLE [dbo].[External_Community] ADD
 CONSTRAINT [FK_External_Community_AIRSExportType] FOREIGN KEY ([AIRSExportType]) REFERENCES [dbo].[AIRSExportType] ([AIRSExportType])
 ALTER TABLE [dbo].[External_Community] ADD 
 CONSTRAINT [PK_External_Community] PRIMARY KEY CLUSTERED  ([EXT_ID]) ON [PRIMARY]
-CREATE UNIQUE NONCLUSTERED INDEX [IX_External_Community] ON [dbo].[External_Community] ([SystemCode], [AreaName], [ProvinceState], [PrimaryAreaType]) ON [PRIMARY]
+
 
 
 
