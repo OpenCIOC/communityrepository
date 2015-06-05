@@ -94,6 +94,15 @@ class ExternalCommunitySchema(validators.Schema):
 @view_defaults(route_name="external_community")
 class ExternalCommunties(ViewBase):
 
+    @view_config(route_name="external_systems", renderer='externalsystems.mak', permission='view')
+    def system_list(self):
+        request = self.request
+
+        with request.connmgr.get_connection() as conn:
+            external_systems = conn.execute('EXEC sp_External_System_l').fetchall()
+
+        return {'external_systems': external_systems}
+
     @view_config(route_name="external_community_list", renderer='externalcommunities.mak', permission='view')
     def list(self):
         request = self.request

@@ -195,7 +195,10 @@ def main(global_config, **settings):
 
     config.add_route('publish', '/publish', pregenerator=passvars_pregen, factory=OnlyAdminRootFactory)
 
+    config.add_route('external_systems', '/external_communities', pregenerator=passvars_pregen)
+
     config.add_route('external_community_list', '/external_communities/{SystemCode}', pregenerator=passvars_pregen, factory='communitymanager.views.externalsystem.ExternalSystemRoot')
+
     config.add_route('json_external_community_parents', '/external_communities/{SystemCode}/parents', pregenerator=passvars_pregen, factory='communitymanager.views.externalsystem.ExternalSystemRoot')
 
     config.add_route('external_community_add', '/external_communities/{SystemCode}/add', pregenerator=passvars_pregen, factory='communitymanager.views.externalsystem.ExternalSystemRoot')
