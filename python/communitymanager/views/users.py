@@ -262,7 +262,6 @@ class Users(ViewBase):
 
                 log.debug('args: %s', args)
 
-
             if is_new:
                 fields.append('Request_ID')
                 args.append(reqid)
@@ -434,7 +433,7 @@ class Users(ViewBase):
         if not is_request:
             if is_new:
                 with request.connmgr.get_connection() as conn:
-                    cursor = conn.execute('EXEC sp_Users_AccountRequest_s ?; sp_External_System_l', reqid)
+                    cursor = conn.execute('EXEC sp_Users_AccountRequest_s ?; EXEC sp_External_System_l', reqid)
                     account_request = cursor.fetchone()
 
                     cursor.nextset()
