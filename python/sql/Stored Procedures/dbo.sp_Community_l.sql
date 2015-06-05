@@ -21,12 +21,10 @@ SELECT cm.CM_ID, cmn.Name, cm.AlternativeArea, cm.ParentCommunity,
 				)
 			)
 		) THEN 1 ELSE 0 END AS CanEdit,
-	CAST(CASE WHEN ec.EXT_ID IS NOT NULL THEN 1 ELSE 0 END AS bit) AS ExternalSystemMatch
+	CAST(CASE WHEN EXISTS(SELECT * FROM External_Community ec WHERE ec.CM_ID=cm.CM_ID AND ec.SystemCode=@SystemCode) THEN 1 ELSE 0 END AS bit) AS ExternalSystemMatch
 FROM Community cm
 INNER JOIN Community_Name cmn
 	ON cm.CM_ID=cmn.CM_ID AND cmn.LangID=(SELECT TOP 1 LangID FROM Community_Name WHERE CM_ID=cm.CM_ID ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
-LEFT JOIN dbo.External_Community ec
-	ON ec.CM_ID = cm.CM_ID AND ec.SystemCode=@SystemCode
 ORDER BY ParentCommunity, cmn.Name
 
 SET NOCOUNT OFF
@@ -39,6 +37,7 @@ END
 
 
 GO
+
 
 GRANT EXECUTE ON  [dbo].[sp_Community_l] TO [web_user]
 GO

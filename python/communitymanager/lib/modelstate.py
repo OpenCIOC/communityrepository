@@ -106,7 +106,7 @@ class CiocFormRenderer(FormRenderer):
         if 'for_' not in attrs:
             attrs['for_'] = name
 
-        #attrs['for_'] = tags._make_safe_id_component(attrs['for_'])
+        # attrs['for_'] = tags._make_safe_id_component(attrs['for_'])
         label = label or name.capitalize()
         return HTML.tag("label", label, **attrs)
 

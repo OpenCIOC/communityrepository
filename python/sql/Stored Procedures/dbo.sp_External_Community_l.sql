@@ -21,7 +21,8 @@ BEGIN
 			--pst.ProvinceStateCountry AS MappedProvinceStateCountry,
 			cmn2.Name AS MappedParentCommunityName,
 			excm2.AreaName AS ParentName,
-			excm.AIRSExportType
+			excm.AIRSExportType,
+			CAST(CASE WHEN EXISTS(SELECT * FROM dbo.External_Community ec2 WHERE excm.EXT_ID<>ec2.EXT_ID AND excm.CM_ID=ec2.CM_ID) THEN 1 ELSE 0 END AS bit) AS DuplicateWarning
 	FROM External_Community excm
 	LEFT JOIN External_Community excm2
 		ON excm2.EXT_ID=excm.Parent_ID
@@ -51,7 +52,7 @@ BEGIN
 		ON cm.ProvinceState=pst.ProvID AND pst.LangID=(SELECT TOP 1 LangID FROM vw_ProvinceStateCountry WHERE ProvID=pst.ProvID ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
 		*/
 	WHERE excm.SystemCode=@SystemCode
-	ORDER BY AreaName
+	ORDER BY excm.SortCode, AreaName
 
 	SET NOCOUNT OFF
 END
@@ -61,6 +62,7 @@ END
 
 
 GO
+
 
 GRANT EXECUTE ON  [dbo].[sp_External_Community_l] TO [web_user]
 GO

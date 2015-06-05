@@ -17,6 +17,7 @@
 </%doc>
 
 <%inherit file="master.mak"/>
+<%! from markupsafe import Markup, escape %>
 
 <%block name="title">${_('External Communities for %s') % _context.external_system.SystemName}</%block>
 
@@ -43,6 +44,7 @@
 %endif
 
 %if external_communities:
+<p>${escape(_('Mapped communities that have been assigned to multple External Communities are marked with %s.')) % (Markup('''<span class="ui-state-error required-flag"><span class="ui-icon ui-icon-star" title="%s"}"><em>%s</em></span></span>''') % (_('Warning: Duplicate Mapping'), _('Warning: Duplicate Mapping')))}</p>
 <table class="form-table tablesorter" id="mapped-communities">
 <thead>
 <tr>
@@ -70,7 +72,12 @@
 <td class="ui-widget-content">${community.ProvinceStateCountry or ''}</td>
 ##<td class="ui-widget-content">${community.ExternalID or ''}</td>
 <td class="ui-widget-content">${community.AIRSExportType or ''}</td>
-<td class="ui-widget-content">${community.MappedCommunityName or ''}</td>
+<td class="ui-widget-content">
+%if community.DuplicateWarning:
+<span class="ui-state-error required-flag"><span class="ui-icon ui-icon-star" title="${_('Warning: Duplicate Mapping')}"><em>${_('Warning: Duplicate Mapping')}</em></span></span>
+%endif
+${community.MappedCommunityName or ''}
+</td>
 ##<td class="ui-widget-content">${community.MappedProvinceStateCountry or ''}</td>
 <td class="ui-widget-content">${community.MappedParentCommunityName or ''}</td>
 %if can_edit:
