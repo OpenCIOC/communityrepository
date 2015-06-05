@@ -20,6 +20,22 @@
 
 <%block name="title">${_('External Communities for %s') % _context.external_system.SystemName}</%block>
 
+<% external_system = _context.external_system %>
+<% holders = [x for x in [external_system.CopyrightHolder1, external_system.CopyrightHolder2] if x] %>
+%if holders or external_system.Description or external_system.ContactEmail:
+<p>
+%if holders:
+<strong>${_('Owner:')}</strong> ${_(' & ').join(holders)}<br>
+%endif
+%if external_system.ContactEmail:
+<strong>${_('Contact:')}</strong> <a href="mailto:${external_system.ContactEmail}">${external_system.ContactEmail}</a><br>
+%endif
+%if external_system.Description:
+<strong>${_('Description:')}</strong> ${external_system.Description}
+%endif
+</p>
+%endif
+
 %if can_edit:
 <p id="action-bar">
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_add', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New External Community')}</span></a>
