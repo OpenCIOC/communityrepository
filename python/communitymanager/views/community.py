@@ -389,7 +389,7 @@ class Community(ViewBase):
     def autocomplete(self):
         request = self.request
 
-        if not (request.user.Admin or request.user.ManageAreaList):
+        if not request.user or not (request.user.Admin or request.user.ManageAreaList):
             return []
 
         term_validator = validators.UnicodeString(not_empty=True)
