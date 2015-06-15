@@ -43,12 +43,12 @@ MinLength = validators.MinLength
 
 
 class UnicodeString(validators.UnicodeString):
-    trim = True
+    strip = True
     if_empty = None
 
 
 class String(validators.String):
-    trim = True
+    strip = True
     if_empty = None
     encoding = 'cp1252'
 
@@ -60,7 +60,7 @@ class IntID(validators.Int):
 
 
 class Email(validators.Email):
-    trim = True
+    strip = True
     if_empty = None
 
     # update re from dev version of Formencode
