@@ -383,17 +383,25 @@ def _write_xml_data(root_parameters, cursor, zipfile, fname):
 
     with tempfile.TemporaryFile() as file:
         file.write(u'<?xml version="1.0" encoding="UTF-8"?>\n'.encode('utf-8'))
-        file.write((u'<CommunityMapping %s>\n' % root_parameters).encode('utf-8'))
+        file.write((u'<ExternalSystem %s>\n' % root_parameters).encode('utf-8'))
 
-        while True:
-            rows = cursor.fetchmany(2000)
-            if not rows:
-                break
+        for nextset, tagname in enumerate([u'ExternalCommunities', u'CommunityMapping']):
+            if nextset:
+                cursor.nextset()
 
-            rows = u'\n'.join(x[0] for x in rows) + u'\n'
-            file.write(rows.encode('utf-8'))
+            file.write((u'<%s>' % tagname).encode('utf-8'))
 
-        file.write(u'</CommunityMapping>\n'.encode('utf-8'))
+            while True:
+                rows = cursor.fetchmany(2000)
+                if not rows:
+                    break
+
+                rows = u'\n'.join(x[0] for x in rows) + u'\n'
+                file.write(rows.encode('utf-8'))
+
+            file.write((u'</%s>' % tagname).encode('utf-8'))
+
+        file.write(u'</ExternalSystem>\n'.encode('utf-8'))
 
         file.seek(0)
         zipfile.writebuffer(file, fname)

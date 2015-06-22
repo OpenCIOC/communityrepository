@@ -37,11 +37,12 @@
 </p>
 %endif
 
-%if can_edit:
 <p id="action-bar">
+%if can_edit:
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_add', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New External Community')}</span></a>
-</p>
 %endif
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_download', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-suitcase ui-button-icon-primary"></span><span class="ui-button-text">${_('Download Mapping')}</span></a>
+</p>
 
 %if external_communities:
 <p>${escape(_('Mapped communities that have been assigned to multple External Communities are marked with %s.')) % (Markup('''<span class="ui-state-error required-flag"><span class="ui-icon ui-icon-star" title="%s"}"><em>%s</em></span></span>''') % (_('Warning: Duplicate Mapping'), _('Warning: Duplicate Mapping')))}</p>
