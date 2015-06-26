@@ -1,3 +1,4 @@
+
 SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON
@@ -12,7 +13,7 @@ AS BEGIN
 
 SET NOCOUNT ON
 
-SELECT	cm.CM_ID, 
+SELECT	DISTINCT cm.CM_ID, 
 		cmn.Name,
 		cmn.Name
 			+ CASE WHEN cmn.Name LIKE '%' + @searchStr + '%' THEN '' ELSE ' [' + anm.AltName + ']' END
@@ -44,5 +45,6 @@ END
 
 
 GO
+
 GRANT EXECUTE ON  [dbo].[sp_Community_ls_Autocomplete] TO [web_user]
 GO
