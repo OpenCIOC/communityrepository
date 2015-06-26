@@ -288,6 +288,7 @@ class ExternalCommunties(ViewBase):
     @view_config(route_name='json_external_community_parents', renderer='json', permission='edit')
     def autocomplete_parents(self):
         request = self.request
+        _ = request.translate
 
         term_validator = validators.UnicodeString(not_empty=True)
         try:
@@ -309,7 +310,9 @@ class ExternalCommunties(ViewBase):
 
             cols = ['chkid', 'value', 'label']
 
-            retval = [dict(zip(cols, x)) for x in cursor.fetchall()]
+            in_tmpl = _(' (in %s)')
+            values = (x[:2] + (x[2] + ((in_tmpl % x[3]) if x[3] else ''),) for x in cursor.fetchall())
+            retval = [dict(zip(cols, x)) for x in values]
 
             cursor.close()
 
