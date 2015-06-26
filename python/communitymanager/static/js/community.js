@@ -1108,7 +1108,7 @@ function init_check_for_autochecklist (confirm_string) {
   ========================================================================================= */
 
 (function() {
-var $ = jQuery
+var $ = jQuery;
 var init_municipality_autocomplete = function(fields, url, errmsg) {
 	fields.each(function() {
 		var cache = {}, self = this, my_id = this.id,
@@ -1122,6 +1122,12 @@ var init_municipality_autocomplete = function(fields, url, errmsg) {
 					},
 					source: create_caching_source_fn($,url, cache),
 					minLength: 1,
+                    select: function(event, ui) {
+                        input_el.data('cm_info', {
+                            chkid: ui.item.chkid,
+                            value: ui.item.value
+                        });
+                    },
                     close: function() {
                         if (!input_el.is(':focus')) {
                             on_blur_timeout();
@@ -1141,26 +1147,26 @@ var init_municipality_autocomplete = function(fields, url, errmsg) {
                     shadow_el[0].value = '';
                     return;
                 }
-                if (info && info['chkid'] && info['value'] && info['value'] === value) {
-                    shadow_el[0].value = info['chkid'];
+                if (info && info.chkid && info.value && info.value === value) {
+                    shadow_el[0].value = info.chkid;
                     return;
                 }
                  
                 testvalue = string_ci_ai(value);
                 if (cache.content) {
                     var values = $.grep(cache.content, function(value) {
-                        return string_ci_ai(value['value']) === testvalue;
+                        return string_ci_ai(value.value) === testvalue;
                     });
                     if (values.length === 1) {
-                        shadow_el[0].value = values[0]['chkid'];
-                        input_el.data('cm_info', values[0])
-                        return
+                        shadow_el[0].value = values[0].chkid;
+                        input_el.data('cm_info', values[0]);
+                        return;
                     }
                 }
 
                 setTimeout(function() { input_el[0].focus(); }, 1);
                 alert(errmsg);
-            }
+            };
 
             input_el.blur(function() {
                 if (! (input_el.autocomplete('widget')).is(':visible')) {
