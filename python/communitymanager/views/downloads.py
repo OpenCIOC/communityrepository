@@ -158,7 +158,7 @@ class Downloads(ViewBase):
 
         # TODO Add Schema?
         data = [
-            u'''
+            u'''\
 <?xml version="1.0" encoding="UTF-8"?><community_information source=%s>
 <!--
     All user geography data contributed to the CIOC Community Repository is cc-by 4.0 licensed.
