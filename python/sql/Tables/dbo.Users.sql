@@ -18,8 +18,8 @@ CREATE TABLE [dbo].[Users]
 [PasswordHash] [char] (44) COLLATE Latin1_General_100_CI_AI NOT NULL,
 [Admin] [bit] NOT NULL CONSTRAINT [DF_Users_Admin] DEFAULT ((0)),
 [ManageAreaList] [varchar] (max) COLLATE Latin1_General_100_CI_AI NULL,
-[ManageExternalSystemList] [varchar] (max) COLLATE Latin1_General_100_CI_AI NULL,
-[Inactive] [bit] NOT NULL CONSTRAINT [DF_Users_Inactive] DEFAULT ((0))
+[Inactive] [bit] NOT NULL CONSTRAINT [DF_Users_Inactive] DEFAULT ((0)),
+[ManageExternalSystemList] [varchar] (max) COLLATE Latin1_General_100_CI_AI NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 ALTER TABLE [dbo].[Users] ADD 
 CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED  ([User_ID]) ON [PRIMARY]
@@ -28,7 +28,9 @@ ALTER TABLE [dbo].[Users] ADD CONSTRAINT [IX_Users] UNIQUE NONCLUSTERED  ([UserN
 
 CREATE NONCLUSTERED INDEX [IX_Users_Initials] ON [dbo].[Users] ([Initials]) ON [PRIMARY]
 
+
 GO
+
 
 ALTER TABLE [dbo].[Users] ADD CONSTRAINT [FK_Users_Language] FOREIGN KEY ([StartLanguage]) REFERENCES [dbo].[Language] ([LangID])
 GO

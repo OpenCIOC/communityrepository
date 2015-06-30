@@ -15,15 +15,20 @@
 # =========================================================================================
 
 # std lib
+from xml.sax.saxutils import quoteattr
+from datetime import datetime
+import tempfile
+import zipfile
 
 # 3rd party
 from pyramid.httpexceptions import HTTPNotFound, HTTPFound
 from pyramid.view import view_config, view_defaults
 from pyramid.security import Allow, DENY_ALL, Everyone
+from pyramid.response import FileIter
 from markupsafe import Markup
 
 # this app
-from communitymanager.lib import validators
+from communitymanager.lib import validators, bufferedzip
 from communitymanager.views.base import ViewBase
 
 
@@ -342,3 +347,67 @@ class ExternalCommunties(ViewBase):
             cursor.close()
 
         return retval
+
+    @view_config(route_name='external_community_download', permission='view')
+    def download(self):
+        request = self.request
+        external_system = request.context.external_system
+
+        names = ['SystemCode', 'SystemName', 'CopyrightHolder1', 'CopyrightHolder2', 'ContactEmail']
+        root_parameters = [getattr(external_system, x) for x in names]
+
+        isodate = datetime.now().replace(microsecond=0).isoformat()
+        names.append('date')
+        root_parameters.append(isodate)
+
+        isodate = isodate.replace(':', '-')
+
+        values = [quoteattr(unicode(x) if x is not None else u'') for x in root_parameters]
+        root_parameters = u' '.join(u'='.join(x) for x in zip(names, values))
+
+        fname = u"CommunityMap-%s-%s.xml" % (external_system.SystemCode, isodate)
+
+        file = tempfile.TemporaryFile()
+        with bufferedzip.BufferedZipFile(file, 'w', zipfile.ZIP_DEFLATED) as zf:
+            with request.connmgr.get_connection() as conn:
+                cursor = conn.execute('EXEC sp_External_Community_l_xml ?', external_system.SystemCode)
+
+                _write_xml_data(root_parameters, cursor, zf, fname)
+
+        length = file.tell()
+        file.seek(0)
+        res = request.response
+        res.content_type = 'application/zip'
+        res.charset = None
+        res.app_iter = FileIter(file)
+        res.content_length = length
+        res.headers['Content-Disposition'] = 'attachment;filename=%s.zip' % fname[:-4]
+        return res
+
+
+def _write_xml_data(root_parameters, cursor, zipfile, fname):
+
+    with tempfile.TemporaryFile() as file:
+        file.write(u'<?xml version="1.0" encoding="UTF-8"?>\n'.encode('utf-8'))
+        file.write((u'<ExternalSystem %s>\n' % root_parameters).encode('utf-8'))
+
+        for nextset, tagname in enumerate([u'ExternalCommunities', u'CommunityMapping']):
+            if nextset:
+                cursor.nextset()
+
+            file.write((u'<%s>' % tagname).encode('utf-8'))
+
+            while True:
+                rows = cursor.fetchmany(2000)
+                if not rows:
+                    break
+
+                rows = u'\n'.join(x[0] for x in rows) + u'\n'
+                file.write(rows.encode('utf-8'))
+
+            file.write((u'</%s>' % tagname).encode('utf-8'))
+
+        file.write(u'</ExternalSystem>\n'.encode('utf-8'))
+
+        file.seek(0)
+        zipfile.writebuffer(file, fname)
