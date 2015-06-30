@@ -11,7 +11,8 @@ CREATE TABLE [dbo].[External_Community]
 [CM_ID] [int] NULL,
 [Parent_ID] [int] NULL,
 [SortCode] [varchar] (max) COLLATE Latin1_General_100_CI_AI NULL,
-[Depth] [smallint] NULL
+[Depth] [smallint] NULL,
+[EXT_GUID] [uniqueidentifier] NOT NULL CONSTRAINT [DF_External_Community_EXT_GUID] DEFAULT (newid())
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 CREATE UNIQUE NONCLUSTERED INDEX [IX_External_Community] ON [dbo].[External_Community] ([SystemCode], [AreaName], [ProvinceState], [PrimaryAreaType], [Parent_ID]) ON [PRIMARY]
 
