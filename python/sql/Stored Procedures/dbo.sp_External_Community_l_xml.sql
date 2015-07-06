@@ -13,6 +13,8 @@ BEGIN
 
 SET NOCOUNT ON
 
+EXEC sp_Community_External_Map_u @SystemCode
+
 SELECT	
 	(SELECT
 		excm.EXT_ID AS [@ID],
@@ -33,8 +35,6 @@ LEFT JOIN Community_Type_Name patn
 	ON patn.Code = pat.Code AND patn.LangID=(SELECT TOP 1 LangID FROM Community_Type_Name WHERE pat.Code=Code ORDER BY CASE WHEN LangID=@@LANGID THEN 0 ELSE 1 END, LangID)
 LEFT JOIN ProvinceState psc
 	ON excm.ProvinceState=psc.ProvID
-LEFT JOIN Community cm
-	ON cm.CM_ID = excm.CM_ID
 WHERE excm.SystemCode=@SystemCode
 
 SELECT
@@ -57,6 +57,7 @@ END
 
 
 GO
+
 
 GRANT EXECUTE ON  [dbo].[sp_External_Community_l_xml] TO [web_user]
 GO
