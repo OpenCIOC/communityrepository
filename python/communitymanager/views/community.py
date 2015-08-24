@@ -98,7 +98,7 @@ class CommunityBaseSchema(validators.Schema):
 
     ParentCommunity = validators.IntID()
     ParentCommunityName = validators.UnicodeString()
-    ProvinceState = validators.IntID()
+    ProvinceState = validators.IntID(not_empty=True)
 
     chained_validators = [validators.RequireIfPredicate(cannot_save_without_parent, ['ParentCommunity'])]
 
@@ -254,7 +254,7 @@ class Community(ViewBase):
         prov_state = []
         alt_area_name_map = {}
         with request.connmgr.get_connection() as conn:
-            prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry').fetchall())
+            prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry ORDER BY DisplayOrder, ProvinceStateCountry').fetchall())
 
             if is_alt_area:
                 alt_area_name_map = {str(x[0]): x[1] for x in conn.execute('EXEC sp_Community_ls_Names ?', ','.join(str(x) for x in alt_areas)).fetchall()}
@@ -287,7 +287,7 @@ class Community(ViewBase):
 
         prov_state = []
         with request.connmgr.get_connection() as conn:
-            prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry').fetchall())
+            prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry ORDER BY DisplayOrder, ProvinceStateCountry').fetchall())
 
         if community:
             community.ChildCommunities = xml_to_dict_list(community.ChildCommunities)

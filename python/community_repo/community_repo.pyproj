@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>08750314-63e7-4ef3-9dfb-e70bb31e068f</ProjectGuid>
+    <ProjectHome>..\</ProjectHome>
+    <StartupFile>
+    </StartupFile>
+    <SearchPath>
+    </SearchPath>
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <InterpreterId>2af0f10d-7135-4994-9156-5d01c9c11b7e</InterpreterId>
+    <InterpreterVersion>2.7</InterpreterVersion>
+    <Name>community_repo</Name>
+    <RootNamespace>community_repo</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="install_svc.py" />
+    <Compile Include="setup.py" />
+    <Compile Include="update_svc.py" />
+    <Compile Include="wsgisvc.py" />
+    <Compile Include="communitymanager\__init__.py" />
+    <Compile Include="communitymanager\lib\basicauthpolicy.py" />
+    <Compile Include="communitymanager\lib\config.py" />
+    <Compile Include="communitymanager\lib\connection.py" />
+    <Compile Include="communitymanager\lib\const.py" />
+    <Compile Include="communitymanager\lib\email.py" />
+    <Compile Include="communitymanager\lib\logtools.py" />
+    <Compile Include="communitymanager\lib\modelstate.py" />
+    <Compile Include="communitymanager\lib\request.py" />
+    <Compile Include="communitymanager\lib\security.py" />
+    <Compile Include="communitymanager\lib\subscribers.py" />
+    <Compile Include="communitymanager\lib\syslanguage.py" />
+    <Compile Include="communitymanager\lib\validators.py" />
+    <Compile Include="communitymanager\lib\__init__.py" />
+    <Compile Include="communitymanager\views\base.py" />
+    <Compile Include="communitymanager\views\communities.py" />
+    <Compile Include="communitymanager\views\community.py" />
+    <Compile Include="communitymanager\views\downloads.py" />
+    <Compile Include="communitymanager\views\externalsystem.py" />
+    <Compile Include="communitymanager\views\home.py" />
+    <Compile Include="communitymanager\views\login.py" />
+    <Compile Include="communitymanager\views\pwreset.py" />
+    <Compile Include="communitymanager\views\suggest.py" />
+    <Compile Include="communitymanager\views\users.py" />
+    <Compile Include="communitymanager\views\__init__.py" />
+    <Content Include="CHANGES.txt" />
+    <Content Include="requirements.txt" />
+    <Content Include="CommunityManager.egg-info\dependency_links.txt" />
+    <Content Include="CommunityManager.egg-info\entry_points.txt" />
+    <Content Include="CommunityManager.egg-info\paster_plugins.txt" />
+    <Content Include="CommunityManager.egg-info\requires.txt" />
+    <Content Include="CommunityManager.egg-info\SOURCES.txt" />
+    <Content Include="CommunityManager.egg-info\top_level.txt" />
+    <Content Include="communitymanager\static\css\jquery-ui-1.8.16.custom.css" />
+    <Content Include="communitymanager\static\css\style.css" />
+    <Content Include="communitymanager\static\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="communitymanager\static\css\images\ui-bg_flat_55_fbec88_40x100.png" />
+    <Content Include="communitymanager\static\css\images\ui-bg_glass_75_d0e5f5_1x400.png" />
+    <Content Include="communitymanager\static\css\images\ui-bg_glass_85_dfeffc_1x400.png" />
+    <Content Include="communitymanager\static\css\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="communitymanager\static\css\images\ui-bg_gloss-wave_55_5c9ccc_500x100.png" />
+    <Content Include="communitymanager\static\css\images\ui-bg_inset-hard_100_f5f8f9_1x100.png" />
+    <Content Include="communitymanager\static\css\images\ui-bg_inset-hard_100_fcfdfd_1x100.png" />
+    <Content Include="communitymanager\static\css\images\ui-icons_217bc0_256x240.png" />
+    <Content Include="communitymanager\static\css\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="communitymanager\static\css\images\ui-icons_469bdd_256x240.png" />
+    <Content Include="communitymanager\static\css\images\ui-icons_6da8d5_256x240.png" />
+    <Content Include="communitymanager\static\css\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="communitymanager\static\css\images\ui-icons_d8e7f3_256x240.png" />
+    <Content Include="communitymanager\static\css\images\ui-icons_f9bd01_256x240.png" />
+    <Content Include="communitymanager\static\img\d.png" />
+    <Content Include="communitymanager\static\img\asc.gif" />
+    <Content Include="communitymanager\static\img\bg.gif" />
+    <Content Include="communitymanager\static\img\cic-icon.gif" />
+    <Content Include="communitymanager\static\img\ct-icon.gif" />
+    <Content Include="communitymanager\static\img\desc.gif" />
+    <Content Include="communitymanager\static\img\transparent.gif" />
+    <Content Include="communitymanager\static\img\vol-icon.gif" />
+    <Content Include="communitymanager\templates\changelog.mak" />
+    <Content Include="communitymanager\templates\cm_checklist.mak" />
+    <Content Include="communitymanager\templates\communities.mak" />
+    <Content Include="communitymanager\templates\community.mak" />
+    <Content Include="communitymanager\templates\community_more_details.mak" />
+    <Content Include="communitymanager\templates\confirmdelete.mak" />
+    <Content Include="communitymanager\templates\downloads.mak" />
+    <Content Include="communitymanager\templates\externalcommunities.mak" />
+    <Content Include="communitymanager\templates\externalcommunity.mak" />
+    <Content Include="communitymanager\templates\faq.mak" />
+    <Content Include="communitymanager\templates\home.mak" />
+    <Content Include="communitymanager\templates\login.mak" />
+    <Content Include="communitymanager\templates\master.mak" />
+    <Content Include="communitymanager\templates\not_authorized.mak" />
+    <Content Include="communitymanager\templates\not_authorized_users.mak" />
+    <Content Include="communitymanager\templates\publish.mak" />
+    <Content Include="communitymanager\templates\pwreset.mak" />
+    <Content Include="communitymanager\templates\request_thanks.mak" />
+    <Content Include="communitymanager\templates\results.mak" />
+    <Content Include="communitymanager\templates\review.mak" />
+    <Content Include="communitymanager\templates\suggest.mak" />
+    <Content Include="communitymanager\templates\user.mak" />
+    <Content Include="communitymanager\templates\users.mak" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="communitymanager" />
+    <Folder Include="CommunityManager.egg-info" />
+    <Folder Include="communitymanager\lib" />
+    <Folder Include="communitymanager\static\css" />
+    <Folder Include="communitymanager\static\css\images" />
+    <Folder Include="communitymanager\static\img" />
+    <Folder Include="communitymanager\templates" />
+    <Folder Include="communitymanager\views" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+</Project>
