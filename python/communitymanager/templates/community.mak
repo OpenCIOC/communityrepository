@@ -109,7 +109,7 @@ ${self.makeMgmtInfo(community)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('community.ParentCommunityWeb', _('Parent Community'))} ${renderer.required_flag()}</th>
+	<td class="ui-widget-header field">${renderer.label('community.ParentCommunityWeb', _('Parent Community'))} ${renderer.required_flag()}</td>
 	<td class="ui-widget-content">
 		${renderer.errorlist('community.ParentCommunity')}
         ${renderer.hidden('community.ParentCommunity', id='community_ParentCommunity')}
@@ -117,7 +117,7 @@ ${self.makeMgmtInfo(community)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('community.ProvinceState', _('Province, State and/or Country'))}</th>
+	<td class="ui-widget-header field">${renderer.label('community.ProvinceState', _('Province, State and/or Country'))} ${renderer.required_flag()}</td>
 	<td class="ui-widget-content">
 		${renderer.errorlist('community.ProvinceState')}
         ${renderer.select('community.ProvinceState', [('','')] + prov_state)}

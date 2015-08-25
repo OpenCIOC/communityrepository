@@ -55,6 +55,8 @@
     <DataWriteAllFilesInOneDirectory>True</DataWriteAllFilesInOneDirectory>
   </WriteToFileOptions>
   <DataFileSet>
-    <Count>0</Count>
+    <Count>2</Count>
+    <DataFile>dbo.ProvinceState_Data.sql</DataFile>
+    <DataFile>dbo.ProvinceState_Name_Data.sql</DataFile>
   </DataFileSet>
 </DatabaseInformation>

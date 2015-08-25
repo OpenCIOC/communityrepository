@@ -4,6 +4,7 @@ GO
 SET ANSI_NULLS ON
 GO
 
+
 CREATE VIEW [dbo].[vw_ProvinceStateCountry]
 AS
 SELECT pv.ProvID, pvn.LangID, pv.NameOrCode, 
@@ -12,12 +13,15 @@ SELECT pv.ProvID, pvn.LangID, pv.NameOrCode,
 		THEN ''
 		ELSE ', ' + pv.Country
 	END AS ProvinceStateCountry,
-	pv.Country
+	pv.Country,
+	pv.DisplayOrder
 FROM [dbo].ProvinceState pv
 LEFT JOIN [dbo].ProvinceState_Name pvn
 	ON pv.ProvID = pvn.ProvID AND pvn.LangID=(SELECT TOP 1 LangID FROM [dbo].ProvinceState_Name WHERE ProvID = pvn.ProvID ORDER BY CASE WHEN LangID=@@LangID THEN 0 ELSE 1 END)
 
+
 GO
+
 
 GRANT SELECT ON  [dbo].[vw_ProvinceStateCountry] TO [web_user]
 GO
