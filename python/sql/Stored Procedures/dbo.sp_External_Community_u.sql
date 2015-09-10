@@ -68,6 +68,9 @@ END IF @AIRSExportType IS NOT NULL AND NOT EXISTS(SELECT * FROM AIRSExportType W
 END IF @Parent_ID IS NOT NULL AND NOT EXISTS(SELECT * FROM External_Community WHERE SystemCode=@SystemCode AND EXT_ID=@Parent_ID AND (@EXT_ID IS NULL OR EXT_ID<>@EXT_ID)) BEGIN
 	SET @Error = 3 -- No Such Record
 	SET @ErrMsg = cioc_shared.dbo.fn_SHR_STP_FormatError(@Error, CAST(@Parent_ID AS varchar), @ParentObjectName)
+END IF EXISTS(SELECT * FROM External_Community WHERE (@CM_ID IS NULL OR CM_ID<>@CM_ID) AND SystemCode=@SystemCode AND AreaName=@AreaName AND ProvinceState=@ProvinceState AND PrimaryAreaType=@PrimaryAreaType AND Parent_ID=@Parent_ID) BEGIN
+	SET @Error = 6 -- Value in Use
+	SET @ErrMsg = cioc_shared.dbo.fn_SHR_STP_FormatError(@Error, @AreaName, @ExternalCommunityObjectName)
 END
 
 IF @Error = 0 BEGIN
@@ -127,6 +130,7 @@ SET NOCOUNT OFF
 
 
 GO
+
 
 
 GRANT EXECUTE ON  [dbo].[sp_External_Community_u] TO [web_user]
