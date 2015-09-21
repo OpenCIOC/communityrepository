@@ -86,7 +86,7 @@ ${renderer.required_field_instructions()}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('external_community_Parent_IDWeb', _('Parent Community'))}}</th>
+	<td class="ui-widget-header field">${renderer.label('external_community_Parent_IDWeb', _('Parent Community'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.Parent_ID')}
         ${renderer.hidden('external_community.Parent_ID', id='external_community_Parent_ID')}
@@ -94,7 +94,7 @@ ${renderer.required_field_instructions()}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('external_community_CM_IDWeb', _('Community Mapping'))}}</th>
+	<td class="ui-widget-header field">${renderer.label('external_community_CM_IDWeb', _('Community Mapping'))}</th>
 	<td class="ui-widget-content">
 		${renderer.errorlist('external_community.CM_ID')}
         ${renderer.hidden('external_community.CM_ID', id='external_community_CM_ID')}
