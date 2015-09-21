@@ -39,7 +39,7 @@
 <div class="hidden">
 ${renderer.form_passvars()}
 </div>
-${_('Search: ')}${renderer.text('terms')} <button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Search')}</span></button>
+<label for="terms">${_('Search: ')}</label>${renderer.text('terms')} <button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Search')}</span></button>
 </form>
 </p>
 %if external_systems:
@@ -48,7 +48,7 @@ ${_('Search: ')}${renderer.text('terms')} <button id="search-button" class="ui-b
 <div class="hidden">
 ${renderer.form_passvars()}
 </div>
-${_('Show External Mapping: ')} ${renderer.select('ExternalSystem', options = [('','')] + external_systems)} <button id="show-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Show')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Show')}</span></button>
+<label for="ExternalSystem">${_('Show External Mapping: ')}</label> ${renderer.select('ExternalSystem', options = [('','')] + external_systems)} <button id="show-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Show')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Show')}</span></button>
 </form>
 </p>
 %endif
