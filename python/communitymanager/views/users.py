@@ -1,4 +1,4 @@
-# =========================================================================================
+﻿# =========================================================================================
 #  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -337,7 +337,7 @@ class Users(ViewBase):
                     return HTTPFound(location=request.route_url('user', uid=result.User_ID))
                 elif is_request:
                     subject = 'CIOC Community Manager Account Request'
-                    tmpl_args = {'url': request.route_url('user_new', _query=[('Request_ID', result.Request_ID)])}
+                    tmpl_args = {'url': request.route_url('user_new', _query=[('reqid', result.Request_ID)])}
                     tmpl_args.update(user)
                     request_message = request_email_template % tmpl_args
                     email.email('admin@cioc.ca', 'admin@cioc.ca', subject, request_message)
