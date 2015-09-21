@@ -67,8 +67,8 @@
 <h1 style="margin: 0; padding-left: 1em;" class="ui-widget-header"><a href="${request.route_path('home')}">${_('CIOC Communities Repository')}</a></h1>
 <nav class="site-nav"><%block name="sitenav">
 <%block name="browse"><a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('communities')}"><span class="ui-icon ui-icon-search ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Search')}</span></a></%block>
-<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary"></span><span class="ui-button-text">${_('Downloads')}</span></a>
-<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('external_systems')}"><span class="ui-icon ui-icon-link ui-button-icon-primary"></span><span class="ui-button-text">${_('External Systems')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('downloads')}"><span class="ui-icon ui-icon-script ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Downloads')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('external_systems')}"><span class="ui-icon ui-icon-link ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('External Systems')}</span></a>
 %if request.user:
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('suggest')}"><span class="ui-icon ui-icon-comment ui-button-icon-primary"></span><span class="ui-button-text">${_('Suggest Change')}</span></a>
 %if request.user.Admin or request.user.ManageAreaList:
@@ -80,8 +80,8 @@
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_url('account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary"></span><span class="ui-button-text">${_('My Account')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('logout')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Logout')}</span></a>
 %else:
-<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('request_account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary"></span><span class="ui-button-text">${_('Request Account')}</span></a>
-<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('login')}"><span class="ui-icon ui-icon-power ui-button-icon-primary"></span><span class="ui-button-text">${_('Login')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('request_account')}"><span class="ui-icon ui-icon-person ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Request Account')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-bottom ui-button-text-icon-primary" href="${request.route_path('login')}"><span class="ui-icon ui-icon-power ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Login')}</span></a>
 %endif
 </%block>
 </nav>
@@ -132,7 +132,7 @@
 <%def name="printInfoMessage(message)">
     <div class="ui-widget error-notice clearfix">
         <div class="ui-state-highlight ui-corner-all error-notice-wrapper"> 
-            <p><span class="ui-icon ui-icon-info error-notice-icon"></span> ${message} </p>
+            <p><span class="ui-icon ui-icon-info error-notice-icon" aria-hidden="true"></span> ${message} </p>
         </div>
     </div>
 </%def>

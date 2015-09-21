@@ -24,7 +24,7 @@
 <% user = request.user %>
 
 <p id="action-bar">
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('communities')}"><span class="ui-icon ui-icon-arrowthick-1-w ui-button-icon-primary"></span><span class="ui-button-text">${_('Back to Browse')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('communities')}"><span class="ui-icon ui-icon-arrowthick-1-w ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Back to Browse')}</span></a>
 %if user and (user.Admin or user.ManageAreaList):
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new')}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New Community')}</span></a>
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}"><span class="ui-icon ui-icon-lightbulb ui-button-icon-primary"></span><span class="ui-button-text">${_('New Alternate Area')}</span></a></p>
@@ -37,9 +37,9 @@ ${renderer.form_passvars()}
 </div>
 
 ${renderer.errorlist('terms')}
-${_('Search: ')} 
+<label for="terms">${_('Search: ')} </label>
 ${renderer.text('terms')}
-<button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Search')}</span></button>
+<button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search" aria-hidden="true"></span><span class="ui-button-text">${_('Search')}</span></button>
 </form>
 </p>
 

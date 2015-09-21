@@ -167,6 +167,7 @@ class CiocFormRenderer(FormRenderer):
     (_('Required fields are marked with'), self.required_flag())
 
     def errorlist(self, name=None, **attrs):
+        _ = self.form.request.translate
         """
         Renders errors in a <ul> element if there are multiple, otherwise will
         use a div. Unless specified in attrs, class will be "Alert".
@@ -195,10 +196,10 @@ class CiocFormRenderer(FormRenderer):
         return Markup('''
             <div class="ui-widget clearfix" style="margin: 0.25em;">
                 <div class="ui-state-error error-field-wrapper">
-                <span class="ui-icon ui-icon-alert error-notice-icon"></span>%s
+                <span class="ui-icon ui-icon-alert error-notice-icon">%s</span>%s
                 </div>
             </div>
-            ''') % errors[0]
+            ''') % (_('Warning'),errors[0])
 
     def error_notice(self, msg=None):
         if not self.all_errors():
@@ -212,14 +213,15 @@ class CiocFormRenderer(FormRenderer):
         return self.error_msg(msg)
 
     def error_msg(self, msg):
+        _ = self.form.request.translate
         return Markup('''
             <div class="ui-widget error-notice clearfix">
                 <div class="ui-state-error ui-corner-all error-notice-wrapper">
-                    <p><span class="ui-icon ui-icon-alert error-notice-icon"></span>
+                    <p><span class="ui-icon ui-icon-alert error-notice-icon">%s</span>
                     %s</p>
                 </div>
             </div>
-            ''') % msg
+            ''') % (_('Warning'),msg)
 
     def form_passvars(self, ln=None):
         params = self.form.request.form_args(ln)
