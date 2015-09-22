@@ -40,7 +40,7 @@ ${renderer.hidden('came_from')}
 	<td class="ui-widget-header">${renderer.label('LoginPwd', _('Password: '))}</td>
 	<td class="ui-widget-content">
 		${renderer.errorlist('LoginPwd')}
-		${renderer.password('LoginPwd', maxlength=None)}
+		${renderer.password('LoginPwd', id='LoginPwd',maxlength=None)}
 	</td>
 </tr>
 </table>

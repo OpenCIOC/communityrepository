@@ -41,7 +41,7 @@
 %if can_edit:
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_add', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New External Community')}</span></a>
 %endif
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_download', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-suitcase ui-button-icon-primary"></span><span class="ui-button-text">${_('Download Mapping')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_download', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-suitcase ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Download Mapping')}</span></a>
 </p>
 
 %if external_communities:
@@ -68,11 +68,11 @@
 <tr>
 <td class="ui-widget-content">${community.AreaName}</td>
 <td class="ui-widget-content">${community.ParentName or ''}</td>
-<td class="ui-widget-content">${community.PrimaryAreaTypeName or ''}</td>
+<td class="ui-widget-content" aria-hidden="true">${community.PrimaryAreaTypeName or ''}</td>
 ##<td class="ui-widget-content">${community.SubAreaTypeName or ''}</td>
 <td class="ui-widget-content">${community.ProvinceStateCountry or ''}</td>
 ##<td class="ui-widget-content">${community.ExternalID or ''}</td>
-<td class="ui-widget-content">${community.AIRSExportType or ''}</td>
+<td class="ui-widget-content" aria-hidden="true">${community.AIRSExportType or ''}</td>
 <td class="ui-widget-content">
 %if community.DuplicateWarning:
 <span class="ui-state-error required-flag"><span class="ui-icon ui-icon-star" title="${_('Warning: Duplicate Mapping')}"><em>${_('Warning: Duplicate Mapping')}</em></span></span>
@@ -80,7 +80,7 @@
 ${community.MappedCommunityName or ''}
 </td>
 ##<td class="ui-widget-content">${community.MappedProvinceStateCountry or ''}</td>
-<td class="ui-widget-content">${community.MappedParentCommunityName or ''}</td>
+<td class="ui-widget-content" aria-hidden="true">${community.MappedParentCommunityName or ''}</td>
 %if can_edit:
 <td class="ui-widget-content">
     <a href="${request.route_path('external_community', SystemCode=external_system.SystemCode, action='edit', EXTID=unicode(community.EXT_ID))}">${_('Edit')}</a>
