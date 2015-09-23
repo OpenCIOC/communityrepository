@@ -68,11 +68,11 @@
 <tr>
 <td class="ui-widget-content">${community.AreaName}</td>
 <td class="ui-widget-content">${community.ParentName or ''}</td>
-<td class="ui-widget-content" aria-hidden="true">${community.PrimaryAreaTypeName or ''}</td>
+<td class="ui-widget-content">${community.PrimaryAreaTypeName or ''}</td>
 ##<td class="ui-widget-content">${community.SubAreaTypeName or ''}</td>
 <td class="ui-widget-content">${community.ProvinceStateCountry or ''}</td>
 ##<td class="ui-widget-content">${community.ExternalID or ''}</td>
-<td class="ui-widget-content" aria-hidden="true">${community.AIRSExportType or ''}</td>
+<td class="ui-widget-content">${community.AIRSExportType or ''}</td>
 <td class="ui-widget-content">
 %if community.DuplicateWarning:
 <span class="ui-state-error required-flag"><span class="ui-icon ui-icon-star" title="${_('Warning: Duplicate Mapping')}"><em>${_('Warning: Duplicate Mapping')}</em></span></span>
@@ -80,7 +80,7 @@
 ${community.MappedCommunityName or ''}
 </td>
 ##<td class="ui-widget-content">${community.MappedProvinceStateCountry or ''}</td>
-<td class="ui-widget-content" aria-hidden="true">${community.MappedParentCommunityName or ''}</td>
+<td class="ui-widget-content">${community.MappedParentCommunityName or ''}</td>
 %if can_edit:
 <td class="ui-widget-content">
     <a href="${request.route_path('external_community', SystemCode=external_system.SystemCode, action='edit', EXTID=unicode(community.EXT_ID))}">${_('Edit')}</a>

@@ -199,7 +199,7 @@ class CiocFormRenderer(FormRenderer):
                 <span class="ui-icon ui-icon-alert error-notice-icon">%s</span>%s
                 </div>
             </div>
-            ''') % (_('Warning'),errors[0])
+            ''') % (_('Error'),errors[0])
 
     def error_notice(self, msg=None):
         if not self.all_errors():
@@ -221,7 +221,7 @@ class CiocFormRenderer(FormRenderer):
                     %s</p>
                 </div>
             </div>
-            ''') % (_('Warning'),msg)
+            ''') % (_('Error'),msg)
 
     def form_passvars(self, ln=None):
         params = self.form.request.form_args(ln)

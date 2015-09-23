@@ -132,7 +132,7 @@
 <%def name="printInfoMessage(message)">
     <div class="ui-widget error-notice clearfix">
         <div class="ui-state-highlight ui-corner-all error-notice-wrapper"> 
-            <p><span class="ui-icon ui-icon-info error-notice-icon" aria-hidden="true"></span> ${message} </p>
+            <p><span class="ui-icon ui-icon-info error-notice-icon">${_('Notice')}</span> ${message} </p>
         </div>
     </div>
 </%def>
