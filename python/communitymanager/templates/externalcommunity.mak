@@ -33,7 +33,7 @@ is_add = not (external_community and external_community.EXT_ID)
 </%block>
 
 <p id="action-bar">
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_list', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-link ui-button-icon-primary"></span><span class="ui-button-text">${_('Back To External Community List')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('external_community_list', SystemCode=_context.external_system.SystemCode)}"><span class="ui-icon ui-icon-link ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Back To External Community List')}</span></a>
 </p>
 
 ${renderer.error_notice()}

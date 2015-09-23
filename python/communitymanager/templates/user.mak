@@ -128,7 +128,7 @@ ${self.makeMgmtInfo(user)}
 </tr>
 %if is_admin:
 <tr>
-	<td class="ui-widget-header field">${_('Manage Communities')}</th>
+	<td class="ui-widget-header field">${renderer.label('NEW_cm_checklist', _('Manage Communities'))}</th>
 	<td class="ui-widget-content">
         %if account_request:
             %if account_request.ManageAreaRequest:
@@ -202,21 +202,21 @@ ${self.makeMgmtInfo(user)}
             <tr>
             <td class="field-lable-clear">${renderer.label('password.CurrentPassword', _('Current Password'))}
             <td>${renderer.errorlist('password.CurrentPassword')}
-                ${renderer.password('password.CurrentPassword')}
+                ${renderer.password('password.CurrentPassword', id='password.CurrentPassword')}
             </td>
             </tr>
 
             <tr>
             <td class="field-lable-clear">${renderer.label('password.Password', _('New Password'))}
             <td>${renderer.errorlist('password.Password')}
-                ${renderer.password('password.Password', autocomplete="off")}
+                ${renderer.password('password.Password', id='password.Password', autocomplete="off")}
             </td>
             </tr>
             
             <tr>
             <td class="field-lable-clear">${renderer.label('password.ConfirmPassword', _('Confirm New Password'))}
             <td>${renderer.errorlist('password.ConfirmPassword')}
-                ${renderer.password('password.ConfirmPassword', autocomplete="off")}
+                ${renderer.password('password.ConfirmPassword', id='password.ConfirmPassword', autocomplete="off")}
             </td>
             </tr>
 
