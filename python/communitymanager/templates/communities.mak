@@ -25,13 +25,13 @@
 
 
 <p id="action-bar">
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="close-all-nodes" href="#"><span class="ui-icon ui-icon-folder-collapsed ui-button-icon-primary"></span><span class="ui-button-text">${_('Close All')}</span></a> 
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="close-all-nodes" href="#"><span class="ui-icon ui-icon-folder-collapsed ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('Close All')}</span></a> 
 %if user and user.ManageAreaList:
 <a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" id="reset-open-nodes" href="#"><span class="ui-icon ui-icon-folder-open ui-button-icon-primary"></span><span class="ui-button-text">${_('My Management Areas')}</span></a>
 %endif
 %if user and (user.Admin or user.ManageAreaList):
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new')}"><span class="ui-icon ui-icon-document ui-button-icon-primary"></span><span class="ui-button-text">${_('New Community')}</span></a>
-<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}"><span class="ui-icon ui-icon-lightbulb ui-button-icon-primary"></span><span class="ui-button-text">${_('New Alternate Area')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new')}"><span class="ui-icon ui-icon-document ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('New Community')}</span></a>
+<a class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon-primary" href="${request.route_path('community', cmid='new', _query=[('altarea', 'on')])}"><span class="ui-icon ui-icon-lightbulb ui-button-icon-primary" aria-hidden="true"></span><span class="ui-button-text">${_('New Alternate Area')}</span></a>
 %endif
 </p>
 <p>
@@ -39,7 +39,7 @@
 <div class="hidden">
 ${renderer.form_passvars()}
 </div>
-${_('Search: ')}${renderer.text('terms')} <button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Search')}</span></button>
+<label for="terms">${_('Search: ')}</label>${renderer.text('terms')} <button id="search-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Search')}"><span class="ui-button-icon-primary ui-icon ui-icon-search" aria-hidden="true"></span><span class="ui-button-text">${_('Search')}</span></button>
 </form>
 </p>
 %if external_systems:
@@ -48,7 +48,7 @@ ${_('Search: ')}${renderer.text('terms')} <button id="search-button" class="ui-b
 <div class="hidden">
 ${renderer.form_passvars()}
 </div>
-${_('Show External Mapping: ')} ${renderer.select('ExternalSystem', options = [('','')] + external_systems)} <button id="show-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Show')}"><span class="ui-button-icon-primary ui-icon ui-icon-search"></span><span class="ui-button-text">${_('Show')}</span></button>
+<label for="ExternalSystem">${_('Show External Mapping: ')}</label> ${renderer.select('ExternalSystem', options = [('','')] + external_systems)} <button id="show-button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only" role="button" aria-disabled="false" title="${_('Show')}"><span class="ui-button-icon-primary ui-icon ui-icon-search" aria-hidden="true"></span><span class="ui-button-text">${_('Show')}</span></button>
 </form>
 </p>
 %endif
