@@ -59,6 +59,9 @@
     <Compile Include="communitymanager\views\users.py" />
     <Compile Include="communitymanager\views\__init__.py" />
     <Content Include="CHANGES.txt" />
+    <Content Include="communitymanager\locale\CommunityManager.pot" />
+    <Content Include="communitymanager\locale\fr_CA\LC_MESSAGES\CommunityManager.po" />
+    <Content Include="communitymanager\templates\externalsystems.mak" />
     <Content Include="requirements.txt" />
     <Content Include="CommunityManager.egg-info\dependency_links.txt" />
     <Content Include="CommunityManager.egg-info\entry_points.txt" />
@@ -119,6 +122,9 @@
     <Folder Include="communitymanager" />
     <Folder Include="CommunityManager.egg-info" />
     <Folder Include="communitymanager\lib" />
+    <Folder Include="communitymanager\locale\" />
+    <Folder Include="communitymanager\locale\fr_CA\" />
+    <Folder Include="communitymanager\locale\fr_CA\LC_MESSAGES\" />
     <Folder Include="communitymanager\static\" />
     <Folder Include="communitymanager\static\css" />
     <Folder Include="communitymanager\static\css\images" />
