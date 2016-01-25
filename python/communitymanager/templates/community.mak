@@ -109,7 +109,7 @@ ${self.makeMgmtInfo(community)}
 	</td>
 </tr>
 <tr>
-	<td class="ui-widget-header field">${renderer.label('community.ParentCommunityWeb', _('Parent Community'))} ${renderer.required_flag()}</td>
+	<td class="ui-widget-header field">${renderer.label('community_ParentCommunityWeb', _('Parent Community'))} ${renderer.required_flag()}</td>
 	<td class="ui-widget-content">
 		${renderer.errorlist('community.ParentCommunity')}
         ${renderer.hidden('community.ParentCommunity', id='community_ParentCommunity')}
@@ -138,7 +138,7 @@ ${self.makeMgmtInfo(community)}
 </tr>
 %if is_alt_area:
 <tr>
-	<td class="ui-widget-header field">${_('Search Communities')}</th>
+	<td class="ui-widget-header field"><label for="NEW_cm_checklist">${_('Search Communities')}</label></th>
 	<td class="ui-widget-content">
     ${cc.make_cm_checklist_ui('alt_areas', alt_area_name_map)}
 	</td>
