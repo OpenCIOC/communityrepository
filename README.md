@@ -13,3 +13,9 @@ Features
 * Lists and provides downloads of XML snapshots of the contained communities data
 * Log of changes made to the data in the repository for each release, as well as 
   recent changes not yet incorporated into a release
+
+
+More Info
+---------
+
+* http://opencioc.org/community-repo.php
