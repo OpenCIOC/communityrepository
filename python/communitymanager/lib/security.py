@@ -15,24 +15,24 @@
 # =========================================================================================
 
 # std lib
-import string
 from hashlib import pbkdf2_hmac
 import os
 import random
+import base64
 
 # this app
 
 
-gen_pass_alphabet = string.letters + string.digits + '!@#$%^&*-_=+?<>'
+gen_pass_alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz12345678901234567890!@#$%^&*-_=+?<>'
 DEFAULT_REPEAT = 100000
 
 
 def Crypt(salt, password, repeat=DEFAULT_REPEAT):
-    return pbkdf2_hmac('sha1', password, salt, repeat, 33).encode('base64').strip()
+    return base64.b64encode(pbkdf2_hmac('sha1', password.encode('utf-8'), salt.encode('utf-8'), repeat, 33)).decode('ascii').strip()
 
 
 def MakeSalt():
-    return os.urandom(33).encode('base64').strip()
+    return base64.b64encode(os.urandom(33).encode('base64')).decode('ascii').strip()
 
 
 def MakeRandomPassword(length=15, chars=gen_pass_alphabet):

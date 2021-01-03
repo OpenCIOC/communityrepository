@@ -239,7 +239,7 @@ def passvars_pregen(request, elements, kw):
             query = []
 
         elif isinstance(query, dict):
-            query = query.items()
+            query = list(query.items())
 
         else:
             query = list(query)

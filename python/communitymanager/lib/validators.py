@@ -92,8 +92,8 @@ class DeleteKeyIfEmpty(validators.FancyValidator):
     def _to_python(self, value_dict, state):
         to_del = []
         try:
-            for key, value in value_dict.iteritems():
-                if not any(v for v in value.itervalues()):
+            for key, value in value_dict.items():
+                if not any(v for v in value.values()):
                     to_del.append(key)
 
             for key in to_del:
@@ -159,7 +159,7 @@ class FlagRequiredIfNoCulture(validators.FormValidator):
         active_cultures = sl.active_record_cultures() if self.record_cultures else sl.active_cultures()
         errors = {}
 
-        for fieldname, validator in self.targetvalidator.fields.iteritems():
+        for fieldname, validator in self.targetvalidator.fields.items():
             if not validator.not_empty:
                 continue
 
@@ -233,7 +233,7 @@ class RequireIfPredicate(validators.FormValidator):
         return value_dict
 
     def _convert_to_list(self, value):
-        if isinstance(value, (str, unicode)):
+        if isinstance(value, str):
             return [value]
         elif value is None:
             return []
@@ -361,7 +361,7 @@ class CheckPassword(validators.FormValidator):
         finally:
             self.gettextargs = gt_args
         if errors:
-            error_list = errors.items()
+            error_list = list(errors.items())
             raise Invalid(
                 '\n'.join(["%s: %s" % (name, value) for name, value in error_list]),
                 value_dict, state, error_dict=errors)
@@ -402,7 +402,7 @@ class ForceRequire(validators.FormValidator):
         return field_dict
 
     def _convert_to_list(self, value):
-        if isinstance(value, (str, unicode)):
+        if isinstance(value, str):
             return [value]
         elif value is None:
             return []

@@ -27,7 +27,7 @@ from communitymanager.lib import validators, security, email
 from communitymanager.lib.request import get_translate_fn
 
 _ = lambda x: x
-pwreset_email_template = _(u'''\
+pwreset_email_template = _('''\
 Hi %(FirstName)s,
 
 Someone requested a password reset for the CIOC Communities Repository site.

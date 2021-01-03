@@ -83,7 +83,7 @@ ${community.MappedCommunityName or ''}
 <td class="ui-widget-content">${community.MappedParentCommunityName or ''}</td>
 %if can_edit:
 <td class="ui-widget-content">
-    <a href="${request.route_path('external_community', SystemCode=external_system.SystemCode, action='edit', EXTID=unicode(community.EXT_ID))}">${_('Edit')}</a>
+    <a href="${request.route_path('external_community', SystemCode=external_system.SystemCode, action='edit', EXTID=str(community.EXT_ID))}">${_('Edit')}</a>
 </td>
 %endif
 </tr>

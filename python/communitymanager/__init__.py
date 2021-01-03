@@ -151,6 +151,7 @@ def main(global_config, **settings):
                          authorization_policy=authz_policy)
 
     config.include('pyramid_redis_sessions')
+    config.include('pyramid_mako')
 
     passvars_pregen = request.passvars_pregen
 

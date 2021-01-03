@@ -18,10 +18,10 @@ import os
 import sys
 
 if len(sys.argv) < 2:
-    print "Missing port number"
+    print("Missing port number")
     sys.exit(1)
 
-envname = 'ciocenv31'
+envname = 'CommRepoPy38'
 if len(sys.argv) == 3:
     envname = sys.argv[2]
 
@@ -35,7 +35,7 @@ virtualenv = os.path.abspath(os.path.join(os.environ.get('CIOC_ENV_ROOT', os.pat
 
 args = dict(virtualenv=virtualenv, app_name=app_name, http_port=sys.argv[1])
 cmd = r'%(virtualenv)s\Scripts\python.exe wsgisvc.py -n PyCioc%(app_name)s -d "CIOC %(app_name)s" -v %(virtualenv)s -c production.ini -p %(http_port)s install' % args
-print cmd
+print(cmd)
 result = os.system(cmd)
 if not result:
     result = os.system('sc config PyCioc%s start= auto' % app_name)

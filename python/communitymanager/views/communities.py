@@ -43,7 +43,7 @@ class Communities(ViewBase):
 
             cursor.nextset()
 
-            external_systems = map(tuple, cursor.fetchall())
+            external_systems = list(map(tuple, cursor.fetchall()))
 
             cursor.close()
 
@@ -77,7 +77,7 @@ class Communities(ViewBase):
         validator = validators.IntID(not_empty=True)
         try:
             cm_id = validator.to_python(request.matchdict.get('cmid'))
-        except validators.Invalid, e:
+        except validators.Invalid as e:
             return {'fail': True, 'reason': e.message}
 
         community = None

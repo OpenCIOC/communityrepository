@@ -177,11 +177,11 @@ class Community(ViewBase):
 
             root = ET.Element('DESCS')
 
-            for culture, description in model_state.form.data['descriptions'].iteritems():
+            for culture, description in model_state.form.data['descriptions'].items():
 
                 desc = ET.SubElement(root, 'DESC')
                 ET.SubElement(desc, "Culture").text = culture.replace('_', '-')
-                for name, value in description.iteritems():
+                for name, value in description.items():
                     if value:
                         ET.SubElement(desc, name).text = value
 
@@ -202,7 +202,7 @@ class Community(ViewBase):
             if is_alt_area:
                 root = ET.Element('ALTAREAS')
                 for area in data.get('alt_areas') or []:
-                    ET.SubElement(root, 'CM_ID').text = unicode(area)
+                    ET.SubElement(root, 'CM_ID').text = str(area)
 
                 args.append(ET.tostring(root))
 
@@ -254,7 +254,7 @@ class Community(ViewBase):
         prov_state = []
         alt_area_name_map = {}
         with request.connmgr.get_connection() as conn:
-            prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry ORDER BY DisplayOrder, ProvinceStateCountry').fetchall())
+            prov_state = list(map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry ORDER BY DisplayOrder, ProvinceStateCountry').fetchall()))
 
             if is_alt_area:
                 alt_area_name_map = {str(x[0]): x[1] for x in conn.execute('EXEC sp_Community_ls_Names ?', ','.join(str(x) for x in alt_areas)).fetchall()}
@@ -287,7 +287,7 @@ class Community(ViewBase):
 
         prov_state = []
         with request.connmgr.get_connection() as conn:
-            prov_state = map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry ORDER BY DisplayOrder, ProvinceStateCountry').fetchall())
+            prov_state = list(map(tuple, conn.execute('SELECT ProvID, ProvinceStateCountry FROM dbo.vw_ProvinceStateCountry ORDER BY DisplayOrder, ProvinceStateCountry').fetchall()))
 
         if community:
             community.ChildCommunities = xml_to_dict_list(community.ChildCommunities)
@@ -370,7 +370,7 @@ class Community(ViewBase):
         request = self.request
         _ = request.translate
 
-        cm_names = request.context.descriptions.values()
+        cm_names = list(request.context.descriptions.values())
         cm_names.sort(key=lambda x: (x.LangID != request.language.LangID, x.LangID))
         cm_name = cm_names[0]
         if request.context.community.AlternativeArea:

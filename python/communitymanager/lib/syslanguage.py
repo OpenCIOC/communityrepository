@@ -86,7 +86,7 @@ _culture_list = [
     ),
     CultureDescription(
         Culture=CULTURE_FRENCH_CANADIAN,
-        LanguageName=u'Français',
+        LanguageName='Français',
         LanguageAlias=SQLALIAS_FRENCH,
         LCID=LCID_FRENCH_CANADIAN,
         LangID=LANG_FRENCH,
