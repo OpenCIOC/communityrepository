@@ -17,7 +17,7 @@
 # std lib
 import os
 from glob import glob
-from itertools import tee, takewhile, izip_longest, chain, repeat
+from itertools import tee, takewhile, zip_longest, chain, repeat
 import zipfile
 from xml.sax.saxutils import quoteattr
 
@@ -46,11 +46,11 @@ class rewindable_iterator(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         if self._use_save:
             self._use_save = False
         else:
-            self._save = self._iter.next()
+            self._save = next(self._iter)
         return self._save
 
     def backup(self):
@@ -88,7 +88,7 @@ def files_with_logs(files, logs):
     if new_items:
         yield (None, None, new_items)
 
-    for next_date, filenames in izip_longest(next_date, filenames):
+    for next_date, filenames in zip_longest(next_date, filenames):
         if next_date is None:
             # we are already at the last published file
             changes = list(takewhile(lambda x: x is not None, logiter))
@@ -158,7 +158,7 @@ class Downloads(ViewBase):
 
         # TODO Add Schema?
         data = [
-            u'''\
+            '''\
 <?xml version="1.0" encoding="UTF-8"?><community_information source=%s>
 <!--
     All user geography data contributed to the CIOC Community Repository is cc-by 4.0 licensed.
@@ -204,7 +204,7 @@ class Downloads(ViewBase):
 
             cursor.close()
 
-        data.append(u'</community_information>')
+        data.append('</community_information>')
 
         fname = date.isoformat().replace(':', '_') + '.xml'
         with open(os.path.join(const.publish_dir, fname + '.zip'), 'wb') as f:

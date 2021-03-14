@@ -28,7 +28,7 @@ def xml_to_dict_list(text):
     if not text:
         return []
 
-    root = ET.fromstring('<root>' + text.encode('utf8') + '</root>')
+    root = ET.fromstring(b'<root>' + text.encode('utf8') + b'</root>')
 
     return [el.attrib for el in root]
 

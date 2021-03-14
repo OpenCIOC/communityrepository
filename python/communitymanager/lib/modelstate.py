@@ -16,8 +16,9 @@
 
 import re
 from markupsafe import Markup
-from webhelpers.html import tags
-from webhelpers.html.builder import HTML, literal
+from webhelpers2.html import tags
+from webhelpers2.html.tags import Option, OptGroup
+from webhelpers2.html.builder import HTML, literal
 
 from pyramid_simpleform import Form, State
 from pyramid_simpleform.renderers import FormRenderer
@@ -30,8 +31,29 @@ import logging
 log = logging.getLogger('communitymanager.lib.modelstate')
 
 
+def convert_options(options):
+	# convert from webhelpers1 to webhelpers2
+	opts = []
+	for opt in options:
+		if isinstance(opt, (Option, OptGroup)):
+			opts.append(opt)
+			continue
+		if isinstance(opt, (list, tuple)):
+			value, label = opt[:2]
+			if isinstance(value, (list, tuple)):  # It's an optgroup
+				opts.append(OptGroup(label, convert_options(value)))
+				continue
+		else:
+			value = label = opt
+
+		opt = Option(label=label, value=value)
+		opts.append(opt)
+	return opts
+
+
 class DefaultModel(object):
     pass
+
 
 _split_re = re.compile(r'((?:-\d+)?\.)')
 
@@ -77,7 +99,7 @@ class CiocFormRenderer(FormRenderer):
         Outputs radio input.
         """
         try:
-            checked = unicode(traverse_object_for_value(self.form.data, name)) == unicode(value)
+            checked = str(traverse_object_for_value(self.form.data, name)) == str(value)
         except (KeyError, AttributeError):
             pass
 
@@ -91,8 +113,8 @@ class CiocFormRenderer(FormRenderer):
         """
         Outputs checkbox in radio style (i.e. multi select)
         """
-        checked = unicode(value) in self.value(name, []) or checked
-        id = id or ('_'.join((name, unicode(value))))
+        checked = str(value) in self.value(name, []) or checked
+        id = id or ('_'.join((name, str(value))))
         return tags.checkbox(name, value, checked, label, id, **attrs)
 
     def label(self, name, label=None, **attrs):
@@ -121,7 +143,7 @@ class CiocFormRenderer(FormRenderer):
         value = self.value(name, value)
         if value and value.startswith('http://'):
             value = value[len('http://'):]
-        return literal(u'http://') + tags.text(name, value, id, **kw)
+        return literal('http://') + tags.text(name, value, id, **kw)
 
     def email(self, name, value=None, id=None, **attrs):
         kw = {'type': 'email', 'maxlength': 60, 'class_': 'email'}

@@ -230,8 +230,8 @@ class ExternalCommunties(ViewBase):
 
         return {
             'external_community': external_community,
-            'area_types': map(tuple, area_types),
-            'prov_state': map(tuple, prov_state),
+            'area_types': list(map(tuple, area_types)),
+            'prov_state': list(map(tuple, prov_state)),
             'airs_export_types': [x[0] for x in airs_export_types],
             'is_add': is_add
         }
@@ -362,10 +362,10 @@ class ExternalCommunties(ViewBase):
 
         isodate = isodate.replace(':', '-')
 
-        values = [quoteattr(unicode(x) if x is not None else u'') for x in root_parameters]
-        root_parameters = u' '.join(u'='.join(x) for x in zip(names, values))
+        values = [quoteattr(str(x) if x is not None else '') for x in root_parameters]
+        root_parameters = ' '.join('='.join(x) for x in zip(names, values))
 
-        fname = u"CommunityMap-%s-%s.xml" % (external_system.SystemCode, isodate)
+        fname = "CommunityMap-%s-%s.xml" % (external_system.SystemCode, isodate)
 
         file = tempfile.TemporaryFile()
         with bufferedzip.BufferedZipFile(file, 'w', zipfile.ZIP_DEFLATED) as zf:
@@ -388,26 +388,26 @@ class ExternalCommunties(ViewBase):
 def _write_xml_data(root_parameters, cursor, zipfile, fname):
 
     with tempfile.TemporaryFile() as file:
-        file.write(u'<?xml version="1.0" encoding="UTF-8"?>\n'.encode('utf-8'))
-        file.write((u'<ExternalSystem %s>\n' % root_parameters).encode('utf-8'))
+        file.write('<?xml version="1.0" encoding="UTF-8"?>\n'.encode('utf-8'))
+        file.write(('<ExternalSystem %s>\n' % root_parameters).encode('utf-8'))
 
-        for nextset, tagname in enumerate([u'ExternalCommunities', u'CommunityMapping']):
+        for nextset, tagname in enumerate(['ExternalCommunities', 'CommunityMapping']):
             if nextset:
                 cursor.nextset()
 
-            file.write((u'<%s>' % tagname).encode('utf-8'))
+            file.write(('<%s>' % tagname).encode('utf-8'))
 
             while True:
                 rows = cursor.fetchmany(2000)
                 if not rows:
                     break
 
-                rows = u'\n'.join(x[0] for x in rows) + u'\n'
+                rows = '\n'.join(x[0] for x in rows) + '\n'
                 file.write(rows.encode('utf-8'))
 
-            file.write((u'</%s>' % tagname).encode('utf-8'))
+            file.write(('</%s>' % tagname).encode('utf-8'))
 
-        file.write(u'</ExternalSystem>\n'.encode('utf-8'))
+        file.write('</ExternalSystem>\n'.encode('utf-8'))
 
         file.seek(0)
         zipfile.writebuffer(file, fname)

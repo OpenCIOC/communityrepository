@@ -15,7 +15,7 @@
 # =========================================================================================
 
 import os
-from ConfigParser import SafeConfigParser as ConfigParser
+from configparser import SafeConfigParser as ConfigParser
 
 
 class ConfigManager(object):

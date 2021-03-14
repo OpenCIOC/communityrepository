@@ -34,7 +34,7 @@ log = logging.getLogger('communitymanager.views.users')
 
 # create passthrough _ function to grab the string value
 _ = lambda x: x
-welcome_email_template = _(u'''\
+welcome_email_template = _('''\
 Hi %(FirstName)s,
 
 Your account on the CIOC Communities Repository site has been created:
@@ -44,7 +44,7 @@ Password: %(Password)s
 Please log in to %(url)s as soon as possible and change your password.
 ''')
 
-request_email_template = _(u'''\
+request_email_template = _('''\
 Hi,
 
 An account has been requested on the CIOC Communities Repository site:
@@ -238,7 +238,7 @@ class Users(ViewBase):
             form_data = model_state.data
             user = form_data['user']
 
-            fields = schema.fields['user'].fields.keys()
+            fields = list(schema.fields['user'].fields.keys())
             args = [user.get(x) for x in fields]
 
             if not is_request and not is_account:
@@ -246,7 +246,7 @@ class Users(ViewBase):
                 if not user.get('Admin'):
                     for cmid in form_data.get('manage_areas') or []:
                         if cmid:
-                            ET.SubElement(root, 'CM_ID').text = unicode(cmid)
+                            ET.SubElement(root, 'CM_ID').text = str(cmid)
 
                 fields.append('ManageAreas')
                 args.append(ET.tostring(root))
@@ -255,7 +255,7 @@ class Users(ViewBase):
                 if not user.get('Admin'):
                     for code in form_data.get('manage_external') or []:
                         if code:
-                            ET.SubElement(root, 'SystemCode').text = unicode(code)
+                            ET.SubElement(root, 'SystemCode').text = str(code)
 
                 fields.append('ManageExternalSystems')
                 args.append(ET.tostring(root))
@@ -558,7 +558,7 @@ class Users(ViewBase):
         validator = validators.IntID()
         try:
             reqid = validator.to_python(request.params.get('reqid'))
-        except validators.Invalid, e:
+        except validators.Invalid as e:
             request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
             raise HTTPFound(location=request.route_url('users'))
 

@@ -14,30 +14,24 @@
 #  limitations under the License.
 # =========================================================================================
 
---find-links https://binary-deps.cioc.ca/cioc
-pyodbc==3.0.7
-pyramid==1.4.6
-Babel==0.9.6
-Mako==1.0.0
+pyodbc==4.0.30
+pyramid==1.5.8
+Babel==1.3.0
+Mako==1.1.3
 pyramid_mako==1.0.2
 Paste
 PasteDeploy
 PasteScript
-Sphinx==1.0.7
-WebHelpers==1.3
-backports.ssl-match-hostname==3.2a3
-isodate==0.4.4
-marrow.interface==1.0.0
-marrow.mailer==4.0.0
-marrow.util==1.2.2
-pyramid-exclog==0.4
-pyramid-simpleform==0.6.1
-redis==2.4.10
-requests==2.5.0
+Sphinx==3.4.1
+WebHelpers2==2.0
+isodate==0.6.0
+pyramid-exclog==0.8
+pyramid-simpleform==0.7.dev0
+redis==2.10.6
+requests==2.25.1
 ipaddress==1.0.6
-pyramid_redis_sessions==1.0a2
-dogpile.core==0.4.1
-dogpile.cache==0.5.4
-lxml==3.3.5
+pyramid_redis_sessions==1.0.1
+dogpile.cache==0.6.5
+lxml==4.5.2
 pyramid_debugtoolbar==2.2
-pyramid_multiauth==0.4.0
+pyramid_multiauth==0.9
