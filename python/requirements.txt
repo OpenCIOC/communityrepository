@@ -32,6 +32,6 @@ requests==2.25.1
 ipaddress==1.0.6
 pyramid_redis_sessions==1.0.1
 dogpile.cache==0.6.5
-lxml==4.5.2
+lxml==4.6.2
 pyramid_debugtoolbar==2.2
 pyramid_multiauth==0.9
