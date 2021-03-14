@@ -22,7 +22,7 @@ pyramid_mako==1.0.2
 Paste
 PasteDeploy
 PasteScript
-Sphinx==3.4.1
+Sphinx==3.5.2
 WebHelpers2==2.0
 isodate==0.6.0
 pyramid-exclog==0.8
