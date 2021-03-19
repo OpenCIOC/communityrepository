@@ -28,7 +28,7 @@ from pyramid.response import FileIter
 from markupsafe import Markup
 
 # this app
-from communitymanager.lib import validators, bufferedzip
+from communitymanager.lib import validators
 from communitymanager.views.base import ViewBase
 
 
@@ -368,7 +368,7 @@ class ExternalCommunties(ViewBase):
         fname = "CommunityMap-%s-%s.xml" % (external_system.SystemCode, isodate)
 
         file = tempfile.TemporaryFile()
-        with bufferedzip.BufferedZipFile(file, 'w', zipfile.ZIP_DEFLATED) as zf:
+        with zipfile.ZipFile(file, 'w', zipfile.ZIP_DEFLATED) as zf:
             with request.connmgr.get_connection() as conn:
                 cursor = conn.execute('EXEC sp_External_Community_l_xml ?', external_system.SystemCode)
 
@@ -387,7 +387,7 @@ class ExternalCommunties(ViewBase):
 
 def _write_xml_data(root_parameters, cursor, zipfile, fname):
 
-    with tempfile.TemporaryFile() as file:
+    with zipfile.open(fname, 'w') as file:
         file.write('<?xml version="1.0" encoding="UTF-8"?>\n'.encode('utf-8'))
         file.write(('<ExternalSystem %s>\n' % root_parameters).encode('utf-8'))
 
@@ -408,6 +408,3 @@ def _write_xml_data(root_parameters, cursor, zipfile, fname):
             file.write(('</%s>' % tagname).encode('utf-8'))
 
         file.write('</ExternalSystem>\n'.encode('utf-8'))
-
-        file.seek(0)
-        zipfile.writebuffer(file, fname)
