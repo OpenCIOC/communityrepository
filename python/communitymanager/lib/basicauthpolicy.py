@@ -2,6 +2,7 @@
 # http://pyramid-cookbook.readthedocs.org/en/latest/auth/basic.html
 
 import binascii
+import base64
 
 from paste.httpheaders import AUTHORIZATION
 from paste.httpheaders import WWW_AUTHENTICATE
@@ -18,7 +19,7 @@ def _get_basicauth_credentials(request):
         return None
     if authmeth.lower() == 'basic':
         try:
-            auth = auth.strip().decode('base64')
+            auth = base64.b64decode(auth.strip().encode('ascii')).decode('utf-8')
         except binascii.Error:  # can't decode
             return None
         try:
