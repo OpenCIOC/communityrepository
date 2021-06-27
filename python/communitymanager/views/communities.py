@@ -78,7 +78,7 @@ class Communities(ViewBase):
         try:
             cm_id = validator.to_python(request.matchdict.get('cmid'))
         except validators.Invalid as e:
-            return {'fail': True, 'reason': e.message}
+            return {'fail': True, 'reason': e.msg}
 
         community = None
         with request.connmgr.get_connection() as conn:

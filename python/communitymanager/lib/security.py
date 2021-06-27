@@ -32,7 +32,7 @@ def Crypt(salt, password, repeat=DEFAULT_REPEAT):
 
 
 def MakeSalt():
-    return base64.b64encode(os.urandom(33).encode('base64')).decode('ascii').strip()
+    return base64.b64encode(os.urandom(33)).decode('ascii').strip()
 
 
 def MakeRandomPassword(length=15, chars=gen_pass_alphabet):

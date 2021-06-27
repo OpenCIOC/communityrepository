@@ -559,7 +559,7 @@ class Users(ViewBase):
         try:
             reqid = validator.to_python(request.params.get('reqid'))
         except validators.Invalid as e:
-            request.session.flash(_('Invalid Account Request ID: ') + e.message, 'errorqueue')
+            request.session.flash(_('Invalid Account Request ID: ') + e.msg, 'errorqueue')
             raise HTTPFound(location=request.route_url('users'))
 
         return reqid

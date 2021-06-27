@@ -142,7 +142,7 @@ class Suggest(ViewBase):
         try:
             sjid = validator.to_python(request.params.get('sjid'))
         except validators.Invalid as e:
-            request.session.flash(_('Invalid Suggestion ID: ') + e.message, 'errorqueue')
+            request.session.flash(_('Invalid Suggestion ID: ') + e.msg, 'errorqueue')
             raise HTTPFound(location=request.route_url('review_suggestions'))
 
         return sjid
