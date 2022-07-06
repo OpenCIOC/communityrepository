@@ -30,6 +30,6 @@ pyramid-simpleform==0.7.dev0
 redis==2.10.6
 requests==2.27.1
 pyramid_redis_sessions==1.0.1
-lxml==4.8.0
+lxml==4.9.1
 pyramid_debugtoolbar==2.2
 pyramid_multiauth==0.9
