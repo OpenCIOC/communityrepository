@@ -1,0 +1,6 @@
+-r requirements.in
+
+Sphinx
+flake8
+black
+pyramid_debugtoolbar

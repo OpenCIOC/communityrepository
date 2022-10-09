@@ -36,25 +36,20 @@ EMAIL_LENGTH = 60
 _app_path = None
 _config_file = None
 _app_name = None
-session_lock_dir = None
 publish_dir = None
 
 
 def update_cache_values():
     # called from application init at startup
-    global _app_path, _config_file, _app_name, session_lock_dir, publish_dir
+    global _app_path, _config_file, _app_name, publish_dir
 
     if _app_path is None:
-        _app_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+        _app_path = os.path.normpath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "..")
+        )
         _app_name = os.path.split(_app_path)[1]
-        _config_file = os.path.join(_app_path, '..', '..', 'config', _app_name + '.ini')
-        session_lock_dir = os.path.join(_app_path, 'python', 'session_lock')
-        publish_dir = os.path.join(_app_path, 'python', 'published_files')
-
-        try:
-            os.makedirs(session_lock_dir)
-        except os.error:
-            pass
+        _config_file = os.path.join(_app_path, "..", "..", "config", _app_name + ".ini")
+        publish_dir = os.path.join(_app_path, "python", "published_files")
 
         try:
             os.makedirs(publish_dir)

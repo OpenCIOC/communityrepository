@@ -27,20 +27,22 @@ class ConnectionManager(object):
     def connection_string(self):
         config = self.config
         settings = [
-            ('Driver', '{%s}' % config.get('driver', 'SQL Server Native Client 11.0')),
-            ('Server', config['server']),
-            ('Database', config['database']),
-            ('UID', config['uid']),
-            ('PWD', config['pwd'])
+            ("Driver", config.get("driver", "SQL Server Native Client 11.0")),
+            ("Server", config["server"]),
+            ("Database", config["database"]),
+            ("UID", config["uid"]),
+            ("PWD", config["pwd"]),
         ]
 
-        return ';'.join('='.join(x) for x in settings)
+        return ";".join("%s={%s}" % x for x in settings)
 
     def get_connection(self, language=None):
         if not language:
             language = self.request.language.LanguageAlias
 
-        conn = pyodbc.connect(self.connection_string, autocommit=True, unicode_results=True)
+        conn = pyodbc.connect(
+            self.connection_string, autocommit=True, unicode_results=True
+        )
         conn.execute("SET LANGUAGE '" + language + "'")
 
         return conn

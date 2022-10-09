@@ -24,15 +24,18 @@ import logging
 from pyramid.request import Request
 from pyramid.decorator import reify
 from pyramid.i18n import get_localizer, TranslationStringFactory, TranslationString
-from pyramid.security import unauthenticated_userid
 
 from babel import Locale, dates
 
 # This app
-from communitymanager.lib.syslanguage import SystemLanguage, default_culture, is_active_culture
+from communitymanager.lib.syslanguage import (
+    SystemLanguage,
+    default_culture,
+    is_active_culture,
+)
 from communitymanager.lib import config, connection, const
 
-log = logging.getLogger('communitymanager.lib.request')
+log = logging.getLogger("communitymanager.lib.request")
 
 
 class LocaleDict(defaultdict):
@@ -42,32 +45,32 @@ class LocaleDict(defaultdict):
 
 _locales = LocaleDict()
 _locale_date_format = {
-    'en-CA': 'd MMM yyyy',
-    'fr-CA': 'd MMM yyyy',
-    'de': 'dd.MM.yyyy',
-    'fr': 'd MMM yyyy',
-    'es-MX': 'MM/dd/yyyy',
-    'it': 'd MMM yyyy',
-    'nl': 'd MMM yyyy',
-    'no': 'd MMM yyyy',
-    'pt': 'd-MM-yyyy',
-    'sv': 'd MMM yyyy',
-    'hu': 'MMM d. yyyy',
-    'pl': 'd MMM yyyy',
-    'ro': 'd MMM yyyy',
-    'hr': 'd MMM yyyy',
-    'sk': 'dd.MM.yyyy',
-    'sl': 'd MMM yyyy',
-    'el': 'dd/MM/yyyy',
-    'bg': 'd MMM yyyy',
-    'ru': 'd MMM yyyy',
-    'tr': 'd MMM yyyy',
-    'lv': 'd MMM yyyy',
-    'lt': 'd MMM yyyy',
-    'zh-TW': 'yyyy/MM/dd',
-    'ko': 'yyyy/MM/dd',
-    'zh-CN': 'yyyy/MM/dd',
-    'th': 'd MMM yyyy'
+    "en-CA": "d MMM yyyy",
+    "fr-CA": "d MMM yyyy",
+    "de": "dd.MM.yyyy",
+    "fr": "d MMM yyyy",
+    "es-MX": "MM/dd/yyyy",
+    "it": "d MMM yyyy",
+    "nl": "d MMM yyyy",
+    "no": "d MMM yyyy",
+    "pt": "d-MM-yyyy",
+    "sv": "d MMM yyyy",
+    "hu": "MMM d. yyyy",
+    "pl": "d MMM yyyy",
+    "ro": "d MMM yyyy",
+    "hr": "d MMM yyyy",
+    "sk": "dd.MM.yyyy",
+    "sl": "d MMM yyyy",
+    "el": "dd/MM/yyyy",
+    "bg": "d MMM yyyy",
+    "ru": "d MMM yyyy",
+    "tr": "d MMM yyyy",
+    "lv": "d MMM yyyy",
+    "lt": "d MMM yyyy",
+    "zh-TW": "yyyy/MM/dd",
+    "ko": "yyyy/MM/dd",
+    "zh-CN": "yyyy/MM/dd",
+    "th": "d MMM yyyy",
 }
 
 
@@ -75,20 +78,24 @@ def get_locale(request):
     return _locales[request.language.Culture]
 
 
+def get_date_locale(request):
+    return _locales[request.language.Culture.replace("-CA", "")]
+
+
 def format_date(d, request):
     if d is None:
-        return ''
+        return ""
     if not isinstance(d, (date, datetime)):
         return d
 
     l = get_locale(request)
-    format = _locale_date_format.get(request.language.Culture, 'medium')
+    format = _locale_date_format.get(request.language.Culture, "medium")
     return dates.format_date(d, locale=l, format=format)
 
 
 def format_time(t, request):
     if t is None:
-        return ''
+        return ""
     if not isinstance(t, (datetime, time)):
         return t
 
@@ -98,7 +105,7 @@ def format_time(t, request):
 
 def format_datetime(dt, request):
     if dt is None:
-        return ''
+        return ""
     if not isinstance(dt, (date, datetime, time)):
         return dt
 
@@ -110,7 +117,7 @@ def format_datetime(dt, request):
     if isinstance(dt, (datetime, time)):
         parts.append(format_time(dt, request))
 
-    return ' '.join(parts)
+    return " ".join(parts)
 
 
 class CommunityManagerRequest(Request):
@@ -120,7 +127,7 @@ class CommunityManagerRequest(Request):
 
         extra_args = []
         if ln and ln != self.default_culture:
-            extra_args.append(('Ln', ln))
+            extra_args.append(("Ln", ln))
 
         return extra_args
 
@@ -130,7 +137,7 @@ class CommunityManagerRequest(Request):
 
     @reify
     def _LOCALE_(self):
-        return self.language.Culture.replace('-', '_')
+        return self.language.Culture.replace("-", "_")
 
     @reify
     def config(self):
@@ -144,8 +151,8 @@ class CommunityManagerRequest(Request):
     def language(self):
         language = SystemLanguage(self)
 
-        ln = self.params.get('Ln')
-        log.debug('Ln: %s', ln)
+        ln = self.params.get("Ln")
+        log.debug("Ln: %s", ln)
         if ln and is_active_culture(ln):
             language.setSystemLanguage(ln)
 
@@ -157,7 +164,7 @@ class CommunityManagerRequest(Request):
 
     @reify
     def translate(self):
-        if not hasattr(self, 'localizer'):
+        if not hasattr(self, "localizer"):
             self.localizer = get_localizer(self)
 
         localizer = self.localizer
@@ -183,26 +190,28 @@ class CommunityManagerRequest(Request):
     def user(self):
         # <your database connection, however you get it, the below line
         # is just an example>
-        userid = unauthenticated_userid(self)
+        userid = self.unauthenticated_userid
         if userid is not None:
             # this should return None if the user doesn't exist
             # in the database
             with self.connmgr.get_connection() as conn:
-                user = conn.execute('EXEC sp_User_Login_s ?', userid).fetchone()
+                user = conn.execute("EXEC sp_User_Login_s ?", userid).fetchone()
 
             if user:
                 if user.ManageAreaList:
-                    user.ManageAreaList = user.ManageAreaList.split(',')
+                    user.ManageAreaList = user.ManageAreaList.split(",")
 
                 if user.ManageExternalSystemList:
-                    user.ManageExternalSystemList = user.ManageExternalSystemList.split(',')
+                    user.ManageExternalSystemList = user.ManageExternalSystemList.split(
+                        ","
+                    )
 
             return user
 
         return None
 
 
-tsf = TranslationStringFactory('CommunityManager')
+tsf = TranslationStringFactory("CommunityManager")
 
 
 def get_translate_fn(request, _culture=None):
@@ -223,16 +232,16 @@ def get_translate_fn(request, _culture=None):
 
 
 def passvars_pregen(request, elements, kw):
-    query = kw.get('_query')
-    ln = kw.pop('_ln', None)
-    form = kw.pop('_form', None)
+    query = kw.get("_query")
+    ln = kw.pop("_ln", None)
+    form = kw.pop("_form", None)
 
     if not form and not ln:
         ln = request.language.Culture
 
     extra_args = []
     if ln and ln != request.default_culture:
-        extra_args.append(('Ln', ln))
+        extra_args.append(("Ln", ln))
 
     if extra_args:
         if not query:
@@ -245,6 +254,6 @@ def passvars_pregen(request, elements, kw):
             query = list(query)
 
         query.extend(extra_args)
-        kw['_query'] = query
+        kw["_query"] = query
 
     return elements, kw
