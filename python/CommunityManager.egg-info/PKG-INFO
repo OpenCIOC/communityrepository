@@ -1,22 +1,45 @@
-Metadata-Version: 1.0
+Metadata-Version: 2.1
 Name: CommunityManager
 Version: 0.0
 Summary: CommunityManager
-Home-page: UNKNOWN
-Author: UNKNOWN
-Author-email: UNKNOWN
-License: UNKNOWN
-Description: CommunityManager README
-        
-        
-        0.0
-        ---
-        
-        -  Initial version
-        
+Home-page: 
+Author: 
+Author-email: 
+License: Apache 2.0
 Keywords: web wsgi bfg pylons pyramid
 Platform: UNKNOWN
 Classifier: Programming Language :: Python
 Classifier: Framework :: Pylons
 Classifier: Topic :: Internet :: WWW/HTTP
 Classifier: Topic :: Internet :: WWW/HTTP :: WSGI :: Application
+Classifier: License :: OSI Approved :: Apache Software License
+
+CIOC Community Repository
+=========================
+
+The CIOC Community Repository is a management tool for hierarchical community
+data. The data managed by this tool is available under a creative commons
+license directly from https://community-repository.cioc.ca/.
+
+Features
+--------
+
+* Tools for searching the community hierarchy
+* Editorial tools for repository managers
+* Lists and provides downloads of XML snapshots of the contained communities data
+* Log of changes made to the data in the repository for each release, as well as 
+  recent changes not yet incorporated into a release
+
+
+More Info
+---------
+
+* http://opencioc.org/community-repo.php
+
+
+0.0
+---
+
+-  Initial version
+
+

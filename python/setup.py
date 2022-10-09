@@ -20,41 +20,41 @@ import sys
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join('..', 'README.md')).read()
-CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
+README = open(os.path.join("..", "README.md")).read()
+CHANGES = open(os.path.join(here, "CHANGES.txt")).read()
 
 requires = [
-    'pyramid',
-    'pyramid_debugtoolbar',
-    ]
+    "pyramid",
+]
 
 if sys.version_info[:3] < (2, 5, 0):
-    requires.append('pysqlite')
+    requires.append("pysqlite")
 
-setup(name='CommunityManager',
-      version='0.0',
-      description='CommunityManager',
-      long_description=README + '\n\n' + CHANGES,
-      classifiers=[
-          "Programming Language :: Python",
-          "Framework :: Pylons",
-          "Topic :: Internet :: WWW/HTTP",
-          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-          "License :: OSI Approved :: Apache Software License"
-      ],
-      author='',
-      author_email='',
-      url='',
-      keywords='web wsgi bfg pylons pyramid',
-      packages=find_packages(),
-      include_package_data=True,
-      zip_safe=False,
-      # test_suite='communitymanager',
-      install_requires=requires,
-      entry_points="""\
+setup(
+    name="CommunityManager",
+    version="0.0",
+    description="CommunityManager",
+    long_description=README + "\n\n" + CHANGES,
+    classifiers=[
+        "Programming Language :: Python",
+        "Framework :: Pylons",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+        "License :: OSI Approved :: Apache Software License",
+    ],
+    author="",
+    author_email="",
+    url="",
+    keywords="web wsgi bfg pylons pyramid",
+    packages=find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    # test_suite='communitymanager',
+    install_requires=requires,
+    entry_points="""\
       [paste.app_factory]
       main = communitymanager:main
       """,
-      license='Apache 2.0',
-      paster_plugins=['pyramid'],
-      )
+    license="Apache 2.0",
+    paster_plugins=["pyramid"],
+)
