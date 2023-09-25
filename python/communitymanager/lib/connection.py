@@ -27,12 +27,11 @@ class ConnectionManager(object):
     def connection_string(self):
         config = self.config
         settings = [
-            ("Driver", config.get("driver", "ODBC Driver 18 for SQL Server")),
+            ("Driver", config.get("driver", "ODBC Driver 17 for SQL Server")),
             ("Server", config["server"]),
             ("Database", config["database"]),
             ("UID", config["uid"]),
             ("PWD", config["pwd"]),
-            ("Encrypt", "Optional"),
         ]
 
         return ";".join("%s={%s}" % x for x in settings)
