@@ -173,7 +173,7 @@ def main(global_config, **settings):
     passvars_pregen = request.passvars_pregen
 
     config.add_translation_dirs(
-        "communitymanager:locale", formencode.api.get_localedir()
+        "communitymanager:locale", str(formencode.api.get_localedir())
     )
     config.add_subscriber(
         "communitymanager.lib.subscribers.add_renderer_globals",
