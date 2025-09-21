@@ -6,13 +6,13 @@
 #
 async-timeout==5.0.1
     # via redis
-babel==2.16.0
+babel==2.17.0
     # via -r requirements.in
-certifi==2024.12.14
+certifi==2025.8.3
     # via requests
-charset-normalizer==3.4.0
+charset-normalizer==3.4.3
     # via requests
-formencode==2.1.0
+formencode==2.1.1
     # via pyramid-simpleform
 hupper==1.12.1
     # via pyramid
@@ -20,9 +20,9 @@ idna==3.10
     # via requests
 isodate==0.7.2
     # via -r requirements.in
-lxml==5.3.0
+lxml==6.0.1
     # via -r requirements.in
-mako==1.3.8
+mako==1.3.10
     # via
     #   -r requirements.in
     #   pyramid-mako
@@ -39,7 +39,7 @@ pastedeploy==3.1.0
     #   -r requirements.in
     #   pastescript
     #   plaster-pastedeploy
-pastescript==3.6.0
+pastescript==3.7.0
     # via -r requirements.in
 plaster==1.1.2
     # via
@@ -63,23 +63,23 @@ pyramid-mako==1.1.0
     # via -r requirements.in
 pyramid-multiauth==1.0.2
     # via -r requirements.in
-pyramid-session-redis==1.6.3
+pyramid-session-redis==1.8.0
     # via -r requirements.in
 pyramid-simpleform==0.7.dev0
     # via -r requirements.in
-redis==5.2.1
+redis==6.4.0
     # via
     #   -r requirements.in
     #   pyramid-session-redis
-requests==2.32.3
+requests==2.32.5
     # via -r requirements.in
 six==1.17.0
-    # via
-    #   pyramid-session-redis
-    #   webhelpers2
+    # via webhelpers2
 translationstring==1.4
     # via pyramid
-urllib3==2.2.3
+typing-extensions==4.15.0
+    # via pyramid-session-redis
+urllib3==2.5.0
     # via requests
 venusian==3.1.1
     # via pyramid
@@ -89,9 +89,9 @@ webhelpers2==2.1
     #   pyramid-simpleform
 webob==1.8.9
     # via pyramid
-zope-deprecation==5.0
+zope-deprecation==6.0
     # via pyramid
-zope-interface==7.2
+zope-interface==8.0
     # via
     #   pyramid
     #   pyramid-session-redis

@@ -31,8 +31,6 @@ from pyramid.security import (
 
 from pyramid_multiauth import MultiAuthenticationPolicy
 
-from redis import ConnectionPool
-
 import formencode.api
 
 # this app
@@ -120,17 +118,12 @@ class OnlyAdminRootFactory(object):
         pass
 
 
-def get_redis_pool(config):
-    url = config.get("session.url", "172.23.16.12:6379")
-
-    host, port = url.split(":")
-    redispool = ConnectionPool(host=host, port=int(port))
-
-    return redispool
-
-
 def get_session_settings(cnf, settings):
-    settings["redis.sessions.connection_pool"] = get_redis_pool(cnf)
+    url = cnf.get("session.url", "172.23.16.12:6379")
+    host, port = url.split(":")
+
+    settings["redis.sessions.redis_host"] = host
+    settings["redis.sessions.redis_port"] = int(port)
 
     session_secret = cnf.get("session.secret")
     if session_secret:
@@ -300,7 +293,7 @@ def main(global_config, **settings):
 
     config.add_route(
         "external_community",
-        "/external_communities/{SystemCode}/{EXTID:\d+}/{action}",
+        "/external_communities/{SystemCode}/{EXTID:\\d+}/{action}",
         pregenerator=passvars_pregen,
         factory="communitymanager.views.externalsystem.ExternalCommunityRoot",
     )
