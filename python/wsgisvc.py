@@ -31,13 +31,12 @@ class ServiceSettings(object):
     _wssection_ = "winservice"
 
     def __init__(self, cfg_file_name, override=None):
-
         if override is None:
             override = {}
 
         self.override = override
 
-        c = configparser.SafeConfigParser()
+        c = configparser.RawConfigParser()
         c.read(cfg_file_name)
 
         self.cfg_file_name = cfg_file_name
@@ -50,7 +49,7 @@ class ServiceSettings(object):
         return self.cfg_file_name
 
     def getSvcName(self):
-        val = self.override.get('svc_name')
+        val = self.override.get("svc_name")
         if val:
             return val
 
@@ -60,7 +59,7 @@ class ServiceSettings(object):
             return os.path.splitext(os.path.basename(self.cfg_file_name))[0]
 
     def getSvcDisplayName(self):
-        val = self.override.get('svc_display_name')
+        val = self.override.get("svc_display_name")
         if val:
             return val
 
@@ -70,7 +69,7 @@ class ServiceSettings(object):
             return "%s Paste Service" % self.getSvcName()
 
     def getHttpPort(self):
-        val = self.override.get('http_port')
+        val = self.override.get("http_port")
         if val:
             return val
 
@@ -87,7 +86,7 @@ class ServiceSettings(object):
         return desc + "wsgi_ini_file: %s" % (self.getCfgFileName(),)
 
     def getVirtualEnv(self):
-        val = self.override.get('virtual_env')
+        val = self.override.get("virtual_env")
         if val:
             return val
 
@@ -104,16 +103,21 @@ class ServiceSettings(object):
 
 def checkIniFileName(file_name):
     if not os.path.exists(file_name):
-        raise Exception("The specified paster ini file ( %s ) doesn't exist. Correct the wsgi_ini_file attribute" % file_name)
+        raise Exception(
+            "The specified paster ini file ( %s ) doesn't exist. Correct the wsgi_ini_file attribute"
+            % file_name
+        )
 
 
 def activate_virtualenv(ve_dir):
-    activate_this = os.path.abspath(os.path.join(ve_dir, 'scripts', 'activate_this.py'))
-    exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
+    activate_this = os.path.abspath(os.path.join(ve_dir, "scripts", "activate_this.py"))
+    exec(
+        compile(open(activate_this, "rb").read(), activate_this, "exec"),
+        dict(__file__=activate_this),
+    )
 
 
 class PasteWinService(win32serviceutil.ServiceFramework):
-
     def __init__(self, args):
         self._svc_name_ = args[0]
 
@@ -125,7 +129,6 @@ class PasteWinService(win32serviceutil.ServiceFramework):
         self.stop_event = win32event.CreateEvent(None, 0, 0, None)
 
     def SvcDoRun(self):
-
         if self.ss.getVirtualEnv():
             activate_virtualenv(self.ss.getVirtualEnv())
 
@@ -133,12 +136,13 @@ class PasteWinService(win32serviceutil.ServiceFramework):
         sys.path.append(self.ss.getCfgFileDir())
 
         from paste.script.serve import ServeCommand as Server
+
         s = Server(None)
         args = [self.ss.getCfgFileName()]
 
         http_port = self.ss.getHttpPort()
         if http_port:
-            args.append('http_port=' + str(http_port))
+            args.append("http_port=" + str(http_port))
 
         s.run(args)
         win32event.WaitForSingleObject(self.stop_event, win32event.INFINITE)
@@ -156,13 +160,13 @@ class PasteWinService(win32serviceutil.ServiceFramework):
 def getOverrideFromRegistry(svc_name):
     override = {}
     try:
-        keys = win32serviceutil.GetServiceCustomOption(svc_name, 'wsgi_override_keys')
+        keys = win32serviceutil.GetServiceCustomOption(svc_name, "wsgi_override_keys")
     except:
         return override
 
     for key in keys.split():
         try:
-            val = win32serviceutil.GetServiceCustomOption(svc_name, 'wsgi_' + key)
+            val = win32serviceutil.GetServiceCustomOption(svc_name, "wsgi_" + key)
         except:
             pass
 
@@ -172,12 +176,14 @@ def getOverrideFromRegistry(svc_name):
 
 
 def getCfgNameFromRegistry(svc_name):
-    return win32serviceutil.GetServiceCustomOption(svc_name, 'wsgi_ini_file')
+    return win32serviceutil.GetServiceCustomOption(svc_name, "wsgi_ini_file")
 
 
 def custom_usage():
     print("")
-    print("Option for wsgi deployments as windows services. This option is mandatory! :")
+    print(
+        "Option for wsgi deployments as windows services. This option is mandatory! :"
+    )
     print(" -c config_file : the deployment ini file")
     print()
     print("Optional settings for wsgi deployments via command line: ")
@@ -194,7 +200,6 @@ def usage():
 
 
 def handle_command_line(argv):
-
     options_pattern = "c:v:n:d:p:"
     optlist, args = getopt.getopt(sys.argv[1:], options_pattern)
 
@@ -206,7 +211,7 @@ def handle_command_line(argv):
         usage()
         return
 
-    if len(args) == 1 and args[0] == 'list':
+    if len(args) == 1 and args[0] == "list":
         print("List of wsgi services (display names) installed: ")
         print(listServices())
         return
@@ -215,20 +220,20 @@ def handle_command_line(argv):
     override = {}
 
     for opt, val in optlist:
-        if opt == '-c':
+        if opt == "-c":
             cmd_cfg_file = val
 
-        elif opt == '-n':
-            override['svc_name'] = val
+        elif opt == "-n":
+            override["svc_name"] = val
 
-        elif opt == '-d':
-            override['svc_display_name'] = val
+        elif opt == "-d":
+            override["svc_display_name"] = val
 
-        elif opt == '-v':
-            override['virtual_env'] = os.path.abspath(val)
+        elif opt == "-v":
+            override["virtual_env"] = os.path.abspath(val)
 
-        elif opt == '-p':
-            override['http_port'] = val
+        elif opt == "-p":
+            override["http_port"] = val
 
     if not cmd_cfg_file:
         print("Incorrect parameters")
@@ -242,14 +247,25 @@ def handle_command_line(argv):
             pass
 
         ds.transferEssential(A)
-        win32serviceutil.HandleCommandLine(A, serviceClassString=getServiceClassString(PasteWinService, argv), argv=argv, customInstallOptions=options_pattern)
-        win32serviceutil.SetServiceCustomOption(ds.getSvcName(), 'wsgi_ini_file', os.path.abspath(cmd_cfg_file))
+        win32serviceutil.HandleCommandLine(
+            A,
+            serviceClassString=getServiceClassString(PasteWinService, argv),
+            argv=argv,
+            customInstallOptions=options_pattern,
+        )
+        win32serviceutil.SetServiceCustomOption(
+            ds.getSvcName(), "wsgi_ini_file", os.path.abspath(cmd_cfg_file)
+        )
 
         for key, value in list(override.items()):
-            win32serviceutil.SetServiceCustomOption(ds.getSvcName(), 'wsgi_' + key, value)
+            win32serviceutil.SetServiceCustomOption(
+                ds.getSvcName(), "wsgi_" + key, value
+            )
 
         if override:
-            win32serviceutil.SetServiceCustomOption(ds.getSvcName(), 'wsgi_override_keys', ' '.join(list(override.keys())))
+            win32serviceutil.SetServiceCustomOption(
+                ds.getSvcName(), "wsgi_override_keys", " ".join(list(override.keys()))
+            )
 
     except SystemExit as e:
         if e.code == 1:
@@ -260,22 +276,38 @@ def listServices():
     import win32api
     import win32con
     import prettytable
+
     wsgi_svcs = prettytable.PrettyTable(["name", "display name"])
     wsgi_svcs.set_field_align("name", "l")
     wsgi_svcs.set_field_align("display name", "l")
-    services_key = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE, "System\\CurrentControlSet\\Services")
+    services_key = win32api.RegOpenKey(
+        win32con.HKEY_LOCAL_MACHINE, "System\\CurrentControlSet\\Services"
+    )
     i = 0
     try:
         while 1:
             svc_name = win32api.RegEnumKey(services_key, i)
             try:
-                params_key = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE, "System\\CurrentControlSet\\Services\\" + svc_name + "\\Parameters")
+                params_key = win32api.RegOpenKey(
+                    win32con.HKEY_LOCAL_MACHINE,
+                    "System\\CurrentControlSet\\Services\\" + svc_name + "\\Parameters",
+                )
                 try:
-                    win32api.RegQueryValueEx(params_key, 'wsgi_ini_file')[0]
-                    main_svc_key = win32api.RegOpenKey(win32con.HKEY_LOCAL_MACHINE, "System\\CurrentControlSet\\Services\\" + svc_name)
+                    win32api.RegQueryValueEx(params_key, "wsgi_ini_file")[0]
+                    main_svc_key = win32api.RegOpenKey(
+                        win32con.HKEY_LOCAL_MACHINE,
+                        "System\\CurrentControlSet\\Services\\" + svc_name,
+                    )
                     try:
                         pass
-                        wsgi_svcs.add_row([svc_name, win32api.RegQueryValueEx(main_svc_key, 'DisplayName')[0]])
+                        wsgi_svcs.add_row(
+                            [
+                                svc_name,
+                                win32api.RegQueryValueEx(main_svc_key, "DisplayName")[
+                                    0
+                                ],
+                            ]
+                        )
                     except win32api.error:
                         pass
                     win32api.RegCloseKey(main_svc_key)
@@ -296,5 +328,6 @@ def listServices():
 def main():
     handle_command_line(argv=sys.argv)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
