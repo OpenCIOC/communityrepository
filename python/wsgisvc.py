@@ -20,6 +20,7 @@ import win32event
 import sys
 import os
 import getopt
+from configparser import RawConfigParser as ConfigParser
 import configparser
 
 
@@ -36,7 +37,7 @@ class ServiceSettings(object):
 
         self.override = override
 
-        c = configparser.RawConfigParser()
+        c = ConfigParser()
         c.read(cfg_file_name)
 
         self.cfg_file_name = cfg_file_name
