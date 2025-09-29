@@ -1,5 +1,5 @@
 # =========================================================================================
-#  Copyright 2015 Community Information Online Consortium (CIOC) and KCL Software Solutions
+#  Copyright 2016 Community Information Online Consortium (CIOC) and KCL Software Solutions Inc.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,13 +14,14 @@
 #  limitations under the License.
 # =========================================================================================
 
+
+import os
+import sys
+
 import win32serviceutil
 import win32service
 import win32event
-import sys
-import os
 import getopt
-from configparser import RawConfigParser as ConfigParser
 import configparser
 
 
@@ -28,7 +29,7 @@ def getServiceClassString(o, argv):
     return win32serviceutil.GetServiceClassString(o, argv)
 
 
-class ServiceSettings(object):
+class ServiceSettings:
     _wssection_ = "winservice"
 
     def __init__(self, cfg_file_name, override=None):
@@ -37,11 +38,16 @@ class ServiceSettings(object):
 
         self.override = override
 
-        c = ConfigParser()
+        c = configparser.ConfigParser()
         c.read(cfg_file_name)
 
         self.cfg_file_name = cfg_file_name
         self.c = c
+
+    #        try:
+    #            c.get(self._wssection_,"svc_name")
+    #        except (ConfigParser.NoOptionError, ConfigParser.NoSectionError):
+    #                raise Exception("No \"svc_name\" in the % section of %s" % (self._wssection_,cfg_file_name))
 
     def getCfgFileDir(self):
         return os.path.dirname(self.cfg_file_name)
@@ -56,7 +62,10 @@ class ServiceSettings(object):
 
         try:
             return self.c.get(self._wssection_, "svc_name")
-        except (configparser.NoOptionError, configparser.NoSectionError):
+        except (
+            configparser.NoOptionError,
+            configparser.NoSectionError,
+        ):
             return os.path.splitext(os.path.basename(self.cfg_file_name))[0]
 
     def getSvcDisplayName(self):
@@ -66,7 +75,10 @@ class ServiceSettings(object):
 
         try:
             return self.c.get(self._wssection_, "svc_display_name")
-        except (configparser.NoOptionError, configparser.NoSectionError):
+        except (
+            configparser.NoOptionError,
+            configparser.NoSectionError,
+        ):
             return "%s Paste Service" % self.getSvcName()
 
     def getHttpPort(self):
@@ -76,25 +88,47 @@ class ServiceSettings(object):
 
         try:
             return self.c.get(self._wssection_, "http_port").strip()
-        except (configparser.NoOptionError, configparser.NoSectionError):
+        except (
+            configparser.NoOptionError,
+            configparser.NoSectionError,
+        ):
             return None
 
     def getSvcDescription(self):
         try:
             desc = self.c.get(self._wssection_, "svc_description") + "; "
-        except (configparser.NoOptionError, configparser.NoSectionError):
+        except (
+            configparser.NoOptionError,
+            configparser.NoSectionError,
+        ):
             desc = ""
-        return desc + "wsgi_ini_file: %s" % (self.getCfgFileName(),)
+        return desc + f"wsgi_ini_file: {self.getCfgFileName()}"
 
     def getVirtualEnv(self):
-        val = self.override.get("virtual_env")
-        if val:
-            return val
+        # NOTE also update includes/core/incInitPython.asp
+        app_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-        try:
-            return self.c.get(self._wssection_, "virtual_env")
-        except (configparser.NoOptionError, configparser.NoSectionError):
-            return None
+        env = "ciocenv4py3"
+        virtualenv_directive_file = os.path.join(app_dir, "python", "virtualenv.desc")
+        if os.path.exists(virtualenv_directive_file):
+            with open(virtualenv_directive_file) as f:
+                possible_env = f.read().strip()
+
+            if os.path.exists(
+                os.path.join(
+                    os.environ.get(
+                        "CIOC_ENV_ROOT", os.path.join(app_dir, "..", "..", "PythonEnvs")
+                    ),
+                    possible_env,
+                    "scripts",
+                    "activate_this.py",
+                )
+            ):
+                env = possible_env
+
+        return os.path.join(
+            os.environ.get("CIOC_ENV_ROOT", os.path.join(app_dir, "..", "..")), env
+        )
 
     def transferEssential(self, o):
         o._svc_name_ = self.getSvcName()
@@ -130,9 +164,15 @@ class PasteWinService(win32serviceutil.ServiceFramework):
         self.stop_event = win32event.CreateEvent(None, 0, 0, None)
 
     def SvcDoRun(self):
-        if self.ss.getVirtualEnv():
-            activate_virtualenv(self.ss.getVirtualEnv())
+        # required to find some DLLs that extentions need
+        os.add_dll_directory(os.path.join(sys.prefix, "DLLs"))
+        os.add_dll_directory(sys.prefix)
 
+        env = self.ss.getVirtualEnv()
+        if env:
+            activate_virtualenv(env)
+
+        sys.dont_write_bytecode = True
         os.chdir(self.ss.getCfgFileDir())
         sys.path.append(self.ss.getCfgFileDir())
 
@@ -150,11 +190,8 @@ class PasteWinService(win32serviceutil.ServiceFramework):
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
-        "send stop event"
         win32event.SetEvent(self.stop_event)
-        "stop event sent"
         self.ReportServiceStatus(win32service.SERVICE_STOPPED)
-        "Exit"
         sys.exit()
 
 
@@ -162,13 +199,13 @@ def getOverrideFromRegistry(svc_name):
     override = {}
     try:
         keys = win32serviceutil.GetServiceCustomOption(svc_name, "wsgi_override_keys")
-    except:
+    except Exception:
         return override
 
     for key in keys.split():
         try:
             val = win32serviceutil.GetServiceCustomOption(svc_name, "wsgi_" + key)
-        except:
+        except Exception:
             pass
 
         override[key] = val
@@ -196,7 +233,7 @@ def custom_usage():
 def usage():
     try:
         win32serviceutil.usage()
-    except:
+    except Exception:
         custom_usage()
 
 
@@ -244,7 +281,7 @@ def handle_command_line(argv):
     try:
         ds = ServiceSettings(os.path.abspath(cmd_cfg_file), override)
 
-        class A(object):
+        class A:
             pass
 
         ds.transferEssential(A)
@@ -258,7 +295,7 @@ def handle_command_line(argv):
             ds.getSvcName(), "wsgi_ini_file", os.path.abspath(cmd_cfg_file)
         )
 
-        for key, value in list(override.items()):
+        for key, value in override.items():
             win32serviceutil.SetServiceCustomOption(
                 ds.getSvcName(), "wsgi_" + key, value
             )
@@ -294,7 +331,9 @@ def listServices():
                     "System\\CurrentControlSet\\Services\\" + svc_name + "\\Parameters",
                 )
                 try:
-                    win32api.RegQueryValueEx(params_key, "wsgi_ini_file")[0]
+                    wsgi_ini_file = win32api.RegQueryValueEx(
+                        params_key, "wsgi_ini_file"
+                    )[0]
                     main_svc_key = win32api.RegOpenKey(
                         win32con.HKEY_LOCAL_MACHINE,
                         "System\\CurrentControlSet\\Services\\" + svc_name,
@@ -319,7 +358,7 @@ def listServices():
                 pass
             i = i + 1
 
-    except:
+    except Exception:
         pass
 
     win32api.RegCloseKey(services_key)
