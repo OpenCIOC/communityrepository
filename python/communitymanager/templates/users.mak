@@ -104,7 +104,7 @@
 <script type="text/javascript" src="/static/js/libs/jquery.tablesorter.min.js"></script> 
 <script type="text/javascript">
 jQuery(function($) {
-    $('#existing-users').tablesorter({headers: {8: {sorter: false}}});
+    $('#existing-users').tablesorter({headers: {9: {sorter: false}}});
 });
 </script>
 </%block>
