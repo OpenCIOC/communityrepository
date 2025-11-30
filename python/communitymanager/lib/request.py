@@ -17,12 +17,12 @@
 # Python STD Lib
 from collections import defaultdict
 from datetime import date, datetime, time
+from functools import cached_property
 
 import logging
 
 # 3rd party libs
 from pyramid.request import Request
-from pyramid.decorator import reify
 from pyramid.i18n import get_localizer, TranslationStringFactory, TranslationString
 
 from babel import Locale, dates
@@ -131,23 +131,23 @@ class CommunityManagerRequest(Request):
 
         return extra_args
 
-    @reify
+    @cached_property
     def default_form_args(self):
         return self.form_args()
 
-    @reify
+    @cached_property
     def _LOCALE_(self):
         return self.language.Culture.replace("-", "_")
 
-    @reify
+    @cached_property
     def config(self):
         return config.get_config(const._config_file)
 
-    @reify
+    @cached_property
     def connmgr(self):
         return connection.ConnectionManager(self)
 
-    @reify
+    @cached_property
     def language(self):
         language = SystemLanguage(self)
 
@@ -158,11 +158,11 @@ class CommunityManagerRequest(Request):
 
         return language
 
-    @reify
+    @cached_property
     def default_culture(self):
         return default_culture()
 
-    @reify
+    @cached_property
     def translate(self):
         if not hasattr(self, "localizer"):
             self.localizer = get_localizer(self)
@@ -186,27 +186,37 @@ class CommunityManagerRequest(Request):
     def format_datetime(self, dt):
         return format_datetime(dt, self)
 
-    @reify
+    @cached_property
     def user(self):
-        # <your database connection, however you get it, the below line
-        # is just an example>
-        userid = self.unauthenticated_userid
-        if userid is not None:
-            # this should return None if the user doesn't exist
-            # in the database
-            with self.connmgr.get_connection() as conn:
-                user = conn.execute("EXEC sp_User_Login_s ?", userid).fetchone()
+        return self.identity
 
-            if user:
-                if user.ManageAreaList:
-                    user.ManageAreaList = user.ManageAreaList.split(",")
+    @cached_property
+    def groups(self):
+        user = self.user
+        if user is not None:
+            # log.debug('user: %s, %d', user.UserName, user.ViewType)
+            groups = []
 
-                if user.ManageExternalSystemList:
-                    user.ManageExternalSystemList = user.ManageExternalSystemList.split(
-                        ","
-                    )
+            if user.ManageAreaList:
+                groups = ["area:" + x for x in user.ManageAreaList]
 
-            return user
+            if user.ManageExternalSystemList:
+                groups.extend(
+                    ["area-external:" + x for x in user.ManageExternalSystemList]
+                )
+
+            if user.Admin:
+                groups.append("area:admin")
+
+            if user.Admin or user.ManageAreaList:
+                groups.append("area:manager")
+
+            if user.Admin or user.ManageExternalSystemList:
+                groups.append("area:externalsystem")
+
+            groups.append("uid:%d" % user.User_ID)
+
+            return groups
 
         return None
 

@@ -19,74 +19,87 @@ import logging
 
 # 3rd party
 from pyramid.config import Configurator
-from pyramid.authentication import SessionAuthenticationPolicy
-from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.authentication import (
+    SessionAuthenticationHelper,
+    extract_http_basic_credentials,
+)
+from pyramid.authorization import ACLHelper, Everyone, Authenticated, Allow, DENY_ALL
 from pyramid.security import (
     NO_PERMISSION_REQUIRED,
-    Everyone,
-    Authenticated,
-    Allow,
-    DENY_ALL,
 )
-
-from pyramid_multiauth import MultiAuthenticationPolicy
 
 import formencode.api
 
 # this app
 from communitymanager.lib import request, const, config as ciocconfig
-from communitymanager.lib.basicauthpolicy import BasicAuthenticationPolicy
 from communitymanager.lib.security import check_credentials
 
 log = logging.getLogger("communitymanager")
 
 
-def groupfinder(userid, request):
-    user = request.user
-    if user is not None:
-        # log.debug('user: %s, %d', user.UserName, user.ViewType)
-        groups = []
+class SecurityPolicy:
+    def __init__(self):
+        self.helper = SessionAuthenticationHelper()
 
-        if user.ManageAreaList:
-            groups = ["area:" + x for x in user.ManageAreaList]
+    def identity(self, request):
+        """Return app-specific user object."""
+        userid = self.helper.authenticated_userid(request)
+        creds = extract_http_basic_credentials(request)
+        user = None
+        if userid is not None:
+            with request.connmgr.get_connection() as conn:
+                user = conn.execute("EXEC sp_User_Login_s ?", userid).fetchone()
+        elif creds:
+            user = check_basic_auth(creds, request)
 
-        if user.ManageExternalSystemList:
-            groups.extend(["area-external:" + x for x in user.ManageExternalSystemList])
+        if user:
+            if user.ManageAreaList:
+                user.ManageAreaList = user.ManageAreaList.split(",")
 
-        if user.Admin:
-            groups.append("area:admin")
+            if user.ManageExternalSystemList:
+                user.ManageExternalSystemList = user.ManageExternalSystemList.split(",")
 
-        if user.Admin or user.ManageAreaList:
-            groups.append("area:manager")
+        return user
 
-        if user.Admin or user.ManageExternalSystemList:
-            groups.append("area:externalsystem")
+    def authenticated_userid(self, request):
+        """Return a string ID for the user."""
+        return self.helper.authenticated_userid(request)
 
-        groups.append("uid:%d" % user.User_ID)
+    def permits(self, request, context, permission):
+        """Allow access to everything if signed in."""
+        identity = self.identity(request)
 
-        return groups
+        principals = [Everyone]
+        if identity is not None:
+            principals.append(Authenticated)
+            principals.extend(request.groups)
+        return ACLHelper().permits(context, principals, permission)
 
-    return None
+    def remember(self, request, userid, **kw):
+        return self.helper.remember(request, userid, **kw)
+
+    def forget(self, request, **kw):
+        return self.helper.forget(request, **kw)
 
 
 def check_basic_auth(credentials, request):
     if not getattr(request, "_basic_auth_fetched_user", False):
         with request.connmgr.get_connection() as conn:
-            request.user = conn.execute(
+            user = conn.execute(
                 "EXEC sp_User_Login_s ?", credentials["login"]
             ).fetchone()
             request._basic_auth_fetched_user = True
+            request._basic_auth_user = None
 
-            if not request.user:
+            if not user:
                 return None
 
             if not check_credentials(request.user, credentials["password"]):
                 return None
 
-    if not hasattr(request, "_basic_auth_groups"):
-        request._basic_auth_groups = groupfinder(credentials["login"], request)
+            request._basic_auth_user = user
 
-    return request._basic_auth_groups
+    return request._basic_auth_user
 
 
 class RootFactory(object):
@@ -144,20 +157,11 @@ def main(global_config, **settings):
 
     get_session_settings(cnf, settings)
 
-    policies = [
-        SessionAuthenticationPolicy(callback=groupfinder, debug=True),
-        BasicAuthenticationPolicy(check_basic_auth),
-    ]
-
-    authn_policy = MultiAuthenticationPolicy(policies)
-    authz_policy = ACLAuthorizationPolicy()
-
     config = Configurator(
         settings=settings,
         root_factory=RootFactory,
         request_factory="communitymanager.request.CommunityManagerRequest",
-        authentication_policy=authn_policy,
-        authorization_policy=authz_policy,
+        security_policy=SecurityPolicy(),
     )
 
     config.include("pyramid_session_redis")

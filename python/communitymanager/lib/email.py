@@ -15,7 +15,6 @@
 # =========================================================================================
 
 
-
 import os
 import smtplib
 
@@ -23,25 +22,31 @@ from email.header import Header
 from email.mime.text import MIMEText
 
 import logging
-log = logging.getLogger('communitymanager.lib.email')
+
+log = logging.getLogger("communitymanager.lib.email")
 
 _server = None
+_port = None
 
 
 def email(from_, to, subject, body):
     global _server
-    msg = MIMEText(body, _charset='utf-8')
-    msg['To'] = to
-    msg['From'] = from_
-    msg['Subject'] = Header(subject, 'utf-8')
+    global _port
+    msg = MIMEText(body, _charset="utf-8")
+    msg["To"] = to
+    msg["From"] = from_
+    msg["Subject"] = Header(subject, "utf-8")
 
     if _server is None:
-        _server = os.environ.get('CIOC_MAIL_HOST', '127.0.0.1')
+        _server = os.environ.get("CIOC_MAIL_HOST", "127.0.0.1")
 
-    if _server == 'test':
+    if _port is None:
+        _port = int(os.environ.get("CIOC_MAIL_PORT", "25"), 10)
+
+    if _server == "test":
         log.debug(msg.as_string())
         return
 
-    smtp = smtplib.SMTP(_server)
+    smtp = smtplib.SMTP(_server, _port)
     smtp.sendmail(from_, [to], msg.as_string())
     smtp.close()
