@@ -1,11 +1,11 @@
 update-deps:
 	python -m pip install -U pip pip-tools
-	pip-compile -v -U requirements.in
-	pip-compile -U requirements-dev.in
+	pip-compile --allow-unsafe -v -U requirements.in
+	pip-compile --allow-unsafe -U requirements-dev.in
 	pip-sync requirements-dev.txt
 
 compile-deps:
 	python -m pip install -U pip pip-tools
-	pip-compile requirements.in
-	pip-compile requirements-dev.in
+	pip-compile --allow-unsafe requirements.in
+	pip-compile --allow-unsafe requirements-dev.in
 	pip-sync requirements-dev.txt
