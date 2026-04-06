@@ -97,11 +97,6 @@ Disallow: /
 
 User-agent: *
 Crawl-delay: 5
-Disallow: /admin/
-Disallow: /feedback.asp
-Disallow: /volunteer/feedback.asp
-Disallow: /search_help.asp
-Disallow: /volunteer/search_help.asp
-Disallow: /record/*/pdf
-Disallow: /customreport
-Disallow: /customreport/*
+Disallow: /downloads/*
+Disallow: /external_communities/*/download
+Disallow: /request_account
